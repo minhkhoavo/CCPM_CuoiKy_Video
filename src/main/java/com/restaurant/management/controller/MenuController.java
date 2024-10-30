@@ -18,9 +18,6 @@ public class MenuController {
     @Autowired
     private DishService dishService;
 
-    @Autowired
-    private ObjectMapper objectMapper;  // Jackson ObjectMapper
-
     @GetMapping
     public String showMenu(Model model) {
         List<Dish> menuItems = dishService.getAllDishes();
