@@ -96,7 +96,7 @@
     <script>
 
         function openModal(button) {
-            const employeeModal = new Modal('employeeModal', "Employee", '/employees/add', '/employees/edit');
+            const employeeModal = new ModalWithForm('employeeModal', "Employee", '/employees/add', '/employees/edit');
             let data;
             if (button != null) {
                  data = {
@@ -114,7 +114,7 @@
         }
 
         function closeModal() {
-            const employeeModal = new Modal('employeeModal', '/employees/add', '/employees/edit');
+            const employeeModal = new ModalWithForm('employeeModal', '/employees/add', '/employees/edit');
             employeeModal.close();
         }
 
