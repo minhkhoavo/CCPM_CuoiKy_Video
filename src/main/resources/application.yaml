@@ -18,10 +18,14 @@ spring:
     cache: false
     prefix: classpath:/templates/
     suffix: .html
-    mode: HTML5
 
 cloudinary:
   cloud_name: ${CLOUDINARY_NAME}
   api_key: ${CLOUDINARY_KEY}
   api_secret: ${CLOUDINARY_SECRET}
   secure: true
+
+payment:
+  vnpay:
+    tmnCode: ${VNP_TMNCODE}
+    secretKey: ${VNP_SECRETKEY}

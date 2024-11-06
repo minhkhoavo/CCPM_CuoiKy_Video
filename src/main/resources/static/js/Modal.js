@@ -1,5 +1,6 @@
 class Modal {
     constructor(modalId) {
+        console.log(modalId)
         this.modal = document.getElementById(modalId);
     }
     open() {
@@ -80,9 +81,9 @@ class ModalCustomWithoutForm extends Modal {
     constructor(modalId, nextCallback) {
         super(modalId);
         this.nextCallback = nextCallback;
-        this.closeButton = this.modal.querySelector('#closeButton');
-        this.nextButton = this.modal.querySelector('#nextButton');
-
+        this.closeButton = this.modal ? this.modal.querySelector('#closeButton') : null;
+        this.nextButton = this.modal ? this.modal.querySelector('#nextButton') : null;
+        this.data = null;
         this.handleEvents();
     }
 
@@ -98,14 +99,14 @@ class ModalCustomWithoutForm extends Modal {
             this.nextButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 if (this.nextCallback && typeof this.nextCallback === 'function') {
-                    this.nextCallback();
+                    this.nextCallback(this.data);
                 }
             });
         }
     }
 
-    open(content = '') {
-        this.modal.querySelector('.modal-content').innerHTML = content;
+    open(content = '', data = null) {
+        this.data = data;
         super.open();
     }
 }
