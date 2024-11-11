@@ -30,7 +30,7 @@ public class DishService {
     public Dish saveDish(Dish dish, MultipartFile file) throws IOException {
         if (file != null && !file.isEmpty()) {
             String imageUrl = storageService.uploadImage(file);
-            dish.setImageUrl(imageUrl);
+            dish.setImage(imageUrl);
         }
         return dishRepository.save(dish);
     }
@@ -45,7 +45,7 @@ public class DishService {
         existingDish.setCategory(updatedDish.getCategory());
 
         if (file != null && !file.isEmpty()) {
-            existingDish.setImageUrl(storageService.uploadImage(file));
+            existingDish.setImage(storageService.uploadImage(file));
         }
 
         dishRepository.save(existingDish);
@@ -55,7 +55,6 @@ public class DishService {
         dishRepository.deleteById(id);
     }
 
-    // Proposed additional method
     public List<Dish> getDishesByCategory(Long categoryId) {
         return dishRepository.findByCategoryId(categoryId);
     }
