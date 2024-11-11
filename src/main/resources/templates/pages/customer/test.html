@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Employee List</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h1>Employee List</h1>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="customer : ${customers}">
+            <td th:text="${customer.customerId}">ID</td>
+            <td th:text="${customer.firstName}">Name</td>
+            <td th:text="${customer.lastName}">Department</td>
+            <td th:text="${customer.email}">ID</td>
+            <td th:text="${customer.phone}">Name</td>
+            <td th:text="${customer.address}">Department</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
