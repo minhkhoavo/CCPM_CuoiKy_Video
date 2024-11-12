@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long dishId;
 
     @Column(nullable = false, unique = true, length = 100)
     private String name;
@@ -24,8 +24,8 @@ public class Dish {
     @Column(length = 500)
     private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    @Column(nullable = false)
+    private Double price;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)

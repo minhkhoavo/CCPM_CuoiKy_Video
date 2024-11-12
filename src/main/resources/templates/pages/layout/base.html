@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:fragment="base" >
+      th:fragment="base (content)" >
 <head>
   <title>My Website</title>
   <link rel="stylesheet" th:href="@{/css/styles.css}" />
@@ -19,7 +19,9 @@
     <!-- Top Bar -->
     <div th:replace="~{fragments/topbar :: topbar}"></div>
     <!-- Content Area -->
-    <div th:replace="~{pages/employee/list :: content}"></div>
+    <div th:replace="${content}">
+      <!-- Content will be inserted here -->
+    </div>
   </div>
 </div>
 <div th:replace="~{pages/employee/list :: page-scripts}"></div>

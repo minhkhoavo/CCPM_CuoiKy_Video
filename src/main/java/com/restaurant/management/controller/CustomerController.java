@@ -20,8 +20,12 @@ public class CustomerController {
 
     @GetMapping
     public String listCostumer(Model model) {
+<<<<<<< HEAD
         model.addAttribute("customers", customerService.getAllCustomer());
         return "pages/customer/list";
+=======
+       return "pages/admin/Customer/custumerList";
+>>>>>>> cf00c250e568cbbb2c32f2d4e1b96bbacd4c9ed2
     }
 
     @PostMapping("/add")

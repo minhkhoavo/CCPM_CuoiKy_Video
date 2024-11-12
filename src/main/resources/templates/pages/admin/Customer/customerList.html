@@ -86,8 +86,8 @@
             </div>
         </div>
     </div>
-    <div id="employeeModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden items-center justify-center">
-        <div th:replace="~{fragments/modals/employee-input-modal}"></div>
+    <div id="customerModal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 hidden items-center justify-center">
+        <div th:replace="~{fragments/modals/customer-input-modal}"></div>
     </div>
 </div>
 
@@ -96,7 +96,7 @@
     <script>
 
         function openModal(button) {
-            const employeeModal = new ModalWithForm('employeeModal', "Employee", '/employees/add', '/employees/edit');
+            const customerModal = new ModalWithForm('customerModal', "Employee 33333", '/customers/add', '/customers/edit');
             let data;
             if (button != null) {
                  data = {
@@ -110,12 +110,12 @@
             }
 
 
-            employeeModal.open(data);
+            customerModal.open(data);
         }
 
         function closeModal() {
-            const employeeModal = new ModalWithForm('employeeModal', '/employees/add', '/employees/edit');
-            employeeModal.close();
+            const customerModal = new ModalWithForm('customerModal', '/employees/add', '/employees/edit');
+            customerModal.close();
         }
 
     </script>
