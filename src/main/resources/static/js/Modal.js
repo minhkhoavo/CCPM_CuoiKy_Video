@@ -65,7 +65,7 @@ class ModalWithForm extends Modal {
             this.form.reset();
             this.form.action = this.formActionAdd;
             this.modalTitle.innerText = `New ${this.name}`;
-            this.imagePreview.classList.add('hidden');
+            this.imagePreview && this.imagePreview.classList.add('hidden');
         }
 
         super.open();

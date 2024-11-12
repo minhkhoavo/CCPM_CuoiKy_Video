@@ -3,6 +3,7 @@ package com.restaurant.management.model;
 import com.restaurant.management.enums.OrderMethod;
 import com.restaurant.management.enums.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
