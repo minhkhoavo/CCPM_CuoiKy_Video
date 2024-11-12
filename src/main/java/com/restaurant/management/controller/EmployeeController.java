@@ -20,12 +20,6 @@ public class EmployeeController {
         return "pages/employee/list";
     }
 
-//    @GetMapping("/add")
-//    public String showAddForm(Model model) {
-//        model.addAttribute("employee", new Employee());
-//        return "employee/add";
-//    }
-//
     @PostMapping("/add")
     public String addEmployee(@ModelAttribute Employee employee,
                               @RequestParam("file") MultipartFile file) {

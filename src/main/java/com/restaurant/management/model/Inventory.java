@@ -18,6 +18,8 @@ public class Inventory {
     Long inventoryId;
 
     String itemName;
+    String description;
+    String unit;//don vi tinh
     int quantity;
     Double unitPrice;
     Long supplierId;

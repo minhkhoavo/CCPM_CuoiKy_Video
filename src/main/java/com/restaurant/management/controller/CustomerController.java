@@ -19,31 +19,44 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping
-    public String listCostumer(Model model) {
-<<<<<<< HEAD
+    public String listCustomer(Model model) {
         model.addAttribute("customers", customerService.getAllCustomer());
-        return "pages/customer/list";
-=======
-       return "pages/admin/Customer/custumerList";
->>>>>>> cf00c250e568cbbb2c32f2d4e1b96bbacd4c9ed2
+       // return "pages/customer/list";
+       return "pages/admin/Customer/customerList";
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
-        Customer savedCustomer = customerService.saveCustomer(customer);
-        return ResponseEntity.ok(savedCustomer);
+    public String addCustomer(@ModelAttribute Customer customer) {
+        try {
+            Customer savedCustomer = customerService.saveCustomer(customer);
+        }
+        catch (Exception e) {
+            System.err.println("Error saving customer: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "redirect:/customers";
+
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Customer> editCustomer(@PathVariable Long id, @RequestBody Customer customer) {
-        customer.setCustomerId(id);
-        Customer updatedCustomer = customerService.updateCustomer(customer);
-        return ResponseEntity.ok(updatedCustomer);
+    @PostMapping("/edit/{id}")
+    public String editCustomer(@PathVariable Long id, @ModelAttribute Customer customer) {
+//        customer.setCustomerId(id);
+//        Customer updatedCustomer = customerService.updateCustomer(customer);
+//       // return ResponseEntity.ok(updatedCustomer);
+        try {
+            customer.setCustomerId(id);
+            Customer updatedCustomer = customerService.updateCustomer(customer);
+
+            return "redirect:/customers";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "error";
+        }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+    @GetMapping("/delete/{id}")
+    public String deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomer(id);
-        return ResponseEntity.ok().build();
+        return "redirect:/customers";
     }
 }
