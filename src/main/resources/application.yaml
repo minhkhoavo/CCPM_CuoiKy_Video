@@ -21,12 +21,12 @@ spring:
     locale: en_US
 
 cloudinary:
-  cloud_name: ${CLOUDINARY_NAME}
-  api_key: ${CLOUDINARY_KEY}
-  api_secret: ${CLOUDINARY_SECRET}
+  cloud_name: ${CLOUDINARY_NAME:111}
+  api_key: ${CLOUDINARY_KEY:111}
+  api_secret: ${CLOUDINARY_SECRET:111}
   secure: true
 
 payment:
   vnpay:
-    tmnCode: ${VNP_TMNCODE}
-    secretKey: ${VNP_SECRETKEY}
+    tmnCode: ${VNP_TMNCODE:12}
+    secretKey: ${VNP_SECRETKEY:12}
