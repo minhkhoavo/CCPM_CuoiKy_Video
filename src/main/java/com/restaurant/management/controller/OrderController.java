@@ -1,10 +1,12 @@
 package com.restaurant.management.controller;
 
+import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
 import com.restaurant.management.service.DishService;
 import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.PaymentService;
+import com.restaurant.management.util.JSONConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +18,29 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/orders")
 public class OrderController {
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private DishService dishService;
+
+    @GetMapping
+    public String showMenu(Model model) {
+        List<Dish> menuItems = dishService.getAllDishes();
+        model.addAttribute("menuItems", menuItems);
+
+        String menuItemsJsonString = JSONConvertUtil.entityToJSON(menuItems);
+
+        System.out.println("Generated JSON: " + menuItemsJsonString);
+
+        model.addAttribute("menuItemsJson", menuItemsJsonString);
+
+        return "pages/menu";
+    }
 
     @PostMapping
     public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> orderData) {

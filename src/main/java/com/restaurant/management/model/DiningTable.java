@@ -17,6 +17,12 @@ public class DiningTable {
     @Column(name = "table_number", nullable = false, unique = true)
     private Integer tableNumber;
 
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
+
     @Column(name = "status", nullable = false)
     private String status; // Example: "Available", "Occupied", "Reserved", "Unavailable"
+
+    @Column(name = "qr_code_url", nullable = false)
+    private String qrCodeUrl;
 }

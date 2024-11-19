@@ -5,11 +5,8 @@ import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
-import com.restaurant.management.repository.CategoryRepository;
 import com.restaurant.management.repository.DishRepository;
-import com.restaurant.management.repository.OrderItemRepository;
 import com.restaurant.management.repository.OrderRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,12 +19,10 @@ import java.util.*;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-    @Autowired
-    private OrderItemRepository orderItemRepository;
+
     @Autowired
     private DishRepository dishRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+
     @Autowired
     private PaymentService paymentService;
 
@@ -133,6 +128,10 @@ public class OrderService {
             orderRepository.save(order);
             return true;
         }).orElse(false);
+    }
+
+    public Optional<Order> findOrderByTableIdAndStatus(Long tableId) {
+        return orderRepository.findFirstByDiningTableIdAndAndOrderStatusIn(tableId, Arrays.asList(OrderStatus.PAID, OrderStatus.UNPAID, OrderStatus.PENDING));
     }
 
 
