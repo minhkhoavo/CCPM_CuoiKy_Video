@@ -50,7 +50,15 @@
         let currentWeekStart = new Date('2024-11-19');
         let drake;
 
-        // Fetch schedule data from API
+        const employees = [
+            { id: 1, name: 'Ryan', position: 'Cloud System Engineer', image: '/api/placeholder/400/400' },
+            { id: 2, name: 'Kate', position: 'Help Desk Specialist', image: '/api/placeholder/400/400' },
+            { id: 3, name: 'John', position: 'Application Developer', image: '/api/placeholder/400/400' },
+            { id: 4, name: 'Mark', position: 'Network Administrator', image: '/api/placeholder/400/400' },
+            { id: 5, name: 'Sharon', position: 'Data Quality Manager', image: '/api/placeholder/400/400' },
+            { id: 6, name: 'Emma', position: 'Product Tactics Agent', image: '/api/placeholder/400/400' }
+        ];
+
         async function fetchScheduleData() {
             const startDate = formatDateForAPI(currentWeekStart);
             const endDate = formatDateForAPI(new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000));
@@ -185,6 +193,8 @@
             });
 
             drake.on('drop', async function(el, target, source, sibling) {
+                console.log("el::::", el)
+                console.log("target::::", target)
                 const scheduleId = el.dataset.scheduleId;
                 const targetDate = target.dataset.date;
                 const targetEmployee = target.dataset.employee;
@@ -230,6 +240,94 @@
             } catch (error) {
                 console.error('Error deleting schedule:', error);
             }
+        }
+
+        function addShift(date, employeeId) {
+            const modal = document.getElementById('shiftModal');
+            const overlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+            const employee = employees.find(e => e.id === employeeId);
+
+            // Format date for display
+            const displayDate = new Date(date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            modalContent.innerHTML = `
+                <div class="space-y-4">
+                    <div class="font-medium">Schedule Shift</div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Employee</label>
+                        <div class="text-gray-900">${employee.name} - ${employee.role}</div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-gray-700">Date</label>
+                        <div class="text-gray-900">${displayDate}</div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="shiftTemplate" class="block text-sm font-medium text-gray-700">Shift Template</label>
+                        <select id="shiftTemplate" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="">Select a shift template</option>
+                            <option value="1" data-start="07:00" data-end="13:00">Morning Shift (07:00 - 13:00)</option>
+                            <option value="2" data-start="12:00" data-end="18:00">Afternoon Shift (12:00 - 18:00)</option>
+                            <option value="3" data-start="17:00" data-end="23:00">Evening Shift (17:00 - 23:00)</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="customTimes" class="block text-sm font-medium text-gray-700">
+                            <input type="checkbox" id="customTimes" class="mr-2">
+                            Custom Times
+                        </label>
+                        <div id="customTimeInputs" class="space-y-2 hidden">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
+                                    <input type="time" id="startTime" class="w-full p-2 border border-gray-300 rounded">
+                                </div>
+                                <div>
+                                    <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
+                                    <input type="time" id="endTime" class="w-full p-2 border border-gray-300 rounded">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
+                        <textarea id="notes" rows="2" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                </div>
+            `;
+
+            // Add event listeners
+            const customTimesCheckbox = document.getElementById('customTimes');
+            const customTimeInputs = document.getElementById('customTimeInputs');
+            const shiftTemplateSelect = document.getElementById('shiftTemplate');
+
+            customTimesCheckbox.addEventListener('change', (e) => {
+                customTimeInputs.classList.toggle('hidden', !e.checked);
+                shiftTemplateSelect.disabled = e.checked;
+            });
+
+            shiftTemplateSelect.addEventListener('change', (e) => {
+                const option = e.target.selectedOptions[0];
+                if (option.value) {
+                    document.getElementById('startTime').value = option.dataset.start;
+                    document.getElementById('endTime').value = option.dataset.end;
+                }
+            });
+
+            modal.dataset.date = date;
+            modal.dataset.employeeId = employeeId;
+
+            modal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
         }
 
         async function saveShift() {
