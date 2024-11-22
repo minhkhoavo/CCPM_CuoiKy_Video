@@ -1,5 +1,6 @@
 package com.restaurant.management.model;
 
+import com.restaurant.management.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,5 @@ public class OrderItem {
 
     private Integer quantity;
     private Double price;
-
+    private OrderStatus status;
 }
