@@ -194,7 +194,7 @@
                 dishDetails: {
                     dishId: item.dishId,
                     name: item.name,
-                    imageUrl: item.imageUrl,
+                    imageUrl: item.image,
                     description: item.description,
                     category: item.category
                 },
@@ -207,7 +207,7 @@
     }
 
     function removeFromCart(itemId) {
-        cart = cart.filter((item) => item.dishDetails.id !== itemId);
+        cart = cart.filter((item) => item.dishDetails.dishId !== itemId);
         renderCart();
         updateTotals();
     }
@@ -217,7 +217,7 @@
         if (item) {
             item.quantity = Math.max(0, item.quantity + delta);
             if (item.quantity === 0) {
-                removeFromCart(itemId);
+                removeFromCart(item.dishDetails.dishId);
             } else {
                 renderCart();
                 updateTotals();
@@ -233,7 +233,7 @@
             itemElement.className = 'flex items-center justify-between mb-4';
             itemElement.innerHTML = `
                     <div class="flex items-center space-x-4">
-                        <img src="${item.dishDetails.image}" alt="${item.dishDetails.name}" class="w-12 h-12 rounded-lg">
+                        <img src="${item.dishDetails.imageUrl}" alt="${item.dishDetails.name}" class="w-12 h-12 rounded-lg">
                         <div>
                             <h4 class="font-medium">${item.dishDetails.name}</h4>
                             <p class="text-gray-500 text-sm">$${item.unitPrice.toFixed(2)}</p>

@@ -1,22 +1,30 @@
 package com.restaurant.management.service;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class TableService {
-
-    private final TableRepository tableRepository;
+    @Autowired
+    private TableRepository tableRepository;
 
     @Autowired
-    public TableService(TableRepository tableRepository) {
-        this.tableRepository = tableRepository;
-    }
+    private StorageService storageService;
 
     public List<DiningTable> getAllTables() {
         return tableRepository.findAll();
@@ -26,7 +34,16 @@ public class TableService {
         return tableRepository.findById(id);
     }
 
-    public DiningTable saveTable(DiningTable diningTable) {
+    public DiningTable saveTable(DiningTable diningTable) throws WriterException, IOException {
+        String tableUrl = "http://localhost:8080/table/" + diningTable.getTableNumber();
+
+        ByteArrayOutputStream qrCodeStream = new ByteArrayOutputStream();
+        writeQRCodeImageToStream(tableUrl, diningTable.getTableNumber().toString(), qrCodeStream);
+
+        String qrCodeUrl = storageService.uploadImage(qrCodeStream.toByteArray());
+
+        diningTable.setQrCodeUrl(qrCodeUrl);
+
         return tableRepository.save(diningTable);
     }
 
@@ -43,4 +60,38 @@ public class TableService {
     public void deleteTable(Long id) {
         tableRepository.deleteById(id);
     }
+
+    private void writeQRCodeImageToStream(String text, String tableNumber, ByteArrayOutputStream stream) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 250, 250);
+
+        BufferedImage qrImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+
+        BufferedImage combinedImage = new BufferedImage(250, 300, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = combinedImage.createGraphics();
+
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, 250, 300);
+        g.drawImage(qrImage, 0, 0, null);
+
+        // Cấu hình font và vẽ text
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 16));
+        String text1 = "Bàn số " + tableNumber;
+        String text2 = "Quét QR Code để đặt món";
+
+        // Căn giữa và vẽ text
+        FontMetrics metrics = g.getFontMetrics();
+        int x1 = (250 - metrics.stringWidth(text1)) / 2;
+        int x2 = (250 - metrics.stringWidth(text2)) / 2;
+        g.drawString(text1, x1, 270);
+        g.drawString(text2, x2, 290);
+
+        g.dispose();
+
+        // Ghi BufferedImage vào stream
+        ImageIO.write(combinedImage, "PNG", stream);
+    }
+
+
 }

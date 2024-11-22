@@ -1,13 +1,18 @@
 package com.restaurant.management.controller;
 
+import com.google.zxing.WriterException;
 import com.restaurant.management.model.DiningTable;
+import com.restaurant.management.model.Order;
+import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/tables")
@@ -15,17 +20,35 @@ public class TableController {
 
     @Autowired
     private TableService tableService;
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping
     public String listTables(Model model) {
         List<DiningTable> diningTables = tableService.getAllTables();
         model.addAttribute("tables", diningTables);
-        return "pages/admin/tables";
+        return "pages/tables/tables";
     }
+    @GetMapping("/{tableId}")
+    public String getOrderByTable(@PathVariable("tableId") Long tableId, Model model) {
+        Optional<Order> orderOptional = orderService.findOrderByTableIdAndStatus(tableId);
 
+        if (orderOptional.isPresent()) {
+            model.addAttribute("order", orderOptional.get());
+            model.addAttribute("orderItems", orderOptional.get().getOrderItems());
+            return "pages/tables/table-orders";
+        } else {
+            return "redirect:/menu";
+        }
+    }
     @PostMapping("/add")
     public String addTable(@ModelAttribute DiningTable diningTable) {
-        tableService.saveTable(diningTable);
+        try {
+            tableService.saveTable(diningTable);
+        } catch (WriterException | IOException e) {
+            e.printStackTrace();
+            return "error";
+        }
         return "redirect:/tables";
     }
 
@@ -41,7 +64,6 @@ public class TableController {
         tableService.updateTable(id, diningTable);
         return "redirect:/tables";
     }
-
 
     @GetMapping("/delete/{id}")
     public String deleteTable(@PathVariable Long id) {

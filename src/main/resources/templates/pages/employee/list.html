@@ -100,13 +100,13 @@
             const employeeModal = new ModalWithForm('employeeModal', "Employee", '/employees/add', '/employees/edit');
             let data;
             if (button != null) {
-                 data = {
-                     id: button.getAttribute('data-id') || "",
-                     name: button.getAttribute('data-name') || "",
-                     phone: button.getAttribute('data-phone') || "",
-                     email: button.getAttribute('data-email') || "",
-                     imageUrl: button.getAttribute('data-image') || "",
-                     position: button.getAttribute('data-position') || "",
+                data = {
+                    id: button.getAttribute('data-id') || "",
+                    name: button.getAttribute('data-name') || "",
+                    phone: button.getAttribute('data-phone') || "",
+                    email: button.getAttribute('data-email') || "",
+                    imageUrl: button.getAttribute('data-image') || "",
+                    position: button.getAttribute('data-position') || "",
                 };
                 console.log("Button clicked for action:", data);
             }

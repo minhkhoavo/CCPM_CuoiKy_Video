@@ -15,7 +15,7 @@
   <!-- Include Header Fragment -->
   <div th:replace="~{fragments/sidebar :: sidebar}"></div>
   <!-- Main Content -->
-  <div class="flex-1 flex flex-col overflow-hidden">
+  <div class="flex-1 flex flex-col overflow-scroll">
     <!-- Top Bar -->
     <div th:replace="~{fragments/topbar :: topbar}"></div>
     <!-- Content Area -->
@@ -24,95 +24,9 @@
     </div>
   </div>
 </div>
-<div th:replace="~{pages/employee/list :: page-scripts}"></div>
-
-<!--  -->
-<!--  &lt;!&ndash; Include Navbar Fragment &ndash;&gt;-->
-<!--  <div th:replace="fragments/navbar :: navbar"></div>-->
-<!--  -->
-<!--  &lt;!&ndash; Main Content &ndash;&gt;-->
-<!--  <div class="container">-->
-<!--    <div th:replace="${content}">-->
-<!--      &lt;!&ndash; Content will be inserted here &ndash;&gt;-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  -->
-<!--  &lt;!&ndash; Include Footer Fragment &ndash;&gt;-->
-<!--  <div th:replace="fragments/footer :: footer"></div>-->
-<th:block th:replace="~{::page-scripts}" th:remove="tag"/>
-
-<script>
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-    document.getElementById('dropZone').addEventListener(eventName, preventDefaults, false);
-  });
-
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  function dropHandler(event) {
-    const dt = event.dataTransfer;
-    const files = dt.files;
-
-    handleFiles(files);
-    document.getElementById('dropZone').classList.remove('border-blue-500');
-  }
-
-  function dragOverHandler(event) {
-    document.getElementById('dropZone').classList.add('border-blue-500');
-  }
-
-  function dragLeaveHandler(event) {
-    document.getElementById('dropZone').classList.remove('border-blue-500');
-  }
-
-  function handleFileSelect(event) {
-    const files = event.target.files;
-    handleFiles(files);
-  }
-
-  function handleFiles(files) {
-    if (files.length > 0) {
-      const file = files[0];
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-          const previewImg = document.getElementById('previewImg');
-          const uploadText = document.getElementById('uploadText');
-
-          previewImg.src = e.target.result;
-          previewImg.classList.remove('hidden');
-          uploadText.classList.add('hidden');
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        alert('Please upload an image file');
-      }
-    }
-  }
-
-  // Thêm/Sửa item
-  // document.getElementById('itemForm').addEventListener('submit', function(event) {
-  //     event.preventDefault();
-  //     const nameInput = document.getElementById('name');
-  //
-  //     if (editIndex !== null) {
-  //         // Chỉnh sửa
-  //         items[editIndex].name = nameInput.value;
-  //     } else {
-  //         // Thêm mới
-  //         const newItem = { id: currentId++, name: nameInput.value };
-  //         items.push(newItem);
-  //     }
-  //
-  //     closeModal();
-  //     renderItems();
-  // });
-
-</script>
+<!--&lt;!&ndash; Include Footer Fragment &ndash;&gt;-->
+<!--<div th:replace="fragments/footer :: footer"></div>-->
+<!--<th:block th:replace="~{::page-scripts}" th:remove="tag"/>-->
 
 </body>
 </html>
