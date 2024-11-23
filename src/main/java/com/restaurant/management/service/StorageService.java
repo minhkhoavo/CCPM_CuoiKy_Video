@@ -19,6 +19,11 @@ public class StorageService {
 
     public String uploadImage(byte[] imageBytes) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(imageBytes, Map.of());
-        return uploadResult.get("url").toString();
+        if (uploadResult.containsKey("url")) {
+            return uploadResult.get("url").toString();
+        } else {
+            throw new RuntimeException("Upload failed: URL not found in the result");
+        }
+
     }
 }
