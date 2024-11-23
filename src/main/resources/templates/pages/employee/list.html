@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{pages/layout/base :: base(~{::body})}">
+      th:replace="~{layout/base :: base(~{::body})}">
 <body>
 <!--th:replace="~{layout/base :: base(~{::body})}">-->
 <div  th:fragment="content" class="flex-1 overflow-auto p-6">
@@ -95,7 +95,6 @@
 <th:block th:fragment="page-scripts">
     <script th:src="@{/js/Modal.js}"></script>
     <script>
-
         function openModal(button) {
             const employeeModal = new ModalWithForm('employeeModal', "Employee", '/employees/add', '/employees/edit');
             let data;
@@ -117,7 +116,6 @@
             const employeeModal = new ModalWithForm('employeeModal', '/employees/add', '/employees/edit');
             employeeModal.close();
         }
-
     </script>
 </th:block>
 </body>

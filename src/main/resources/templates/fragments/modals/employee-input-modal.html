@@ -96,31 +96,6 @@
   </form>
 </div>
 <script>
-  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach((eventName) => {
-    document.getElementById('dropZone').addEventListener(eventName, preventDefaults, false);
-  });
-
-  function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  }
-
-  function dropHandler(event) {
-    const dt = event.dataTransfer;
-    const files = dt.files;
-
-    handleFiles(files);
-    document.getElementById('dropZone').classList.remove('border-blue-500');
-  }
-
-  function dragOverHandler(event) {
-    document.getElementById('dropZone').classList.add('border-blue-500');
-  }
-
-  function dragLeaveHandler(event) {
-    document.getElementById('dropZone').classList.remove('border-blue-500');
-  }
-
   function handleFileSelect(event) {
     const files = event.target.files;
     handleFiles(files);
@@ -134,11 +109,11 @@
 
         reader.onload = function (e) {
           const previewImg = document.getElementById('previewImg');
-          const uploadText = document.getElementById('uploadText');
+          // const uploadText = document.getElementById('uploadTeuploadTextxt');
 
           previewImg.src = e.target.result;
           previewImg.classList.remove('hidden');
-          uploadText.classList.add('hidden');
+          // uploadText.classList.add('hidden');
         };
 
         reader.readAsDataURL(file);
