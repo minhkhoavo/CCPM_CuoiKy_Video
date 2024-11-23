@@ -3,6 +3,8 @@ package com.restaurant.management.service;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,10 @@ public class EmployeeService {
     public Employee saveEmployee(Employee employee, MultipartFile file) throws IOException {
         String imageUrl = storageService.uploadImage(file);
         employee.setImage(imageUrl);
+        //mã hoá mật khâủ
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
+
         return employeeRepository.save(employee);
     }
 
