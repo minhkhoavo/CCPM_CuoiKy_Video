@@ -339,19 +339,19 @@
             const shiftId = document.getElementById('shiftTemplate').value;
 
             try {
-                const response = await fetch('/api/schedules', {
+                const response = await fetch(`/api/schedules?shiftId=${shiftId}&employeeId=${employeeId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        employeeId,
-                        shiftId,
                         workingDate: date,
                         startTime,
                         endTime,
                         scheduleType: 'OPEN',
-                        status: 'Pending'
+                        status: 'Pending',
+                        maxRegistrations: 9999,
+                        registrationDeadline: '2024-12-21'
                     })
                 });
 

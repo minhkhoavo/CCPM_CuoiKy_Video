@@ -33,6 +33,6 @@ public class Schedule {
     private LocalDate workingDate;
 
     private String scheduleType;
-    private LocalDateTime registrationDeadline;
+    private LocalDate registrationDeadline;
     private Integer maxRegistrations;
 }
