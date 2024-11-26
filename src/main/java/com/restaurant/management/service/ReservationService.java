@@ -1,12 +1,14 @@
 package com.restaurant.management.service;
 
 import com.restaurant.management.enums.ReservationStatus;
+import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Reservation;
 import com.restaurant.management.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +18,8 @@ public class ReservationService {
 
     @Autowired
     private ReservationRepository reservationRepository;
+    @Autowired
+    private TableService tableService;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -77,7 +81,11 @@ public class ReservationService {
         reservationRepository.deleteById(id);
     }
 
-    // Additional utility methods
+    public boolean isTableAvailable(Long tableId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        List<DiningTable> availableTables = tableService.findAvailableTables(date, startTime);
+        return availableTables.stream().anyMatch(table -> table.getId().equals(tableId));
+    }
+
     public long countPendingReservations() {
         return reservationRepository.countByStatus(ReservationStatus.PENDING);
     }

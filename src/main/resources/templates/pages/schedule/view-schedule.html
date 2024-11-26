@@ -73,7 +73,7 @@
         }
 
         function formatDateForAPI(date) {
-            return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+            return date.toLocaleDateString('en-CA');
         }
 
         function getEmployeeBackgroundColor(employeeId) {

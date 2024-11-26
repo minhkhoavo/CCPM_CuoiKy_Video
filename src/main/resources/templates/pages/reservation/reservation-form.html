@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 p-6">
+<div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">Reservation Form</h2>
+
+    <!-- Thông báo trạng thái -->
+    <div th:if="${availabilityMessage != null}"
+         th:class="'p-4 rounded-lg text-center ' + (${available} ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')">
+        <span th:text="${availabilityMessage}"></span>
+    </div>
+
+    <form th:action="@{/reservations/check-availability}" th:object="${reservation}" method="post" class="space-y-4">
+        <!-- Name -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Name</label>
+            <input type="text" th:field="*{customerName}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" placeholder="Enter your name" required/>
+        </div>
+        <!-- Email field -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Email</label>
+            <input type="email" th:field="*{email}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" placeholder="Enter your email" required/>
+        </div>
+        <!-- Date -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Date to Come</label>
+            <input type="date" th:field="*{dateToCome}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" required/>
+        </div>
+        <!-- Time -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Time to Come</label>
+            <input type="time" th:field="*{timeToCome}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" required/>
+        </div>
+        <!-- Table -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Select Table</label>
+            <select th:field="*{table}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500">
+                <option th:each="table : ${tables}" th:value="${table.id}" th:text="${'Table ' + table.tableNumber}"></option>
+            </select>
+        </div>
+
+        <!-- Number of Persons field -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Number of Persons</label>
+            <input type="number" th:field="*{numberOfPersons}" min="1" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" placeholder="Enter number of persons" required/>
+        </div>
+
+        <!-- Note field -->
+        <div>
+            <label class="text-sm font-medium text-gray-600">Note</label>
+            <textarea th:field="*{note}" class="w-full p-2 mt-1 border rounded-lg focus:outline-none focus:border-orange-500" rows="3" placeholder="Enter any special requests or notes"></textarea>
+        </div>
+
+        <!-- Kiểm tra khả dụng -->
+        <button type="submit" class="w-full bg-blue-500 text-white text-lg font-semibold py-2 rounded-lg mt-6 hover:bg-blue-600 transition-colors">
+            Check Availability
+        </button>
+    </form>
+
+    <!-- Form đặt bàn (hiển thị nếu khả dụng) -->
+    <form th:if="${available}" th:action="@{/reservations/create}" th:object="${reservation}" method="post" class="mt-6">
+        <input type="hidden" th:field="*{customerName}" />
+        <input type="hidden" th:field="*{dateToCome}" />
+        <input type="hidden" th:field="*{timeToCome}" />
+        <input type="hidden" th:field="*{table}" />
+        <input type="hidden" th:field="*{numberOfPersons}" />
+        <input type="hidden" th:field="*{note}" />
+        <input type="hidden" th:field="*{email}" />
+        <button type="submit" class="w-full bg-orange-500 text-white text-lg font-semibold py-2 rounded-lg hover:bg-orange-600 transition-colors">
+            Reserve Table
+        </button>
+    </form>
+</div>
+</body>
+</html>

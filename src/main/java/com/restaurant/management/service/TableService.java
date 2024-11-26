@@ -15,6 +15,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +63,9 @@ public class TableService {
         tableRepository.deleteById(id);
     }
 
+    public List<DiningTable> findAvailableTables(LocalDate date, LocalTime startTime) {
+        return tableRepository.findAvailableTables(date, startTime, startTime.plusHours(1));
+    }
     private void writeQRCodeImageToStream(String text, String tableNumber, ByteArrayOutputStream stream) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 250, 250);
