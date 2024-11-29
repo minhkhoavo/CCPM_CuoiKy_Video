@@ -3,6 +3,7 @@
       th:replace="~{layout/base :: base(~{::body})}">
 <body>
 <div th:fragment="content" class="flex-1 overflow-auto p-6">
+
     <div class="max-w-3xl mx-auto">
         <div>
             <h2 class="text-2xl font-semibold mb-4">Current Orders</h2>
@@ -22,8 +23,10 @@
                         <!-- Form để thay đổi trạng thái -->
                         <form th:action="@{/order-item/updateOrderStatus}" method="post">
                             <input type="hidden" name="orderItemId" th:value="${item.id}"/>
+                            <input type="hidden" name=dishId th:value="${item.getDish().getDishId()}"/>
                             <select name="orderStatus" class="bg-white border border-gray-300 text-sm rounded-lg px-4 py-2 text-gray-800"
-                                    onchange="this.form.submit()">
+                                    onchange="this.form.submit()"
+                                    th:disabled="${item.orderStatus == T(com.restaurant.management.enums.OrderStatus).COMPLETED}">
                                 <option value="PENDING" class="bg-yellow-100 text-yellow-700"
                                         th:selected="${item.orderStatus == T(com.restaurant.management.enums.OrderStatus).PENDING}">
                                     PENDING

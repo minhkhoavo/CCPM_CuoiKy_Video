@@ -2,7 +2,9 @@ package com.restaurant.management.controller;
 
 import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.OrderItem;
+import com.restaurant.management.service.DishService;
 import com.restaurant.management.service.OrderItemService;
+import com.restaurant.management.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,9 @@ public class ChefViewOrderController {
     @Autowired
     private OrderItemService orderItemService;
 
+    @Autowired
+    private DishService dishService;
+
     @GetMapping
     public String listOrder(Model model) {
         List<OrderItem> orderItems = orderItemService.getAllOrderItem();
@@ -27,7 +32,11 @@ public class ChefViewOrderController {
     }
 
     @PostMapping("/updateOrderStatus")
-    public String updateOrderStatus(@RequestParam Long orderItemId, @RequestParam OrderStatus orderStatus) {
+    public String updateOrderStatus(@RequestParam Long orderItemId, @RequestParam Long dishId, @RequestParam OrderStatus orderStatus, Model model ) throws IllegalAccessException {
+        //cập nhật lại kho hàng
+        if(orderStatus.equals(OrderStatus.COMPLETED)) {
+            dishService.processDish(dishId);
+        }
         // Cập nhật trạng thái của order item
         orderItemService.updateOrderStatus(orderItemId, orderStatus);
         return "redirect:/order-item";
