@@ -32,10 +32,13 @@ public class ScheduleService {
     }
 
     public Schedule createSchedule(Schedule schedule, Long shiftId, Long employeeId) {
-        Shift shift = shiftService.getShift(shiftId);
+        if(shiftId != null) {
+            Shift shift = shiftService.getShift(shiftId);
+            schedule.setShift(shift);
+        }
         Optional<Employee> employee = employeeService.getEmployeeById(employeeId);
         schedule.setEmployee(employee.get());
-        schedule.setShift(shift);
+        schedule.setShift(null);
         return scheduleRepository.save(schedule);
     }
 

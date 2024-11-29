@@ -19,8 +19,8 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    @ManyToOne
-    @JoinColumn(name = "shift_id", nullable = false)
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "shift_id")
     private Shift shift;
 
     @ManyToOne
@@ -31,8 +31,4 @@ public class Schedule {
     private LocalTime endTime;
     private String status; // DRAFT, PUBLISHED, CLOSED, COMPLETED
     private LocalDate workingDate;
-
-    private String scheduleType;
-    private LocalDate registrationDeadline;
-    private Integer maxRegistrations;
 }

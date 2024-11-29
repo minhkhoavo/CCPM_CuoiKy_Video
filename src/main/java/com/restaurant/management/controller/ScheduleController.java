@@ -35,7 +35,9 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule, @RequestParam Long shiftId, @RequestParam Long employeeId) {
+    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule,
+                                                   @RequestParam(required = false) Long shiftId,
+                                                   @RequestParam Long employeeId) {
         Schedule createdSchedule = scheduleService.createSchedule(schedule, shiftId, employeeId);
         return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }

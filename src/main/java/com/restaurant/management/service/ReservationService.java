@@ -69,16 +69,24 @@ public class ReservationService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Reservation> findById(Long id) {
-        return reservationRepository.findById(id);
+    public Reservation findById(Long id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reservation not found!"));
     }
 
     public Reservation save(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
 
-    public void deleteById(Long id) {
-        reservationRepository.deleteById(id);
+    public void cancelReservation(Long tableId) {
+        Reservation reservation = findById(tableId);
+        reservation.setStatus(ReservationStatus.CANCELLED);
+        reservationRepository.save(reservation);    }
+
+    public void acceptReservation(Long tableId) {
+        Reservation reservation = findById(tableId);
+        reservation.setStatus(ReservationStatus.CONFIRMED);
+        reservationRepository.save(reservation);
     }
 
     public boolean isTableAvailable(Long tableId, LocalDate date, LocalTime startTime, LocalTime endTime) {

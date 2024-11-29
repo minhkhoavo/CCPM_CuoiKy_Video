@@ -1,5 +1,6 @@
 package com.restaurant.management.service;
 
+import com.restaurant.management.enums.ShiftType;
 import com.restaurant.management.model.Shift;
 import com.restaurant.management.repository.ShiftRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,14 @@ public class ShiftService {
 
     public List<Shift> findAllShift() {
         return shiftRepository.findAll();
+    }
+
+    public List<Shift> getOpenShifts() {
+        return shiftRepository.findByShiftType(ShiftType.OPEN);
+    }
+
+    public List<Shift> getFixedShifts() {
+        return shiftRepository.findByShiftType(ShiftType.FIXED);
     }
 
     public Shift createShift(Shift shift) {

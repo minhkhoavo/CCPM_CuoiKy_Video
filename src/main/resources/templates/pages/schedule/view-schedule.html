@@ -12,6 +12,9 @@
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">November 2024</h1>
+        <button onclick="createOpenShift()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Create Open Shift
+        </button>
         <div class="flex gap-3">
             <button onclick="navigateWeek('prev')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
                 Previous
@@ -50,7 +53,7 @@
         let currentWeekStart = new Date('2024-11-19');
         let drake;
 
-        const employees = [
+        let employees = [
             { id: 1, name: 'Ryan', position: 'Cloud System Engineer', image: '/api/placeholder/400/400' },
             { id: 2, name: 'Kate', position: 'Help Desk Specialist', image: '/api/placeholder/400/400' },
             { id: 3, name: 'John', position: 'Application Developer', image: '/api/placeholder/400/400' },
@@ -110,18 +113,19 @@
                 html += `
                     <th class="px-4 py-3 border-b border-gray-200">
                         <div class="text-sm font-semibold">${dateStr}</div>
-                    </th>
-                `;
+                    </th>`;
             }
             html += '</tr></thead><tbody>';
 
             // Get unique employees from schedule data
-            const employees = new Set();
+            let employees = new Set();
             Object.values(scheduleData).forEach(daySchedules => {
                 daySchedules.forEach(schedule => {
                     employees.add(JSON.stringify(schedule.employee));
                 });
             });
+
+            // employees = new Set(employees.map(employee => JSON.stringify(employee)));
 
             // Render rows for each employee
             Array.from(employees).forEach(employeeJson => {
@@ -157,7 +161,7 @@
                                     <div class="shift-block mb-2 p-2 rounded ${getEmployeeBackgroundColor(employee.id)} text-sm cursor-move"
                                          draggable="true"
                                          data-schedule-id="${schedule.scheduleId}">
-                                        ${schedule.shift.shiftName}<br>
+                                        ${schedule.shift?.shiftName ?? "Custom Shift"}<br>
                                         ${schedule.startTime} - ${schedule.endTime}
                                         <div class="text-xs text-gray-600">Status: ${schedule.status}</div>
                                         <button onclick="deleteSchedule(${schedule.scheduleId})"
@@ -166,7 +170,7 @@
                                 `).join('')}
                             </div>
                             <button onclick="addShift('${dateKey}', ${employee.id})"
-                                    class="text-sm text-blue-600 hover:text-blue-800">
+                                    class="text-sm text-center text-blue-600 hover:text-blue-800">
                                 + Add Shift
                             </button>
                         </td>
@@ -311,8 +315,9 @@
             const shiftTemplateSelect = document.getElementById('shiftTemplate');
 
             customTimesCheckbox.addEventListener('change', (e) => {
-                customTimeInputs.classList.toggle('hidden', !e.checked);
-                shiftTemplateSelect.disabled = e.checked;
+                console.log("Changed:::")
+                customTimeInputs.classList.toggle('hidden', !customTimesCheckbox.checked);
+                shiftTemplateSelect.disabled = customTimesCheckbox.checked;
             });
 
             shiftTemplateSelect.addEventListener('change', (e) => {
@@ -364,6 +369,109 @@
             } catch (error) {
                 console.error('Error creating schedule:', error);
             }
+        }
+
+        function createOpenShift() {
+            const modal = document.getElementById('shiftModal');
+            const overlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+
+            modalContent.innerHTML = `<div class="bg-white max-w-md mx-auto p-6 rounded-lg shadow-md space-y-4">
+                <div class="font-medium text-lg text-gray-800">Create Open Shift</div>
+
+                <div class="space-y-2">
+                    <label for="workingDate" class="block text-sm font-medium text-gray-700">Working Date</label>
+                    <input
+                        type="date"
+                        id="workingDate"
+                        class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                </div>
+
+                <div class="space-y-2">
+                    <label for="shiftTemplate" class="block text-sm font-medium text-gray-700">Shift Template</label>
+                    <select id="shiftTemplate" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select a shift template</option>
+                        <option value="1" data-start="07:00" data-end="13:00">Morning Shift (07:00 - 13:00)</option>
+                        <option value="2" data-start="12:00" data-end="18:00">Afternoon Shift (12:00 - 18:00)</option>
+                        <option value="3" data-start="17:00" data-end="23:00">Evening Shift (17:00 - 23:00)</option>
+                    </select>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="customTimes" class="block text-sm font-medium text-gray-700">
+                        <input type="checkbox" id="customTimes" class="mr-2">
+                        Custom Times
+                    </label>
+                    <div id="customTimeInputs" class="space-y-2 hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700">Start Time</label>
+                                <input type="time" id="startTime" class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                            <div>
+                                <label for="endTime" class="block text-sm font-medium text-gray-700">End Time</label>
+                                <input type="time" id="endTime" class="w-full p-2 border border-gray-300 rounded">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label for="registrationDeadline" class="block text-sm font-medium text-gray-700">Working Date</label>
+                        <input
+                            type="date"
+                            id="registrationDeadline"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                    </div>
+                    <div class="space-y-2">
+                        <label for="maxRegistration" class="block text-sm font-medium text-gray-700">Max Registration</label>
+                        <input
+                            type="number"
+                            id="maxRegistration"
+                            min="1"
+                            class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Maximum registrations"
+                        >
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-4">
+                    <button class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors">
+                        Cancel
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                        Save
+                    </button>
+                </div>
+            </div>`
+
+            const customTimesCheckbox = document.getElementById('customTimes');
+            const customTimeInputs = document.getElementById('customTimeInputs');
+            const shiftTemplateSelect = document.getElementById('shiftTemplate');
+
+            customTimesCheckbox.addEventListener('change', (e) => {
+                console.log("Changed:::")
+                customTimeInputs.classList.toggle('hidden', !customTimesCheckbox.checked);
+                shiftTemplateSelect.disabled = customTimesCheckbox.checked;
+            });
+
+            shiftTemplateSelect.addEventListener('change', (e) => {
+                const option = e.target.selectedOptions[0];
+                if (option.value) {
+                    document.getElementById('startTime').value = option.dataset.start;
+                    document.getElementById('endTime').value = option.dataset.end;
+                }
+            });
+
+            modal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+        }
+
+        function saveOpenShift() {
+
         }
 
         function closeModal() {
