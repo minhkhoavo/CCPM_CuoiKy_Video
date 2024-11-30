@@ -3,10 +3,13 @@ package com.restaurant.management.controller;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/employees")
@@ -18,6 +21,12 @@ public class EmployeeController {
     public String listEmployees(Model model) {
         model.addAttribute("employees", employeeService.getAllEmployees());
         return "pages/employee/list";
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Employee>> listEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return ResponseEntity.ok(employees);
     }
 
     @PostMapping("/add")

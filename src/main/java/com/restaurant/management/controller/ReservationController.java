@@ -80,13 +80,6 @@ public class ReservationController {
         return "pages/reservation/form";
     }
 
-    @PostMapping("/edit/{id}")
-    public String updateReservation(@PathVariable Long id, @ModelAttribute Reservation reservation) {
-        reservation.setId(id);
-        reservationService.save(reservation);
-        return "redirect:/reservations";
-    }
-
     @GetMapping("/accept/{tableId}")
     public String acceptReservation(@PathVariable Long tableId) {
         reservationService.acceptReservation(tableId);

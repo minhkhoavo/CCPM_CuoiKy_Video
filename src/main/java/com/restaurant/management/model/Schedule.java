@@ -2,6 +2,7 @@ package com.restaurant.management.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Fetch;
@@ -14,6 +15,7 @@ import java.time.LocalTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

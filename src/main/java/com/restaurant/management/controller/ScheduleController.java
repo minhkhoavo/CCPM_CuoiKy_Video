@@ -38,6 +38,7 @@ public class ScheduleController {
     public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule,
                                                    @RequestParam(required = false) Long shiftId,
                                                    @RequestParam Long employeeId) {
+        System.out.println(shiftId);
         Schedule createdSchedule = scheduleService.createSchedule(schedule, shiftId, employeeId);
         return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }
