@@ -32,12 +32,37 @@ public class ScheduleService {
     }
 
     public Schedule createSchedule(Schedule schedule, Long shiftId, Long employeeId) {
-        Shift shift = shiftService.getShift(shiftId);
+        if (shiftId != null) {
+            Shift shift = shiftService.getShift(shiftId);
+            schedule.setShift(shift);
+        }
+
         Optional<Employee> employee = employeeService.getEmployeeById(employeeId);
-        schedule.setEmployee(employee.get());
-        schedule.setShift(shift);
-        return scheduleRepository.save(schedule);
+        if (employee.isPresent()) {
+            schedule.setEmployee(employee.get());
+        }
+
+        return scheduleRepository.save(schedule);  // Lưu Schedule vào DB
     }
+
+    public void createSchedulesForFixedShift(Shift shift) {
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusMonths(1);
+
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+            Schedule schedule = Schedule.builder()
+                    .shift(shift)
+                    .employee(shift.getEmployee())
+                    .startTime(shift.getStartTime())
+                    .endTime(shift.getEndTime())
+                    .workingDate(date)
+                    .status("DRAFT")
+                    .build();
+
+            scheduleRepository.save(schedule);
+        }
+    }
+
 
     public void deleteSchedule(Long scheduleId) {
         if (scheduleRepository.existsById(scheduleId)) {
@@ -64,6 +89,28 @@ public class ScheduleService {
         }
 
         return scheduleRepository.save(schedule);
+    }
+
+    public Schedule registerEmployeeToShift(Long employeeId, Long shiftId) {
+        Shift shift = shiftService.registerForShift(shiftId);
+        Optional<Employee> employee = employeeService.getEmployeeById(employeeId);
+        Schedule schedule = Schedule.builder()
+                .employee(employee.get())
+                .shift(shift)
+                .startTime(shift.getStartTime())
+                .endTime(shift.getEndTime())
+                .status("DRAFT")
+                .workingDate(shift.getWorkingDate())
+                .build();
+
+        return scheduleRepository.save(schedule);
+    }
+
+    public void cancelRegistration(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found."));
+        shiftService.cancelShiftRegistration(schedule.getShift().getShiftId());
+        scheduleRepository.delete(schedule);
     }
 
 }

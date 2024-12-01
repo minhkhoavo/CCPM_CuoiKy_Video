@@ -1,15 +1,12 @@
 package com.restaurant.management.controller;
 
-import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Reservation;
 import com.restaurant.management.service.ReservationService;
 import com.restaurant.management.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -70,29 +67,28 @@ public class ReservationController {
 
 
     @PostMapping("/create")
-    public String createReservation(@ModelAttribute Reservation reservation, RedirectAttributes redirectAttributes) {
+    public String createReservation(@ModelAttribute Reservation reservation) {
         reservationService.save(reservation);
         return "redirect:/reservations";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        Reservation reservation = reservationService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid reservation ID: " + id));
+        Reservation reservation = reservationService.findById(id);
         model.addAttribute("tables", tableService.getAllTables());
         model.addAttribute("reservation", reservation);
         return "pages/reservation/form";
     }
 
-    @PostMapping("/edit/{id}")
-    public String updateReservation(@PathVariable Long id, @ModelAttribute Reservation reservation, RedirectAttributes redirectAttributes) {
-        reservation.setId(id);
-        reservationService.save(reservation);
+    @GetMapping("/accept/{tableId}")
+    public String acceptReservation(@PathVariable Long tableId) {
+        reservationService.acceptReservation(tableId);
         return "redirect:/reservations";
     }
 
-    @GetMapping("/delete/{id}")
-    public String deleteReservation(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        reservationService.deleteById(id);
+    @GetMapping("/cancel/{id}")
+    public String deleteReservation(@PathVariable Long id) {
+        reservationService.cancelReservation(id);
         return "redirect:/reservations";
     }
 }

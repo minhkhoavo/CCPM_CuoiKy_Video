@@ -12,6 +12,9 @@
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">November 2024</h1>
+        <button onclick="createOpenShift()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Create Open Shift
+        </button>
         <div class="flex gap-3">
             <button onclick="navigateWeek('prev')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
                 Previous
@@ -49,17 +52,23 @@
         let scheduleData = {};
         let currentWeekStart = new Date('2024-11-19');
         let drake;
-
-        const employees = [
-            { id: 1, name: 'Ryan', position: 'Cloud System Engineer', image: '/api/placeholder/400/400' },
-            { id: 2, name: 'Kate', position: 'Help Desk Specialist', image: '/api/placeholder/400/400' },
-            { id: 3, name: 'John', position: 'Application Developer', image: '/api/placeholder/400/400' },
-            { id: 4, name: 'Mark', position: 'Network Administrator', image: '/api/placeholder/400/400' },
-            { id: 5, name: 'Sharon', position: 'Data Quality Manager', image: '/api/placeholder/400/400' },
-            { id: 6, name: 'Emma', position: 'Product Tactics Agent', image: '/api/placeholder/400/400' }
-        ];
+        // let employees = [
+        //     { id: 1, name: 'Ryan', position: 'Cloud System Engineer', image: '/api/placeholder/400/400' },
+        //     { id: 2, name: 'Kate', position: 'Help Desk Specialist', image: '/api/placeholder/400/400' },
+        //     { id: 3, name: 'John', position: 'Application Developer', image: '/api/placeholder/400/400' },
+        //     { id: 4, name: 'Mark', position: 'Network Administrator', image: '/api/placeholder/400/400' },
+        //     { id: 5, name: 'Sharon', position: 'Data Quality Manager', image: '/api/placeholder/400/400' },
+        //     { id: 6, name: 'Emma', position: 'Product Tactics Agent', image: '/api/placeholder/400/400' }
+        // ];
+        let employees;
+        const listEmployees = () => fetch('http://localhost:8080/employees/list')
+            .then(response => response.ok ? response.json() : Promise.reject('Error'))
+            .then(data => employees = data)
+            .catch(console.error);
 
         async function fetchScheduleData() {
+            await listEmployees();
+            console.log(employees)
             const startDate = formatDateForAPI(currentWeekStart);
             const endDate = formatDateForAPI(new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000));
             console.log(startDate, endDate);
@@ -110,22 +119,12 @@
                 html += `
                     <th class="px-4 py-3 border-b border-gray-200">
                         <div class="text-sm font-semibold">${dateStr}</div>
-                    </th>
-                `;
+                    </th>`;
             }
             html += '</tr></thead><tbody>';
 
-            // Get unique employees from schedule data
-            const employees = new Set();
-            Object.values(scheduleData).forEach(daySchedules => {
-                daySchedules.forEach(schedule => {
-                    employees.add(JSON.stringify(schedule.employee));
-                });
-            });
-
             // Render rows for each employee
-            Array.from(employees).forEach(employeeJson => {
-                const employee = JSON.parse(employeeJson);
+            Array.from(employees).forEach(employee => {
                 html += `
                     <tr class="border-b border-gray-200">
                         <td class="px-4 py-3">
@@ -157,7 +156,7 @@
                                     <div class="shift-block mb-2 p-2 rounded ${getEmployeeBackgroundColor(employee.id)} text-sm cursor-move"
                                          draggable="true"
                                          data-schedule-id="${schedule.scheduleId}">
-                                        ${schedule.shift.shiftName}<br>
+                                        ${schedule.shift?.shiftName ?? "Custom Shift"}<br>
                                         ${schedule.startTime} - ${schedule.endTime}
                                         <div class="text-xs text-gray-600">Status: ${schedule.status}</div>
                                         <button onclick="deleteSchedule(${schedule.scheduleId})"
@@ -166,7 +165,7 @@
                                 `).join('')}
                             </div>
                             <button onclick="addShift('${dateKey}', ${employee.id})"
-                                    class="text-sm text-blue-600 hover:text-blue-800">
+                                    class="text-sm text-center text-blue-600 hover:text-blue-800">
                                 + Add Shift
                             </button>
                         </td>
@@ -246,7 +245,7 @@
             const modal = document.getElementById('shiftModal');
             const overlay = document.getElementById('modalOverlay');
             const modalContent = document.getElementById('modalContent');
-            const employee = employees.find(e => e.id === employeeId);
+            const employee = Array.from(employees).find(e => e.id === employeeId);
 
             // Format date for display
             const displayDate = new Date(date).toLocaleDateString('en-US', {
@@ -311,8 +310,9 @@
             const shiftTemplateSelect = document.getElementById('shiftTemplate');
 
             customTimesCheckbox.addEventListener('change', (e) => {
-                customTimeInputs.classList.toggle('hidden', !e.checked);
-                shiftTemplateSelect.disabled = e.checked;
+                console.log("Changed:::")
+                customTimeInputs.classList.toggle('hidden', !customTimesCheckbox.checked);
+                shiftTemplateSelect.disabled = customTimesCheckbox.checked;
             });
 
             shiftTemplateSelect.addEventListener('change', (e) => {

@@ -80,11 +80,11 @@
         <div th:each="reservation : ${reservations}" class="bg-white p-4 rounded-lg shadow">
             <div class="flex justify-between items-start mb-4">
                 <h3 class="font-medium text-lg" th:text="${reservation.customerName}">Customer Name</h3>
-<!--                <span th:class="${'px-2 py-1 text-xs rounded-full ' +-->
-<!--                                  (reservation.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' :-->
-<!--                                   reservation.status == 'CONFIRMED' ? 'bg-green-100 text-green-800' :-->
-<!--                                   'bg-red-100 text-red-800')}"-->
-<!--                      th:text="${reservation.status}">Status</span>-->
+                <span th:class="${'px-2 py-1 text-xs rounded-full ' +
+                                  (reservation.status == 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                   reservation.status == 'CONFIRMED' ? 'bg-green-100 text-green-800' :
+                                   'bg-red-100 text-red-800')}"
+                      th:text="${reservation.status}">Status</span>
             </div>
 
             <div class="space-y-3 mb-4">
@@ -130,11 +130,16 @@
                     <i data-feather="edit" class="w-4 h-4 mr-2"></i>
                     Edit
                 </a>
-                <a th:href="@{/reservations/delete/{id}(id=${reservation.id})}"
-                   onclick="return confirm('Are you sure you want to delete this reservation?')"
-                   class="flex items-center px-4 py-2 text-red-600 text-sm font-medium rounded-md hover:bg-red-50">
+                <a th:href="@{/reservations/cancel/{id}(id=${reservation.id})}"
+                   onclick="return confirm('Are you sure you want to cancel this reservation?')"
+                   class="flex items-center py-2 text-red-600 text-sm font-medium rounded-md hover:bg-red-50">
                     <i data-feather="trash-2" class="w-4 h-4 mr-2"></i>
                     Delete
+                </a>
+                <a th:href="@{/reservations/accept/{id}(id=${reservation.id})}"
+                   class="flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700">
+                    <i data-feather="check-circle" class="w-4 h-4 mr-2"></i>
+                    Accept
                 </a>
             </div>
         </div>

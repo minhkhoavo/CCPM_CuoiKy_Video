@@ -28,6 +28,10 @@ public class EmployeeService {
         return employeeRepository.findById(id);
     }
 
+    public Employee getEmployeeByEmail(String email) {
+        return employeeRepository.findByEmail(email);
+    }
+
     public Employee saveEmployee(Employee employee, MultipartFile file) throws IOException {
         String imageUrl = storageService.uploadImage(file);
         employee.setImage(imageUrl);

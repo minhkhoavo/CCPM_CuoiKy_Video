@@ -33,15 +33,6 @@ class ModalWithForm extends Modal {
                 this.close();
             });
         }
-
-        if (this.actionButton) {
-            this.actionButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (this.form.checkValidity()) {
-                    this.form.submit();
-                }
-            });
-        }
     }
 
     open(data = null) {
