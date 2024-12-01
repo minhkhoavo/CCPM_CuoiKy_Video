@@ -29,11 +29,6 @@ public class RecipeController {
 
     @Autowired
     private InventoryService inventoryService;
-//    @GetMapping
-//    public String listRecipe(Model model) {
-//        return "pages/recipe/temp";
-//    }
-
 
     @GetMapping("/edit/{dishId}")
     public String showEditDishForm(@PathVariable Long dishId, Model model) {
@@ -59,9 +54,9 @@ public class RecipeController {
         }
 
         // Gọi service để cập nhật công thức
-        log.warn("chay----");
+        //log.warn("chay----");
         recipeService.updateRecipesForDish(dish, params);
-        log.warn("kt---");
+        //log.warn("kt---");
         // Trả về trang chi tiết món ăn sau khi cập nhật
         return "redirect:/recipes/edit/" + dishId;
     }

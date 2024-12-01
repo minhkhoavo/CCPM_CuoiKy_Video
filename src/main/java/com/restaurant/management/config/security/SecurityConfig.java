@@ -26,6 +26,7 @@ public class SecurityConfig {
             "/shifts",
             "/suppliers",
             "/dishes",
+            "/recipes",
     };
 
     @Bean

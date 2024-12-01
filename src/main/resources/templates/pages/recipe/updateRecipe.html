@@ -30,7 +30,8 @@
                         <td class="px-4 py-2">
                             <!-- Kiểm tra xem đã có quantityRequired chưa, nếu có thì hiển thị, nếu không thì mặc định là 0 -->
                             <input type="number"
-                                   th:value="${(dish.recipes != null && dish.recipes[iterStat.index] != null) ? dish.recipes[iterStat.index].quantityRequired : 0}"
+                                   th:value="${(dish.recipes != null && dish.recipes.size() > iterStat.index && dish.recipes[iterStat.index] != null) ? dish.recipes[iterStat.index].quantityRequired : 0}"
+
                                    th:attr="name='recipes[' + ${iterStat.index} + '].quantityRequired'"
                                    class="w-full px-2 py-1 border rounded" required />
                         </td>
