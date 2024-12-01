@@ -34,7 +34,13 @@ public class CustomerService {
 
         return customerRepository.save(existingCustomer);
     }
+    public Customer getCustomerById(Long id) {
+        return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found!"));
+    }
 
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Customer not found!"));
+    }
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
     }
