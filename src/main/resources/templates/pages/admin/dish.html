@@ -82,9 +82,13 @@
                                         th:text="${dish.category.name}"
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"></span>
                                 </td>
-                                <td
-                                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"
-                                    th:text="dish.phone"></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <!-- Nút "Add/Edit Recipe" -->
+                                    <a th:href="@{/recipes/edit/{dishId}(dishId=${dish.dishId})}"
+                                       class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2">
+                                        Recipe
+                                    </a>
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                     <div class="flex space-x-3">
                                         <!-- Button to open modal with dish data -->

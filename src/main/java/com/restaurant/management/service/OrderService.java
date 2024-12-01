@@ -134,12 +134,16 @@ public class OrderService {
         return orderRepository.findFirstByDiningTableIdAndAndOrderStatusIn(tableId, Arrays.asList(OrderStatus.PAID, OrderStatus.UNPAID, OrderStatus.PENDING));
     }
 
-
-    public Optional<Order> getOrderById(String id) {
-        return orderRepository.findById(id);
+    public Order getOrderById(String id) {
+        return orderRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Order not found with id: " + id));
     }
 
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
+    }
+
+    public void saveOrder(Order order) {
+        orderRepository.save(order);
     }
 }

@@ -41,4 +41,8 @@ public class Order {
 
     @ManyToOne
     private DiningTable diningTable;
+
+    private int rating;
+
+    private String comment;
 }

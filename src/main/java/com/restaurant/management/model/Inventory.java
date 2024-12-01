@@ -27,6 +27,4 @@ public class Inventory {
     Double unitPrice;
     Long supplierId;
 
-    @OneToMany(mappedBy = "inventory" , cascade = CascadeType.ALL, orphanRemoval = true)
-    List<Recipe> recipes = new ArrayList<>();
 }

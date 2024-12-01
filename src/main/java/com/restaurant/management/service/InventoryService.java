@@ -35,4 +35,8 @@ public class InventoryService {
         BeanUtils.copyProperties(inventory, existingInventory, "inventoryId"); // Bỏ qua `inventoryId` n
         return inventoryRepository.save(existingInventory);
     }
+
+    public Inventory getById(Long id) {
+        return inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found with id: " + id));
+    }
 }
