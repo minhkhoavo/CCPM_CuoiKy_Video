@@ -24,15 +24,12 @@
                     <tr th:each="inv, iterStat : ${inventories}" class="border-b">
                         <td class="px-4 py-2">
                             <!-- Truyền inventoryId vào input ẩn -->
-                            <input type="hidden" th:attr="name='recipes[' + ${iterStat.index} + '].inventoryId', value=${inv.inventoryId}" />
                             <span th:text="${inv.itemName}"></span>
                         </td>
                         <td class="px-4 py-2">
-                            <!-- Kiểm tra xem đã có quantityRequired chưa, nếu có thì hiển thị, nếu không thì mặc định là 0 -->
                             <input type="number"
-                                   th:value="${(dish.recipes != null && dish.recipes.size() > iterStat.index && dish.recipes[iterStat.index] != null) ? dish.recipes[iterStat.index].quantityRequired : 0}"
-
-                                   th:attr="name='recipes[' + ${iterStat.index} + '].quantityRequired'"
+                                   th:value="${inventoryQuantityMap[inv.inventoryId] != null ? inventoryQuantityMap[inv.inventoryId] : 0}"
+                                   th:attr="name=${inv.inventoryId}"
                                    class="w-full px-2 py-1 border rounded" required />
                         </td>
                         <td class="px-4 py-2">

@@ -19,50 +19,37 @@ public class RecipeService {
     @Autowired
     private InventoryService inventoryService;
 
-    // Phương thức cập nhật công thức cho món ăn
+    //xoa cong thuc cu va chi them nguyen lieu co so luong > 0
     public void updateRecipesForDish(Dish dish, Map<String, String> params) {
+        //tao danh sach luu cong thuc moi
         List<Recipe> recipesToUpdate = new ArrayList<>();
-        Set<Integer> processedIndexes = new HashSet<>();
 
-        for (String key : params.keySet()) {
-            if (key.startsWith("recipes[")) {
-                System.out.println(key + "-----key");
+        for(Map.Entry<String, String> entry : params.entrySet()) {
+            //lay inventoryId, quantity
+            String inventoryIdStr = entry.getKey();
+            String quantityRequiredStr = entry.getValue();
 
-                String[] parts = key.split("\\[|\\]"); // Tách key như "recipes[0].inventoryId"
-                int index = Integer.parseInt(parts[1]); // Lấy chỉ số index
+            if(inventoryIdStr != null && quantityRequiredStr != null){
+                try{
+                    Long inventoryId = Long.parseLong(inventoryIdStr);
+                    int quantity = Integer.parseInt(quantityRequiredStr);
 
-                if (processedIndexes.contains(index)) {
-                    continue; // Nếu đã xử lý rồi, bỏ qua
-                }
-
-//                System.out.println(parts[1]+"---------------------------");
-                // Lấy inventoryId và quantityRequired từ request parameters
-                String inventoryIdStr = params.get("recipes[" + index + "].inventoryId");
-                String quantityRequiredStr = params.get("recipes[" + index + "].quantityRequired");
-
-                if (inventoryIdStr != null && quantityRequiredStr != null) {
-                    //lay inventoryId
-                    Long inventoryId = Long.valueOf(inventoryIdStr);
-                    int quantityRequired = Integer.parseInt(quantityRequiredStr);
-
-                    if (quantityRequired > 0) {
+                    if(quantity>0){
                         Inventory inventory = inventoryService.getById(inventoryId);
 
-                        //tao recipe moi
-                        if (inventory != null) {
-                            Recipe recipe = new Recipe();
-                            recipe.setDish(dish);
-                            recipe.setInventory(inventory);
-                            recipe.setQuantityRequired(quantityRequired);
-                            recipesToUpdate.add(recipe);
-                        }
+                        Recipe recipe = new Recipe();
+                        recipe.setDish(dish);
+                        recipe.setInventory(inventory);
+                        recipe.setQuantityRequired(quantity);
+                        recipesToUpdate.add(recipe);
                     }
                 }
-                processedIndexes.add(index);
+                catch(NumberFormatException e){
+                    System.err.println("Invalid data: inventoryId=" + inventoryIdStr + ", quantityRequired=" + quantityRequiredStr);
+                }
             }
         }
 
-        // Xóa các công thức cũ và lưu các công thức mới
         recipeRepository.deleteByDish(dish);
         recipeRepository.saveAll(recipesToUpdate);
     }

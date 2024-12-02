@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +36,17 @@ public class RecipeController {
         Dish dish = dishService.findById(dishId); // Lấy Dish từ database
         List<Inventory> inventories = inventoryService.getAllInventory(); // Lấy tất cả inventory
 
+        List<Recipe> recipes = dish.getRecipes();
+         Map<Long, Integer> inventoryQuantityMap = new HashMap<>();
+        if(recipes != null) {
+            for (Recipe recipe : recipes) {
+                inventoryQuantityMap.put(recipe.getInventory().getInventoryId(), recipe.getQuantityRequired());
+            }
+        }
+
         model.addAttribute("dish", dish);
         model.addAttribute("inventories", inventories);
+        model.addAttribute("inventoryQuantityMap", inventoryQuantityMap);
         return "pages/recipe/updateRecipe";
     }
 
@@ -50,14 +60,11 @@ public class RecipeController {
         if (dish == null) {
             // Nếu món ăn không tồn tại, trả về lỗi
             model.addAttribute("error", "Món ăn không tồn tại!");
-            return "error"; // Hoặc trang lỗi
+            return "error";
         }
 
-        // Gọi service để cập nhật công thức
-        //log.warn("chay----");
+        //xoa cong thuc cu va chi them nguyen lieu co so luong > 0
         recipeService.updateRecipesForDish(dish, params);
-        //log.warn("kt---");
-        // Trả về trang chi tiết món ăn sau khi cập nhật
         return "redirect:/recipes/edit/" + dishId;
     }
 }
