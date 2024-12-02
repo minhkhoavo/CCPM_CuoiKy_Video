@@ -20,8 +20,8 @@ public class ShiftService {
     @Lazy
     private ScheduleService scheduleService;
 
-    public List<Shift> findAllShift() {
-        return shiftRepository.findAll();
+    public List<Shift> getRegularShifts() {
+        return shiftRepository.findByShiftType(ShiftType.REGULAR);
     }
 
     public List<Shift> getOpenShifts() {
@@ -42,6 +42,10 @@ public class ShiftService {
 
     public Shift getShift(Long id) {
         return shiftRepository.findById(id).orElseThrow(() -> new RuntimeException("Shift not found for ID: " + id));
+    }
+
+    public List<Long> getRegularShiftIds(ShiftType type) {
+        return shiftRepository.findShiftIdsByShiftType(type);
     }
 
     public List<Shift> getAvailableShifts() {

@@ -7,6 +7,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.repository.TableRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -36,8 +38,12 @@ public class TableService {
         return tableRepository.findById(id);
     }
 
-    public DiningTable saveTable(DiningTable diningTable) throws WriterException, IOException {
-        String tableUrl = "http://localhost:8080/table/" + diningTable.getTableNumber();
+    public DiningTable saveTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+
+        String tableUrl = scheme + "://" + serverName + ":" + serverPort + "/table/" + diningTable.getTableNumber();
 
         ByteArrayOutputStream qrCodeStream = new ByteArrayOutputStream();
         writeQRCodeImageToStream(tableUrl, diningTable.getTableNumber().toString(), qrCodeStream);

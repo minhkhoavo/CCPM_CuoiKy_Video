@@ -15,4 +15,6 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
     @Query("SELECT s FROM Shift s WHERE s.available > 0")
     List<Shift> findAvailableShifts();
 
+    @Query("SELECT s.shiftId FROM Shift s WHERE s.shiftType = :shiftType")
+    List<Long> findShiftIdsByShiftType(@Param("shiftType") ShiftType shiftType);
 }

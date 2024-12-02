@@ -1,5 +1,6 @@
 package com.restaurant.management.service;
 
+import com.restaurant.management.enums.ShiftType;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.model.Schedule;
 import com.restaurant.management.model.Shift;
@@ -63,7 +64,6 @@ public class ScheduleService {
         }
     }
 
-
     public void deleteSchedule(Long scheduleId) {
         if (scheduleRepository.existsById(scheduleId)) {
             scheduleRepository.deleteById(scheduleId);
@@ -113,4 +113,44 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
+    public void saveSchedule(int[][][] solution, LocalDate startDate, LocalDate endDate, String position) {
+        List<Long> employeeIds = employeeService.findEmployeeIdsByPosition(position);
+        List<Long> shiftIds = shiftService.getRegularShiftIds(ShiftType.REGULAR);
+
+        shiftIds.forEach(id -> System.out.println("Shift ID: " + id));
+
+        for (int emp = 0; emp < solution.length; emp++) {
+            for (int day = 0; day < solution[emp].length; day++) {
+                for (int shift = 0; shift < solution[emp][day].length; shift++) {
+                    if (solution[emp][day][shift] == 1) {
+                        Shift shiftEntity = shiftService.getShift(shiftIds.get(shift));
+                        Schedule schedule = Schedule.builder()
+                                .employee(employeeService.getEmployeeById(employeeIds.get(emp)).get())
+                                .shift(shiftEntity)
+                                .startTime(shiftEntity.getStartTime())
+                                .endTime(shiftEntity.getEndTime())
+                                .workingDate(startDate.plusDays(day))
+                                .build();
+
+                        scheduleRepository.save(schedule);
+                    }
+                }
+            }
+        }
+    }
+
+    public void autoSchedulingShitf(String startDate, List<List<Integer>> numEmpPerShift, int maxShiftPerDay,
+                                    int maxDeviationShift, int isConsecutiveShifts) {
+        // Xử lý ma trận staff và chef chuyển đổi từ List<List<Integer>> thành mảng 2D int[])
+        int[][] staffMatrixArray = new int[numEmpPerShift.size()][];
+        for (int i = 0; i < numEmpPerShift.size(); i++) {
+            staffMatrixArray[i] = numEmpPerShift.get(i).stream().mapToInt(Integer::intValue).toArray();
+        }
+
+        SchedulingSolver solver = new SchedulingSolver();
+        int[][][] solution = solver.solveConstraint(5,3, 7,
+                staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
+
+        saveSchedule(solution, LocalDate.now(), LocalDate.now().plusDays(7), "STAFF");
+    }
 }

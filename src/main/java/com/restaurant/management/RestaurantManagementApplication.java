@@ -1,5 +1,6 @@
 package com.restaurant.management;
 
+import com.restaurant.management.service.SchedulingSolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +18,7 @@ public class RestaurantManagementApplication {
 		String encodedPassword = encoder.encode(rawPassword); // Mật khẩu đã mã hóa
 
 		System.out.println("Encoded Password: " + encodedPassword);
+//		SchedulingSolver solver = new SchedulingSolver();
 	}
 
 }

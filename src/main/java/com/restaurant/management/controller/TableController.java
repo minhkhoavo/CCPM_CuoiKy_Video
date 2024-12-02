@@ -5,12 +5,14 @@ import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.TableService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +29,7 @@ public class TableController {
     public String listTables(Model model) {
         List<DiningTable> diningTables = tableService.getAllTables();
         model.addAttribute("tables", diningTables);
+        model.addAttribute("diningTable", new DiningTable());
         return "pages/tables/tables";
     }
     @GetMapping("/{tableId}")
@@ -42,9 +45,9 @@ public class TableController {
         }
     }
     @PostMapping("/add")
-    public String addTable(@ModelAttribute DiningTable diningTable) {
+    public String addTable(@ModelAttribute DiningTable diningTable, HttpServletRequest request) {
         try {
-            tableService.saveTable(diningTable);
+            tableService.saveTable(diningTable, request);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
             return "error";

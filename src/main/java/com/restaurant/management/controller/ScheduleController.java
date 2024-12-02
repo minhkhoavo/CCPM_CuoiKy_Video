@@ -2,6 +2,7 @@ package com.restaurant.management.controller;
 
 import com.restaurant.management.model.Schedule;
 import com.restaurant.management.service.ScheduleService;
+import com.restaurant.management.service.SchedulingSolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -67,4 +68,24 @@ public class ScheduleController {
 
         return ResponseEntity.ok(updatedSchedule);
     }
+    @GetMapping("/config")
+    public String sendMatrix(Model model) {
+        return "pages/schedule/auto-scheduling-conf";
+    }
+
+    @PostMapping("/config")
+    public ResponseEntity<?> submitMatrix(@RequestBody Map<String, Object> requestBody) {
+        String startDate = (String) requestBody.get("startDate");
+        int maxShiftPerDay = Integer.parseInt(requestBody.get("maxShiftPerDay").toString());
+        int maxDeviationShift = Integer.parseInt(requestBody.get("maxDeviationShift").toString());
+        int isConsecutiveShifts = Integer.parseInt(requestBody.get("isConsecutiveShifts").toString());
+
+        List<List<Integer>> staffMatrix = (List<List<Integer>>) requestBody.get("staffMatrix");
+        List<List<Integer>> chefMatrix = (List<List<Integer>>) requestBody.get("chefMatrix");
+        scheduleService.autoSchedulingShitf(startDate, staffMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
+        return ResponseEntity.ok("success");
+    }
+
+
+
 }
