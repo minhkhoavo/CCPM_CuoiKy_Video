@@ -33,8 +33,9 @@ public class DishService {
         return dishRepository.findAll();
     }
 
-    public Optional<Dish> getDishById(Long id) {
-        return dishRepository.findById(id);
+    public Dish findById(Long id) {
+        return dishRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dish not found"));
     }
 
     public Dish saveDish(Dish dish, MultipartFile file) throws IOException {
@@ -69,18 +70,27 @@ public class DishService {
         return dishRepository.findByCategoryId(categoryId);
     }
 
-    public void processDish(Long dishID) throws IllegalAccessException {
+    public boolean processDish(Long dishID, int quantity) {
+
         List<Recipe> recipes = recipeRepository.findRecipeByDishId(dishID);
         for (Recipe recipe : recipes) {
+            //trừ từng nguyên liệu
             Inventory inventory = recipe.getInventory();
-            int newQuantity = inventory.getQuantity() - recipe.getQuantityRequired();
+            int newQuantity = inventory.getQuantity() - recipe.getQuantityRequired()*quantity;
 
             if(newQuantity <= 0) {
-                throw new IllegalAccessException("Not enough inventory for item: " + inventory.getItemName());
+                return false;
             }
+        }
+
+        for (Recipe recipe : recipes) {
+            //trừ từng nguyên liệu
+            Inventory inventory = recipe.getInventory();
+            int newQuantity = inventory.getQuantity() - recipe.getQuantityRequired()*quantity;
 
             inventory.setQuantity(newQuantity);
             inventoryRepository.save(inventory);
         }
+        return true;
     }
 }

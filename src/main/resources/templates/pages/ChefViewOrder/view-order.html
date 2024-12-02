@@ -8,13 +8,37 @@
         <div>
             <h2 class="text-2xl font-semibold mb-4">Current Orders</h2>
             <div class="space-y-4">
+                <!-- Hiển thị thông báo nếu có -->
+                <div th:if="${message}" class="text-red-500 mb-4">
+                    <p th:text="${message}"></p>
+                </div>
+                <div class="mb-4">
+                    <form th:action="@{/order-item}" method="get" class="flex items-center space-x-4">
+                        <input type="text" name="keyword" placeholder="Search by dish or order ID"
+                               class="border border-gray-300 rounded-lg px-4 py-2 text-gray-800"
+                               style="font-size: 12px;"
+                               th:value="${keyword}"/>
+
+                        <select name="statusFilter" class="bg-white border border-gray-300 text-sm rounded-lg px-4 py-2 text-gray-800">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING" th:selected="${statusFilter == 'PENDING'}">PENDING</option>
+                            <option value="COMPLETED" th:selected="${statusFilter == 'COMPLETED'}">COMPLETED</option>
+                            <option value="CANCELED" th:selected="${statusFilter == 'CANCELED'}">CANCELED</option>
+                        </select>
+
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                            Filter
+                        </button>
+                    </form>
+                </div>
+
                 <!-- Lặp qua danh sách orderItems -->
                 <div th:each="item : ${orderItems}" class="bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <img src="https://lavenderstudio.com.vn/wp-content/uploads/2017/03/chup-san-pham.jpg" alt="Order image" class="w-16 h-16 rounded-lg object-cover">
                         <div>
                             <p class="font-semibold">Order # <span th:text="${item.order.id}"></span></p>
-                            <p class="text-gray-600 text-sm">Dish ID: <span th:text="${item.dish.dishId}"></span></p>
+                            <p class="text-gray-600 text-sm">Dish: <span th:text="${item.dish.getName()}"></span></p>
                             <p class="text-gray-600 text-sm">Price <span th:text="${item.price}"></span></p>
                             <p class="text-gray-400 text-sm">Quantity: <span th:text="${item.quantity}"></span></p>
                         </div>
@@ -24,6 +48,7 @@
                         <form th:action="@{/order-item/updateOrderStatus}" method="post">
                             <input type="hidden" name="orderItemId" th:value="${item.id}"/>
                             <input type="hidden" name=dishId th:value="${item.getDish().getDishId()}"/>
+                            <input type="hidden" name="quantity" th:value="${item.quantity}"/>
                             <select name="orderStatus" class="bg-white border border-gray-300 text-sm rounded-lg px-4 py-2 text-gray-800"
                                     onchange="this.form.submit()"
                                     th:disabled="${item.orderStatus == T(com.restaurant.management.enums.OrderStatus).COMPLETED}">

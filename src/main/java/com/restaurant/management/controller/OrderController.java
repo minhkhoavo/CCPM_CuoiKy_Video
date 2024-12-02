@@ -53,4 +53,24 @@ public class OrderController {
         String redirectUrl = orderService.payOrder(orderId);
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
+
+    @GetMapping("/reviews/{orderId}")
+    public String showReviews(@PathVariable String orderId ,Model model) {
+        model.addAttribute("order", orderService.getOrderById(orderId));
+        return "pages/reviews";
+    }
+
+    @PostMapping("/reviews/{orderId}")
+    public String updateReview(@PathVariable("orderId") String orderId, @ModelAttribute Order order, Model model) {
+        Order existingOrder = orderService.getOrderById(orderId);
+
+        existingOrder.setRating(order.getRating());
+        existingOrder.setComment(order.getComment());
+
+        orderService.saveOrder(existingOrder);
+
+        model.addAttribute("message", "Your review has been updated!");
+        model.addAttribute("order", existingOrder);
+        return "pages/reviews";
+    }
 }

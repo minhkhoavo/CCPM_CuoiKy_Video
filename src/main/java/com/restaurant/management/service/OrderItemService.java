@@ -29,4 +29,11 @@ public class OrderItemService {
         orderItemRepository.save(orderItem);
     }
 
+    public List<OrderItem> searchOrderItems(String keyword, String statusFilter) {
+        //chuan hoa keyword
+        String searchKeyword = (keyword != null && !keyword.trim().isEmpty()) ? keyword.trim().toLowerCase() : null;
+        //chuan hoa status
+        OrderStatus status = (statusFilter != null && !statusFilter.isEmpty()) ? OrderStatus.valueOf(statusFilter) : null;
+        return orderItemRepository.findByKeywordAndStatus(searchKeyword, status);
+    }
 }
