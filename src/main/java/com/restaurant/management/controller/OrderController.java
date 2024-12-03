@@ -3,12 +3,14 @@ package com.restaurant.management.controller;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
+import com.restaurant.management.service.CategoryService;
 import com.restaurant.management.service.DishService;
 import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.PaymentService;
 import com.restaurant.management.util.JSONConvertUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,26 +30,80 @@ public class OrderController {
     private OrderService orderService;
     @Autowired
     private DishService dishService;
+    @Autowired
+    private CategoryService categoryService;
 
-    @GetMapping
-    public String showMenu(Model model) {
-        List<Dish> menuItems = dishService.getAllDishes();
+    @GetMapping("/menu")
+    public String showMenu(Model model,
+                           @RequestParam("orderId") Long orderId,
+                           @RequestParam(value = "category", required = false) Long categoryId) {
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("activeCategory", categoryId);
+        System.out.println("categoryId:::: " + categoryId);
+        List<Dish> menuItems = (categoryId != null) ?
+                dishService.findDishesByCategoryId(categoryId) :
+                dishService.getAllDishes();
         model.addAttribute("menuItems", menuItems);
-
-        String menuItemsJsonString = JSONConvertUtil.entityToJSON(menuItems);
-
-        System.out.println("Generated JSON: " + menuItemsJsonString);
-
-        model.addAttribute("menuItemsJson", menuItemsJsonString);
-
+        model.addAttribute("orderId", orderId);
+        List<OrderItem> cart = orderService.getOrderDetailByOrderId(orderId);
+        model.addAttribute("cart", cart);
+        double total = cart.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        model.addAttribute("total", total);
         return "pages/menu";
     }
 
-    @PostMapping
-    public ResponseEntity<String> createOrder(@RequestBody Map<String, Object> orderData) {
-        String orderId = orderService.createOrder(orderData);
-        return ResponseEntity.ok(orderId);
+    @GetMapping("/menu/search")
+    public String searchDishes(@RequestParam("query") String query,
+                               @RequestParam("orderId") Long orderId,
+                               Model model) {
+        model.addAttribute("menuItems", dishService.searchDishes(query));
+        model.addAttribute("query", query);
+        model.addAttribute("categories", categoryService.getAllCategories());
+        model.addAttribute("orderId", orderId);
+        model.addAttribute("activeCategory", 1L);
+        List<OrderItem> cart = orderService.getOrderDetailByOrderId(orderId);
+        model.addAttribute("cart", cart);
+        double total = cart.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        model.addAttribute("total", total);
+        return "pages/menu";
     }
+
+    @PostMapping("/add")
+    public String addToOrder(
+            @RequestParam("orderId") String orderId,
+            @RequestParam("dishId") Long dishId,
+            @RequestParam("quantity") Integer quantity) {
+        orderService.addDishToOrder(orderId, dishId, quantity);
+        return "redirect:/orders/menu?orderId=" + orderId;
+    }
+
+    @PostMapping("/update")
+    public String updateOrderItem(
+            @RequestParam("orderId") String orderId,
+            @RequestParam("orderItemId") Long orderItemId,
+            @RequestParam("action") String action) {
+        if ("increase".equals(action)) {
+            orderService.updateOrderItemQuantity(orderItemId, 1);
+        } else if ("decrease".equals(action)) {
+            orderService.updateOrderItemQuantity(orderItemId, -1);
+        }
+        return "redirect:/orders/menu?orderId=" + orderId;
+    }
+
+//    @GetMapping("/checkout")
+//    public String checkout(
+//            @RequestParam("orderId") String orderId,
+//            Model model) {
+//        Order order = orderService.getOrderById(orderId);
+//        model.addAttribute("order", order);
+//        model.addAttribute("total", orderService.calculateTotalAmount(order));
+//        return "checkout"; // Hiển thị trang thanh toán
+//    }
+
 
     @GetMapping("/pay/{orderId}")
     public ResponseEntity<String> pay(@PathVariable("orderId") String orderId) {

@@ -6,6 +6,7 @@ import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
 import com.restaurant.management.repository.DishRepository;
+import com.restaurant.management.repository.OrderItemRepository;
 import com.restaurant.management.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ import java.util.*;
 public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
-
+    @Autowired
+    private OrderItemRepository orderItemRepository;
     @Autowired
     private DishRepository dishRepository;
 
@@ -47,52 +49,51 @@ public class OrderService {
     }
     */
     @Transactional
-    public String createOrder(Map<String, Object> orderData) {
-        String customerId = (String) orderData.get("customerId");
-        LocalDateTime orderDate = LocalDateTime.now();
-        OrderMethod orderMethod = OrderMethod.valueOf((String) orderData.get("orderMethod"));
+    public void addDishToOrder(String orderId, Long dishId, int quantity) {
+        Order order = getOrderById(orderId);
+        Dish dish = dishRepository.findById(dishId)
+                .orElseThrow(() -> new RuntimeException("Dish not found"));
 
-        double[] totalAmount = {0.0};
+        Optional<OrderItem> existingItem = order.getOrderItems()
+                .stream()
+                .filter(item -> item.getDish().getDishId().equals(dishId))
+                .findFirst();
 
-        String orderID = generateOrderID(customerId);
+        if (existingItem.isPresent()) {
+            OrderItem orderItem = existingItem.get();
+            orderItem.setQuantity(orderItem.getQuantity() + quantity);
+            orderItemRepository.save(orderItem);
+        } else {
+            // Tạo mới OrderItem và thêm vào Order
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setDish(dish);
+            orderItem.setQuantity(quantity);
+            orderItem.setPrice(dish.getPrice());
+            orderItemRepository.save(orderItem);
+        }
+    }
 
-        List<Map<String, Object>> orderItemsData = (List<Map<String, Object>>) orderData.get("orderItems");
-        List<OrderItem> orderItems = new ArrayList<>();
+    public void updateOrderItemQuantity(Long orderItemId, int delta) {
+        // Lấy thông tin OrderItem từ cơ sở dữ liệu
+        OrderItem orderItem = orderItemRepository.findById(orderItemId)
+                .orElseThrow(() -> new RuntimeException("Order item not found"));
 
-        orderItemsData.forEach(itemData -> {
-            Map<String, Object> dishData = (Map<String, Object>) itemData.get("dishDetails");
-            Long dishId = ((Number) dishData.get("dishId")).longValue();
+        // Tính toán số lượng mới
+        int newQuantity = orderItem.getQuantity() + delta;
 
-            Dish dish = dishRepository.findById(dishId)
-                    .orElseThrow(() -> new RuntimeException("Dish not found with id: " + dishId));
+        if (newQuantity <= 0) {
+            // Xóa OrderItem nếu số lượng <= 0
+            orderItemRepository.delete(orderItem);
+        } else {
+            // Cập nhật số lượng mới
+            orderItem.setQuantity(newQuantity);
+            orderItemRepository.save(orderItem);
+        }
+    }
 
-            Double price = dish.getPrice();
-            Integer quantity = (Integer) itemData.get("quantity");
-            System.out.println("price:: " + price + " quantity:: " + quantity);
-            totalAmount[0] += price * quantity;
-
-            OrderItem orderItem = OrderItem.builder()
-                    .dish(dish)
-                    .quantity(quantity)
-                    .price(price)
-                    .build();
-
-            orderItems.add(orderItem);
-        });
-
-        Order order = Order.builder()
-                .id(orderID)
-                .orderMethod(orderMethod)
-                .customerId(customerId)
-                .orderDate(orderDate)
-                .totalAmount(totalAmount[0])
-                .orderItems(orderItems)
-                .build();
-
-        orderItems.forEach(item -> item.setOrder(order));
-
-        orderRepository.save(order);
-        return order.getId();
+    public List<OrderItem> getOrderDetailByOrderId(Long orderId) {
+        return orderRepository.findOrderDetailByOrderId(orderId);
     }
 
     private String generateOrderID(String customerId) {

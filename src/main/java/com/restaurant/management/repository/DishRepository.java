@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface DishRepository extends JpaRepository<Dish, Long> {
     List<Dish> findByCategoryId(Long categoryId);
-    List<Dish> findByNameContainingIgnoreCase(String name);
+    List<Dish> findByNameContainingIgnoreCase(String query);
+    List<Dish> findAllByCategoryId(Long categoryId);
 }
