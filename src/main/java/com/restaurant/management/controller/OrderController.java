@@ -3,12 +3,7 @@ package com.restaurant.management.controller;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
-import com.restaurant.management.service.CategoryService;
-import com.restaurant.management.service.DishService;
-import com.restaurant.management.service.OrderService;
-import com.restaurant.management.service.PaymentService;
-import com.restaurant.management.util.JSONConvertUtil;
-import jakarta.servlet.http.HttpServletRequest;
+import com.restaurant.management.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -18,9 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -32,10 +25,12 @@ public class OrderController {
     private DishService dishService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private TableService tableService;
 
     @GetMapping("/menu")
     public String showMenu(Model model,
-                           @RequestParam("orderId") Long orderId,
+                           @RequestParam("orderId") String orderId,
                            @RequestParam(value = "category", required = false) Long categoryId) {
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("activeCategory", categoryId);
@@ -56,7 +51,7 @@ public class OrderController {
 
     @GetMapping("/menu/search")
     public String searchDishes(@RequestParam("query") String query,
-                               @RequestParam("orderId") Long orderId,
+                               @RequestParam("orderId") String orderId,
                                Model model) {
         model.addAttribute("menuItems", dishService.searchDishes(query));
         model.addAttribute("query", query);
@@ -94,16 +89,38 @@ public class OrderController {
         return "redirect:/orders/menu?orderId=" + orderId;
     }
 
-//    @GetMapping("/checkout")
-//    public String checkout(
-//            @RequestParam("orderId") String orderId,
-//            Model model) {
-//        Order order = orderService.getOrderById(orderId);
-//        model.addAttribute("order", order);
-//        model.addAttribute("total", orderService.calculateTotalAmount(order));
-//        return "checkout"; // Hiển thị trang thanh toán
-//    }
+    @GetMapping("/checkout")
+    public String checkout(
+            @RequestParam("orderId") String orderId,
+            Model model) {
+        List<OrderItem> cart = orderService.getOrderDetailByOrderId(orderId);
+        model.addAttribute("orderItems", cart);
+        double total = cart.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        model.addAttribute("total", total);
+        model.addAttribute("orderId", orderId);
+        return "pages/payment";
+    }
 
+    @GetMapping("/manage")
+    public String showManageTableOrder(Model model,
+                          @RequestParam(value = "tableId", required = false) Long tableId) {
+        if(tableId != null) {
+            Optional<Order> order = orderService.findOrderByTableId(tableId);
+            if(order.isPresent()) {
+                List<OrderItem> cart = orderService.getOrderDetailByOrderId(order.get().getId());
+                model.addAttribute("cart", cart);
+                double total = cart.stream()
+                        .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                        .sum();
+                model.addAttribute("total", total);
+                model.addAttribute("orderId", order.get().getId());
+            }
+        }
+        model.addAttribute("tables", tableService.getAllTables());
+        return "pages/order/manage-table-order";
+    }
 
     @GetMapping("/pay/{orderId}")
     public ResponseEntity<String> pay(@PathVariable("orderId") String orderId) {

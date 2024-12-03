@@ -37,7 +37,7 @@ public class ReservationController {
     }
 
     @GetMapping("/booking")
-    public String test(Model model,
+    public String booking(Model model,
            @RequestParam(value = "dateToCome", required = false) LocalDate reserDate,
            @RequestParam(value = "timeToCome", required = false) LocalTime reserTime,
            @RequestParam(value = "people", required = false) Long numPeople) {

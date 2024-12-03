@@ -34,7 +34,7 @@ public class TableController {
     }
     @GetMapping("/{tableId}")
     public String getOrderByTable(@PathVariable("tableId") Long tableId, Model model) {
-        Optional<Order> orderOptional = orderService.findOrderByTableIdAndStatus(tableId);
+        Optional<Order> orderOptional = orderService.findOrderByTableId(tableId);
 
         if (orderOptional.isPresent()) {
             model.addAttribute("order", orderOptional.get());

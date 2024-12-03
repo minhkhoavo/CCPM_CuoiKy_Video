@@ -28,26 +28,6 @@ public class OrderService {
     @Autowired
     private PaymentService paymentService;
 
-    /*
-        {
-      "customerId": "1",
-      "orderDate": "2023-11-05T12:00:00",
-      "totalAmount": 55.5,
-      "orderMethod": "CASH",
-      "orderItems": [
-        {
-          "dishDetails": { "dishId": 1 },
-          "quantity": 2,
-          "price": 99.0
-        },
-        {
-          "dishDetails": { "dishId": 2 },
-          "quantity": 1,
-          "price": 22.0
-        }
-      ]
-    }
-    */
     @Transactional
     public void addDishToOrder(String orderId, Long dishId, int quantity) {
         Order order = getOrderById(orderId);
@@ -64,7 +44,6 @@ public class OrderService {
             orderItem.setQuantity(orderItem.getQuantity() + quantity);
             orderItemRepository.save(orderItem);
         } else {
-            // Tạo mới OrderItem và thêm vào Order
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setDish(dish);
@@ -92,7 +71,7 @@ public class OrderService {
         }
     }
 
-    public List<OrderItem> getOrderDetailByOrderId(Long orderId) {
+    public List<OrderItem> getOrderDetailByOrderId(String orderId) {
         return orderRepository.findOrderDetailByOrderId(orderId);
     }
 
@@ -131,7 +110,7 @@ public class OrderService {
         }).orElse(false);
     }
 
-    public Optional<Order> findOrderByTableIdAndStatus(Long tableId) {
+    public Optional<Order> findOrderByTableId(Long tableId) {
         return orderRepository.findFirstByDiningTableIdAndAndOrderStatusIn(tableId, Arrays.asList(OrderStatus.PAID, OrderStatus.UNPAID, OrderStatus.PENDING));
     }
 

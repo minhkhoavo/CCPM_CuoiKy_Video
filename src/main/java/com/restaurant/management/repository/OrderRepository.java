@@ -15,6 +15,6 @@ import java.util.Optional;
 public interface OrderRepository extends JpaRepository<Order, String> {
     Optional<Order> findFirstByDiningTableIdAndAndOrderStatusIn(Long diningTableId, List<OrderStatus> statuses);
     @Query("SELECT oi FROM OrderItem oi WHERE oi.order.id = :orderId")
-    List<OrderItem> findOrderDetailByOrderId(@Param("orderId") Long orderId);
+    List<OrderItem> findOrderDetailByOrderId(@Param("orderId") String orderId);
 
 }

@@ -145,7 +145,7 @@
                         <span class="font-semibold text-sm md:text-base" th:text="'$' + ${total}"></span>
                     </div>
                 </div>
-                <a th:href="@{/checkout(orderId=${orderId})}" class="block text-center w-full bg-blue-500 text-white py-2 md:py-3 rounded-lg font-medium mt-3 md:mt-4 hover:bg-blue-600 transition-colors text-sm md:text-base">
+                <a th:href="@{/orders/checkout(orderId=${orderId})}" class="block text-center w-full bg-blue-500 text-white py-2 md:py-3 rounded-lg font-medium mt-3 md:mt-4 hover:bg-blue-600 transition-colors text-sm md:text-base">
                     Continue to Payment
                 </a>
             </div>

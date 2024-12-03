@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" >
+    <title>Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 h-screen">
+    <div th:replace="fragments/table-layout :: table-layout"></div>
+    <div th:replace="fragments/order-item-sidebar :: order-item-sidebar"></div>
+</div>
+<script>
+    function selectTable(tableId) {
+        let allTables = document.querySelectorAll('.border-orange-500');
+        allTables.forEach(table => {
+            table.classList.remove('border-orange-500');
+        });
+        let selectedTable = document.getElementById('table-' + tableId);
+        if (selectedTable) {
+            selectedTable.classList.add('border-orange-500');
+        }
+        window.location.href = '/orders/manage?tableId=' + tableId;
+    }
+</script>
+</body>
+</html>

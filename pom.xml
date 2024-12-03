@@ -103,10 +103,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.thymeleaf.extras</groupId>-->
-<!--			<artifactId>thymeleaf-extras-springsecurity6</artifactId>-->
-<!--		</dependency>-->
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.google.ortools/ortools-java -->
 		<dependency>
 			<groupId>com.google.ortools</groupId>
