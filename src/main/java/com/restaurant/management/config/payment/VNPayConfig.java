@@ -39,6 +39,7 @@ public class VNPayConfig {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
         String vnpCreateDate = formatter.format(calendar.getTime());
+        System.out.print("Current time::::" + vnpCreateDate);
         vnpParamsMap.put("vnp_CreateDate", vnpCreateDate);
         calendar.add(Calendar.MINUTE, 15);
         String vnp_ExpireDate = formatter.format(calendar.getTime());

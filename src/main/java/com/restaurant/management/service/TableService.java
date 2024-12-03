@@ -43,7 +43,7 @@ public class TableService {
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
 
-        String tableUrl = scheme + "://" + serverName + ":" + serverPort + "/table/" + diningTable.getTableNumber();
+        String tableUrl = scheme + "://" + serverName + ":" + serverPort + "/tables/" + diningTable.getTableNumber();
 
         ByteArrayOutputStream qrCodeStream = new ByteArrayOutputStream();
         writeQRCodeImageToStream(tableUrl, diningTable.getTableNumber().toString(), qrCodeStream);
@@ -69,9 +69,10 @@ public class TableService {
         tableRepository.deleteById(id);
     }
 
-    public List<DiningTable> findAvailableTables(LocalDate date, LocalTime startTime) {
-        return tableRepository.findAvailableTables(date, startTime, startTime.plusHours(1));
-    }
+//    public List<DiningTable> findAvailableTables(LocalDate date, LocalTime timeToCome) {
+//        return tableRepository.findAvailableTables(date, timeToCome, 1);
+//    }
+
     private void writeQRCodeImageToStream(String text, String tableNumber, ByteArrayOutputStream stream) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 250, 250);

@@ -14,18 +14,5 @@ import java.util.Optional;
 @Repository
 public interface TableRepository extends JpaRepository<DiningTable, Long> {
     Optional<DiningTable> findByTableNumber(int tableNumber);
-
-    @Query("SELECT t FROM DiningTable t " +
-            "WHERE t.id NOT IN (" +
-            "   SELECT DISTINCT r.table.id FROM Reservation r " +
-            "   WHERE r.dateToCome = :date " +
-            "   AND r.timeToCome BETWEEN :startTime AND :endTime " +
-            "   AND r.status != 'CANCELLED'" +
-            ")")
-    List<DiningTable> findAvailableTables(
-            @Param("date") LocalDate date,
-            @Param("startTime") LocalTime startTime,
-            @Param("endTime") LocalTime endTime
-    );
 }
 

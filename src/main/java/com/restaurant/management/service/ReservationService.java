@@ -4,11 +4,15 @@ import com.restaurant.management.enums.ReservationStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Reservation;
 import com.restaurant.management.repository.ReservationRepository;
+import com.restaurant.management.repository.ScheduleRepository;
+import com.restaurant.management.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +24,8 @@ public class ReservationService {
     private ReservationRepository reservationRepository;
     @Autowired
     private TableService tableService;
+    @Autowired
+    private TableRepository tableRepository;
 
     public List<Reservation> getAllReservations() {
         return reservationRepository.findAll();
@@ -89,9 +95,15 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    public boolean isTableAvailable(Long tableId, LocalDate date, LocalTime startTime, LocalTime endTime) {
-        List<DiningTable> availableTables = tableService.findAvailableTables(date, startTime);
-        return availableTables.stream().anyMatch(table -> table.getId().equals(tableId));
+//    public boolean isTableAvailable(Long tableId, LocalDate date, LocalTime startTime, LocalTime endTime) {
+//        List<DiningTable> availableTables = tableService.findAvailableTables(date, startTime);
+//        return availableTables.stream().anyMatch(table -> table.getId().equals(tableId));
+//    }
+
+    public List<DiningTable> findAvailable(LocalDate date, LocalTime timeToCome, Long numPeople) {
+        LocalTime endTime = timeToCome.plusHours(1);
+
+        return reservationRepository.findAvailableTables(date, timeToCome, endTime, numPeople);
     }
 
     public long countPendingReservations() {
@@ -104,5 +116,35 @@ public class ReservationService {
 
     public long countConfirmedReservations() {
         return reservationRepository.countByStatus(ReservationStatus.CONFIRMED);
+    }
+
+    @Scheduled(fixedRate = 300000)
+    public void cancelExpiredReservations() {
+        LocalDate today = LocalDate.now();
+        LocalTime deadlineTime = LocalTime.now().minusMinutes(30);
+        LocalTime upTime = LocalTime.now().plusMinutes(30);
+        List<Reservation> expiredReservations = reservationRepository.findExpiredReservations(today, deadlineTime);
+        List<Reservation> upcomingReservations = reservationRepository.findReservationsUpcoming(today, upTime);
+
+        for (Reservation reservation : expiredReservations) {
+            reservation.setStatus(ReservationStatus.CANCELLED);
+            DiningTable table = reservation.getTable();
+            if (table != null && "Reserved".equals(table.getStatus())) {
+                table.setStatus("Available");
+                tableRepository.save(table);
+            }
+        }
+
+        for (Reservation reservation : upcomingReservations) {
+            DiningTable table = reservation.getTable();
+            if (table != null && !"Reserved".equals(table.getStatus())) {
+                table.setStatus("Reserved");
+                tableRepository.save(table);
+            }
+        }
+
+        reservationRepository.saveAll(expiredReservations);
+        System.out.println("Updated " + expiredReservations.size() + " reservations to CANCELLED.");
+        System.out.println("Updated " + upcomingReservations.size() + " reservations to READY.");
     }
 }
