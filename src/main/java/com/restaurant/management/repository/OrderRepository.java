@@ -2,8 +2,10 @@ package com.restaurant.management.repository;
 
 import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.Order;
+import com.restaurant.management.model.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,4 +20,8 @@ public interface OrderRepository extends JpaRepository<Order, String> {
             "GROUP BY DATE(o.orderDate)" +
             "ORDER BY DATE(o.orderDate)")
     List<Object[]> countOrdersByOrderDay();
+    
+    @Query("SELECT oi FROM OrderItem oi WHERE oi.order.id = :orderId")
+    List<OrderItem> findOrderDetailByOrderId(@Param("orderId") String orderId);
+
 }

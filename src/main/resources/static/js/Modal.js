@@ -67,37 +67,3 @@ class ModalWithForm extends Modal {
         this.form.reset();
     }
 }
-
-class ModalCustomWithoutForm extends Modal {
-    constructor(modalId, nextCallback) {
-        super(modalId);
-        this.nextCallback = nextCallback;
-        this.closeButton = this.modal ? this.modal.querySelector('#closeButton') : null;
-        this.nextButton = this.modal ? this.modal.querySelector('#nextButton') : null;
-        this.data = null;
-        this.handleEvents();
-    }
-
-    handleEvents() {
-        if (this.closeButton) {
-            this.closeButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.close();
-            });
-        }
-
-        if (this.nextButton) {
-            this.nextButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                if (this.nextCallback && typeof this.nextCallback === 'function') {
-                    this.nextCallback(this.data);
-                }
-            });
-        }
-    }
-
-    open(content = '', data = null) {
-        this.data = data;
-        super.open();
-    }
-}

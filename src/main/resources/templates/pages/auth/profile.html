@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: base(~{::body})}" xmlns:sec="http://www.w3.org/1999/xhtml">
+<body>
+<div sec:authorize="hasRole('ADMIN')"
+     th:text="'This is the dashboard of ADMIN.'">
+</div>
+<div sec:authorize="hasRole('CUSTOMER')"
+     th:text="'This is the dashboard of CUSTOMER.'">
+</div>
+<div sec:authorize="hasRole('STAFF')"
+     th:text="'This is the dashboard of STAFF.'">
+</div>
+<div sec:authorize="hasRole('CHEF')"
+     th:text="'This is the dashboard of CHEF.'">
+</div>
+</body>
+</html>

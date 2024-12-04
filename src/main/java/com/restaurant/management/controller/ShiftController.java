@@ -25,7 +25,7 @@ public class ShiftController {
 
     @GetMapping
     private String showShiftList(Model model) {
-        model.addAttribute("shiftList", shiftService.findAllShift());
+        model.addAttribute("shiftList", shiftService.getRegularShifts());
         model.addAttribute("openShifts", shiftService.getOpenShifts());
         model.addAttribute("fixedShifts", shiftService.getFixedShifts());
         model.addAttribute("employees", employeeService.getAllEmployees());
@@ -35,7 +35,7 @@ public class ShiftController {
 
     @GetMapping("edit/{shiftId}")
     private String showShiftList(Model model, @PathVariable Long shiftId) {
-        model.addAttribute("shiftList", shiftService.findAllShift());
+        model.addAttribute("shiftList", shiftService.getRegularShifts());
         model.addAttribute("openShifts", shiftService.getOpenShifts());
         model.addAttribute("fixedShifts", shiftService.getFixedShifts());
         model.addAttribute("employees", employeeService.getAllEmployees());
@@ -49,7 +49,7 @@ public class ShiftController {
         System.out.println(shift);
         shiftService.createShift(shift);
         model.addAttribute("employees", employeeService.getAllEmployees());
-        model.addAttribute("shiftList", shiftService.findAllShift());
+        model.addAttribute("shiftList", shiftService.getRegularShifts());
         model.addAttribute("openShifts", shiftService.getOpenShifts());
         model.addAttribute("fixedShifts", shiftService.getFixedShifts());
         model.addAttribute("shift", new Shift());
@@ -67,5 +67,11 @@ public class ShiftController {
     public String deleteReservation(@PathVariable Long id) {
         shiftService.deleteShift(id);
         return "redirect:/shifts";
+    }
+
+    @GetMapping("/list")
+    @ResponseBody
+    public List<Shift> getListRegularShift() {
+        return shiftService.getRegularShifts();
     }
 }

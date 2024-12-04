@@ -30,44 +30,32 @@ public class ReservationController {
     ) {
         List<Reservation> filteredReservations = reservationService.findWithFilters(search, dateFilter, status);
         model.addAttribute("reservations", filteredReservations);
+        model.addAttribute("pendingReser", reservationService.countPendingReservations());
+        model.addAttribute("todayReser", reservationService.countTodayReservations());
+        model.addAttribute("confirmedReser", reservationService.countConfirmedReservations());
         return "pages/reservation/view-list";
     }
-    @GetMapping("/form")
-    public String reservationForm(Model model) {
-        model.addAttribute("tables", tableService.getAllTables());
-        model.addAttribute("reservation", new Reservation());
-        return "pages/reservation/reservation-form";
+
+    @GetMapping("/booking")
+    public String booking(Model model,
+           @RequestParam(value = "dateToCome", required = false) LocalDate reserDate,
+           @RequestParam(value = "timeToCome", required = false) LocalTime reserTime,
+           @RequestParam(value = "people", required = false) Long numPeople) {
+        if (reserDate != null && reserTime != null) {
+            model.addAttribute("tables", reservationService.findAvailable(reserDate, reserTime, numPeople));
+            model.addAttribute("reservation", Reservation.builder()
+                    .dateToCome(reserDate)
+                    .timeToCome(reserTime)
+                    .build());
+
+            System.out.println(reserDate);
+            return "pages/reservation/form";
+        } else return "pages/reservation/booking";
     }
-
-    @PostMapping("/check-availability")
-    public String checkAvailability(
-            @ModelAttribute("reservation") Reservation reservation,
-            Model model) {
-        LocalDate date = reservation.getDateToCome();
-        LocalTime time = reservation.getTimeToCome();
-        Long tableId = reservation.getTable().getId();
-
-        LocalTime startTime = time;
-        LocalTime endTime = time.plusHours(2);
-
-        boolean isAvailable = reservationService.isTableAvailable(tableId, date, startTime, endTime);
-        String message = isAvailable ? "Table is available for reservation!" : "The selected table is not available at this time.";
-        model.addAttribute("availabilityMessage", message);
-        model.addAttribute("available", isAvailable);
-        model.addAttribute("tables", tableService.getAllTables());
-        return "pages/reservation/reservation-form";
-    }
-
-    @GetMapping("/create")
-    public String showReservationForm(Model model) {
-        model.addAttribute("reservation", new Reservation());
-        model.addAttribute("tables", tableService.getAllTables());
-        return "pages/reservation/form";
-    }
-
 
     @PostMapping("/create")
     public String createReservation(@ModelAttribute Reservation reservation) {
+        System.out.println(reservation);
         reservationService.save(reservation);
         return "redirect:/reservations";
     }

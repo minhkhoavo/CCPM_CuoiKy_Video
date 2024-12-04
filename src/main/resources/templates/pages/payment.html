@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,22 +7,13 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-<div th:fragment="payment-modal" id="paymentModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-    <div
-            class="relative top-5 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 shadow-lg rounded-lg bg-white">
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div class="relative top-5 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 shadow-lg rounded-lg bg-white">
         <!-- Modal Header -->
         <div class="flex justify-between items-center border-b pb-4">
             <h3 class="text-2xl font-bold text-gray-800">Complete Your Order</h3>
-            <button id="closeButton" class="text-gray-400 hover:text-gray-500">
-                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
         </div>
+
         <!-- Modal Content -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <!-- Left Column - Order Summary -->
@@ -47,30 +38,38 @@
                 <h4 class="text-lg font-semibold mb-4">Order Summary</h4>
                 <!-- Order Items -->
                 <div id="orderSummary" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
-
+                    <div th:each="item : ${orderItems}" class="flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <img th:src="@{${item.dish.image}}" th:alt="${item.dish.name}" class="w-12 h-12 rounded-md">
+                            <div>
+                                <p th:text="${item.dish.name}" class="font-medium">1</p>
+                                <p th:text="${item.quantity}" class="text-sm text-gray-500">Qty: 1</p>
+                            </div>
+                        </div>
+                        <p th:text="${item.quantity*item.price}" class="font-medium">$1</p>
+                    </div>
                 </div>
 
                 <!-- Order Details -->
                 <div class="space-y-2 text-sm border-t pt-4 overflow-y-auto">
                     <div class="flex justify-between">
                         <p class="text-gray-600">Subtotal</p>
-                        <p id="subtotal" class="font-medium">$48.21</p>
+                        <p id="subtotal" class="font-medium" th:text="${total}">$48.21</p>
                     </div>
                     <div class="flex justify-between">
                         <p class="text-gray-600">Tax (10%)</p>
-                        <p id="tax" class="font-medium">$4.82</p>
+                        <p id="tax" class="font-medium" th:text="${total*0.1}">$4.82</p>
                     </div>
                     <div class="flex justify-between">
                         <p class="text-gray-600">Discount (WELCOME10)</p>
-                        <p id="discount" class="font-medium text-green-600">-$4.82</p>
+                        <p id="discount" class="font-medium text-green-600" th:text="${discount}">-$4.82</p>
                     </div>
                     <div class="flex justify-between text-lg font-bold pt-4 border-t">
                         <p>Total</p>
-                        <p id="totalSummary">$48.21</p>
+                        <p id="totalSummary" th:text="${total}">$48.21</p>
                     </div>
                 </div>
             </div>
-
             <!-- Right Column - Payment Methods -->
             <div class="space-y-6">
                 <!-- Payment Methods -->
@@ -132,26 +131,37 @@
                     </div>
                 </div>
                 <!-- Place Order Button -->
-                <button
-                        id="nextButton"
-                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                    Place Order
-                </button>
-
+                <a th:href="@{/orders/pay/{orderId}(orderId=${orderId})}" id="payButton"
+                        class="block text-center w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    Submit
+                </a>
             </div>
         </div>
     </div>
-    <script>
-        let selectedPaymentMethod = null;
-        document.getElementById('paymentOptions').addEventListener('click', function(event) {
-            const option = event.target.closest('.border.cursor-pointer');
-            if (option) {
-                [...this.children].forEach(child => child.classList.remove('border-blue-500', 'bg-blue-50'));
-                option.classList.add('border-blue-500', 'bg-blue-50');
-                selectedPaymentMethod = option.getAttribute('data-method');
-            }
-        });
-    </script>
 </div>
 
+<script>
+    let selectedPaymentMethod = null;
+    document.getElementById('paymentOptions').addEventListener('click', function(event) {
+        const option = event.target.closest('.border.cursor-pointer');
+        if (option) {
+            [...this.children].forEach(child => child.classList.remove('border-blue-500', 'bg-blue-50'));
+            option.classList.add('border-blue-500', 'bg-blue-50');
+            selectedPaymentMethod = option.getAttribute('data-method');
+        }
+    });
+    document.getElementById('payButton').addEventListener('click', function(event) {
+        if (selectedPaymentMethod == null || selectedPaymentMethod === "") {
+            event.preventDefault();
+            alert('Please select a payment method.');
+            return;
+        }
+        if (selectedPaymentMethod === 'CASH') {
+            event.preventDefault();
+            alert('Please call the staff to complete the payment.');
+        }
+    });
+</script>
+
 </body>
+</html>

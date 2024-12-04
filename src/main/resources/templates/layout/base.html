@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:fragment="base (content)" >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      th:fragment="base (content)">
 <head>
   <title>My Website</title>
   <!-- Thêm Tailwind CSS qua CDN -->
@@ -13,11 +13,14 @@
 <body class="bg-gray-100">
 <div class="flex h-screen">
   <!-- Include Header Fragment -->
-  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div sec:authorize="hasRole('ADMIN')" th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <div sec:authorize="hasRole('STAFF')" th:replace="~{fragments/employee-sidebar :: employee-sidebar}"></div>
+  <div sec:authorize="hasRole('CHEF')" th:replace="~{fragments/employee-sidebar :: employee-sidebar}"></div>
+
   <!-- Main Content -->
   <div class="flex-1 flex flex-col overflow-scroll">
     <!-- Top Bar -->
-    <div th:replace="~{fragments/topbar :: topbar}"></div>
+    <div sec:authorize="hasRole('ADMIN')" th:replace="~{fragments/topbar :: topbar}"></div>
     <!-- Content Area -->
     <div th:replace="${content}">
       <!-- Content will be inserted here -->

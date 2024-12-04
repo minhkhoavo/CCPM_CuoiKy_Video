@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,9 +12,9 @@
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">November 2024</h1>
-        <button onclick="createOpenShift()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-            Create Open Shift
-        </button>
+        <a th:href="@{/api/schedules/config}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Auto Scheduling
+        </a>
         <div class="flex gap-3">
             <button onclick="navigateWeek('prev')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
                 Previous
@@ -50,18 +50,10 @@
 
     <script>
         let scheduleData = {};
-        let currentWeekStart = new Date('2024-11-19');
+        let currentWeekStart = new Date();
         let drake;
-        // let employees = [
-        //     { id: 1, name: 'Ryan', position: 'Cloud System Engineer', image: '/api/placeholder/400/400' },
-        //     { id: 2, name: 'Kate', position: 'Help Desk Specialist', image: '/api/placeholder/400/400' },
-        //     { id: 3, name: 'John', position: 'Application Developer', image: '/api/placeholder/400/400' },
-        //     { id: 4, name: 'Mark', position: 'Network Administrator', image: '/api/placeholder/400/400' },
-        //     { id: 5, name: 'Sharon', position: 'Data Quality Manager', image: '/api/placeholder/400/400' },
-        //     { id: 6, name: 'Emma', position: 'Product Tactics Agent', image: '/api/placeholder/400/400' }
-        // ];
         let employees;
-        const listEmployees = () => fetch('http://localhost:8080/employees/list')
+        const listEmployees = () => fetch(`/employees/list`)
             .then(response => response.ok ? response.json() : Promise.reject('Error'))
             .then(data => employees = data)
             .catch(console.error);
@@ -107,7 +99,7 @@
             `;
 
             // Render date headers
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 7; i++) {
                 const date = new Date(currentWeekStart);
                 date.setDate(date.getDate() + i);
                 const dateStr = date.toLocaleDateString('en-GB', {
@@ -140,7 +132,7 @@
                 `;
 
                 // Render cells for each day
-                for (let i = 0; i < 5; i++) {
+                for (let i = 0; i < 7; i++) {
                     const date = new Date(currentWeekStart);
                     date.setDate(date.getDate() + i);
                     const dateKey = date.toISOString().split('T')[0];
@@ -260,7 +252,7 @@
                     <div class="font-medium">Schedule Shift</div>
                     <div class="space-y-2">
                         <label class="block text-sm font-medium text-gray-700">Employee</label>
-                        <div class="text-gray-900">${employee.name} - ${employee.role}</div>
+                        <div class="text-gray-900">${employee.name} - ${employee.position}</div>
                     </div>
 
                     <div class="space-y-2">
@@ -379,7 +371,7 @@
             } else if (direction === 'next') {
                 currentWeekStart.setDate(currentWeekStart.getDate() + 7);
             } else if (direction === 'today') {
-                currentWeekStart = new Date('2024-11-19');
+                currentWeekStart = new Date();
             }
             fetchScheduleData();
         }

@@ -62,6 +62,14 @@ public class DishService {
         dishRepository.save(existingDish);
     }
 
+    public List<Dish> searchDishes(String name) {
+        return dishRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    public List<Dish> findDishesByCategoryId(Long categoryId) {
+        return dishRepository.findAllByCategoryId(categoryId);
+    }
+
     public void deleteDish(Long id) {
         dishRepository.deleteById(id);
     }
@@ -71,10 +79,8 @@ public class DishService {
     }
 
     public boolean processDish(Long dishID, int quantity) {
-
         List<Recipe> recipes = recipeRepository.findRecipeByDishId(dishID);
         for (Recipe recipe : recipes) {
-            //trừ từng nguyên liệu
             Inventory inventory = recipe.getInventory();
             int newQuantity = inventory.getQuantity() - recipe.getQuantityRequired()*quantity;
 
@@ -84,7 +90,6 @@ public class DishService {
         }
 
         for (Recipe recipe : recipes) {
-            //trừ từng nguyên liệu
             Inventory inventory = recipe.getInventory();
             int newQuantity = inventory.getQuantity() - recipe.getQuantityRequired()*quantity;
 
