@@ -22,7 +22,9 @@ public class Order {
     @Id
     private String id;
 
-    private String customerId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
+    private Customer customer;
 
     private LocalDateTime orderDate;
 

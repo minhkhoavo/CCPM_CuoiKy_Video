@@ -2,6 +2,7 @@ package com.restaurant.management.service;
 
 import com.restaurant.management.enums.OrderMethod;
 import com.restaurant.management.enums.OrderStatus;
+import com.restaurant.management.model.Customer;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -26,6 +28,8 @@ public class OrderService {
     @Autowired
     private PaymentService paymentService;
 
+    @Autowired
+    private  CustomerService customerService;
     /*
         {
       "customerId": "1",
@@ -79,11 +83,11 @@ public class OrderService {
 
             orderItems.add(orderItem);
         });
-
+        Customer customer = customerService.getCustomerById(Long.valueOf(customerId));
         Order order = Order.builder()
                 .id(orderID)
                 .orderMethod(orderMethod)
-                .customerId(customerId)
+                .customer(customer)
                 .orderDate(orderDate)
                 .totalAmount(totalAmount[0])
                 .orderItems(orderItems)
@@ -146,4 +150,29 @@ public class OrderService {
     public void saveOrder(Order order) {
         orderRepository.save(order);
     }
+
+    public Map<String, Integer> getOrderStatistics() {
+        // Lấy danh sách kết quả từ truy vấn
+        List<Object[]> stats = orderRepository.countOrdersByOrderDay();
+        Map<String, Integer> orderStats = new LinkedHashMap<>();
+
+        for (Object[] stat : stats) {
+            // Kiểm tra và chuyển đổi date từ Object[]
+            String date = "";
+            if (stat[0] instanceof java.sql.Date) {
+                // Nếu stat[0] là java.sql.Date, chuyển đổi nó thành String
+                date = new SimpleDateFormat("yyyy-MM-dd").format((java.sql.Date) stat[0]);
+            } else if (stat[0] instanceof String) {
+                // Nếu stat[0] là String, giữ nguyên
+                date = (String) stat[0];
+            }
+
+            // Kiểm tra và chuyển đổi số lượng đơn hàng (stat[1])
+            Integer quantity = ((Number) stat[1]).intValue();
+
+            orderStats.put(date, quantity);
+        }
+        return orderStats;
+    }
+
 }

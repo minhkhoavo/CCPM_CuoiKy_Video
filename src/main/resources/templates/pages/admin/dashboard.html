@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: base(~{::body})}">
+<body>
+<div th:fragment="content" class="flex-1 overflow-auto p-6">
+    <div class="container mx-auto p-6 bg-gray-100">
+
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-700">Restaurant Dashboard</h1>
+            <p class="text-gray-500">Manage your restaurant's operations with ease</p>
+        </div>
+
+        <!-- Date Range Selector -->
+        <div class="mb-6 flex justify-center">
+            <div class="flex items-center space-x-4">
+                <label for="start-date" class="text-lg">From:</label>
+                <input type="date" id="start-date" class="px-4 py-2 border rounded-md">
+                <label for="end-date" class="text-lg">To:</label>
+                <input type="date" id="end-date" class="px-4 py-2 border rounded-md">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md" id="filter-btn">Filter</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6 mb-8">
+            <!-- Revenue and Profit Chart -->
+            <div class="bg-white p-6 rounded-lg shadow-lg col-span-1 md:col-span-2">
+                <h3 class="text-lg font-semibold mb-4">Cost and revenue</h3>
+                <canvas id="revenueCostChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Grid Layout for Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Revenue Chart -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-lg font-semibold mb-4">Order</h3>
+                <canvas id="revenueChart"></canvas>
+            </div>
+
+            <!-- Reservations Chart -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-lg font-semibold mb-4">Reservations</h3>
+                <canvas id="reservationsChart"></canvas>
+            </div>
+
+            <!-- Top Dishes -->
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <h3 class="text-lg font-semibold mb-4">Dish</h3>
+                <canvas id="dishChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Table with Restaurant Performance -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <h3 class="text-lg font-semibold mb-4">Restaurant Performance</h3>
+            <table class="min-w-full table-auto border-collapse">
+                <thead>
+                <tr>
+                    <th class="px-4 py-2 border">Dish Name</th>
+                    <th class="px-4 py-2 border">Total Orders</th>
+                    <th class="px-4 py-2 border">Revenue</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="px-4 py-2 border">Dish 1</td>
+                    <td class="px-4 py-2 border">150</td>
+                    <td class="px-4 py-2 border">$1,500</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border">Dish 2</td>
+                    <td class="px-4 py-2 border">120</td>
+                    <td class="px-4 py-2 border">$1,200</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border">Dish 3</td>
+                    <td class="px-4 py-2 border">100</td>
+                    <td class="px-4 py-2 border">$1,000</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border">Dish 4</td>
+                    <td class="px-4 py-2 border">90</td>
+                    <td class="px-4 py-2 border">$900</td>
+                </tr>
+                <tr>
+                    <td class="px-4 py-2 border">Dish 5</td>
+                    <td class="px-4 py-2 border">80</td>
+                    <td class="px-4 py-2 border">$800</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Inventory Overview -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-lg font-semibold mb-4">Inventory Status</h3>
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart.js Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+
+        const costAndRevenue = /*[[${costAndRevenue}]]*/ {};
+        // // Dữ liệu ví dụ
+        // const labels2 = ['2024-12-01', '2024-12-02', '2024-12-03', '2024-12-04', '2024-12-05']; // Ngày
+        // const costData = [1500, 1600, 1700, 1800, 2000]; // Tổng chi phí nguyên liệu
+        // const revenueData = [500, 600, 700, 800, 1000]; // Lợi nhuận
+
+        // Dữ liệu ví dụ
+        const labels2 = costAndRevenue.dates; // Ngày
+        const costData = costAndRevenue.totalCosts; // Tổng chi phí
+        const revenueData = costAndRevenue.totalRevenues; // Tổng doanh thu
+
+        // Lấy đối tượng canvas
+        const ctx2 = document.getElementById('revenueCostChart').getContext('2d');
+
+        // Vẽ biểu đồ đường
+        const revenueCostChart = new Chart(ctx2, {
+            type: 'line', // Chọn loại biểu đồ đường
+            data: {
+                labels: labels2, // Các nhãn (ngày)
+                datasets: [
+                    {
+                        label: 'Tổng chi phí nguyên liệu', // Nhãn cho đường chi phí nguyên liệu
+                        data: costData, // Dữ liệu chi phí nguyên liệu
+                        borderColor: 'rgba(255, 99, 132, 1)', // Màu đường chi phí nguyên liệu
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Màu nền
+                        fill: false, // Không điền màu vào giữa các điểm
+                        tension: 0.1 // Độ cong của đường
+                    },
+                    {
+                        label: 'Lợi nhuận', // Nhãn cho đường lợi nhuận
+                        data: revenueData, // Dữ liệu lợi nhuận
+                        borderColor: 'rgba(54, 162, 235, 1)', // Màu đường lợi nhuận
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)', // Màu nền
+                        fill: false, // Không điền màu vào giữa các điểm
+                        tension: 0.1 // Độ cong của đường
+                    }
+                ]
+            },
+            options: {
+                responsive: true, // Đảm bảo biểu đồ đáp ứng với kích thước màn hình
+                plugins: {
+                    legend: {
+                        position: 'top', // Vị trí của legend
+                    },
+                    tooltip: {
+                        mode: 'index', // Chế độ hiển thị tooltip
+                        intersect: false, // Tooltip xuất hiện khi di chuột trên một đường
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true, // Bắt đầu trục y từ 0
+                        title: {
+                            display: true,
+                            text: 'Giá trị' // Tiêu đề trục y
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Ngày' // Tiêu đề trục x
+                        }
+                    }
+                }
+            }
+        });
+
+        // bieu do orderStats
+
+        const orderStats = /*[[${orderStats}]]*/ {};
+        // Chuyển đổi dữ liệu để vẽ biểu đồ
+        const labels = Object.keys(orderStats); // Các ngày
+        const data = Object.values(orderStats); // Số lượng đơn hàng
+
+        // Vẽ biểu đồ
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const orderChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Số lượng đơn hàng',
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.1
+                }]
+            }
+        });
+
+        //dish
+        function generateRandomColors(num) {
+            const colors = [];
+            for (let i = 0; i < num; i++) {
+                // Tạo màu ngẫu nhiên với giá trị Hex
+                colors.push(`rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.6)`);
+            }
+            return colors;
+        }
+       const dishStats = /*[[${dishStats}]]*/ {};
+        // Vẽ biểu đồ
+        const ctx1 = document.getElementById('dishChart').getContext('2d');
+        const orderChart1 = new Chart(ctx1, {
+            type: 'pie',
+            data: {
+                labels:  Object.keys(dishStats),
+                datasets: [{
+                    label: 'Số lượng đơn hàng',
+                    data: Object.values(dishStats),
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: generateRandomColors(Object.keys(dishStats).length),
+                    tension: 0.1
+                }]
+            }
+        });
+
+
+        // Reservations Chart
+        const reservationsCtx = document.getElementById('reservationsChart').getContext('2d');
+        const reservationsChart = new Chart(reservationsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'], // Sample data for reservations
+                datasets: [{
+                    label: 'Reservations',
+                    data: [10, 15, 20, 30], // Sample reservation count
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        // Inventory Chart
+        const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+        const inventoryChart = new Chart(inventoryCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Full', 'Low', 'Out of Stock'], // Sample data for inventory status
+                datasets: [{
+                    data: [60, 30, 10], // Percentages of inventory status
+                    backgroundColor: ['#36A2EB', '#FFCE56', '#FF6384'],
+                    hoverOffset: 4
+                }]
+            }
+        });
+
+        // Filter Button Functionality
+        document.getElementById('filter-btn').addEventListener('click', function() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            if (startDate && endDate) {
+                console.log(`Filtering data from ${startDate} to ${endDate}`);
+                // Call backend to get data for the selected date range and update charts accordingly
+                // You can make an AJAX request here to filter the data
+            }
+        });
+    </script>
+
+</div>
+</body>
+</html>

@@ -7,7 +7,11 @@ import com.restaurant.management.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderItemService {
@@ -36,4 +40,39 @@ public class OrderItemService {
         OrderStatus status = (statusFilter != null && !statusFilter.isEmpty()) ? OrderStatus.valueOf(statusFilter) : null;
         return orderItemRepository.findByKeywordAndStatus(searchKeyword, status);
     }
+
+    public Map<String, Integer> getDishStatistics() {
+        List<Object[]> result = orderItemRepository.getDishSalesStats();
+        Map<String, Integer> dishStatistics = new HashMap<>();
+        for(Object[] row : result){
+            String dishName = (String) row[0];
+            Integer quantity = ((Number) row[1]).intValue();
+//            Integer quantity = ((Number) stat[1]).intValue();
+            dishStatistics.put(dishName, quantity);
+        }
+        return dishStatistics;
+    }
+
+    // dashboard chi phi va loi nhuan
+    public Map<String, Object> getCostAndRevenueData(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> results = orderItemRepository.getCostAndRevenueByDateRange(startDate, endDate);
+
+        List<String> dates = new ArrayList<>();
+        List<Double> totalCosts = new ArrayList<>();
+        List<Double> totalRevenues = new ArrayList<>();
+
+        for (Object[] result : results) {
+            dates.add(((LocalDateTime) result[0]).toLocalDate().toString());
+            totalCosts.add((Double) result[1]);
+            totalRevenues.add((Double) result[2]);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("dates", dates);
+        response.put("totalCosts", totalCosts);
+        response.put("totalRevenues", totalRevenues);
+
+        return response;
+    }
+
 }
