@@ -38,13 +38,11 @@ public class SecurityConfig {
                     .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
-//            .formLogin(form -> form
-//                    .loginPage("/login")
-//                    .loginProcessingUrl("/perform_login")
-//                    .defaultSuccessUrl("/employees", true)
-//                    .permitAll()
-//            )
-            .formLogin(Customizer.withDefaults())
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/profile", false)
+                    .permitAll()
+            )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout")

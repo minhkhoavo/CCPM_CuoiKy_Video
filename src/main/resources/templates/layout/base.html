@@ -15,6 +15,7 @@
   <!-- Include Header Fragment -->
   <div sec:authorize="hasRole('ADMIN')" th:replace="~{fragments/sidebar :: sidebar}"></div>
   <div sec:authorize="hasRole('STAFF')" th:replace="~{fragments/employee-sidebar :: employee-sidebar}"></div>
+  <div sec:authorize="hasRole('CHEF')" th:replace="~{fragments/employee-sidebar :: employee-sidebar}"></div>
 
   <!-- Main Content -->
   <div class="flex-1 flex flex-col overflow-scroll">

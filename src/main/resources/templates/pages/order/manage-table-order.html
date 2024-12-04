@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8" >
-    <title>Title</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: base(~{::body})}">
 <body>
-<div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 h-screen">
+<div class="w-full ml-20 mx-auto flex flex-col md:flex-row gap-6 h-screen">
     <div th:replace="fragments/table-layout :: table-layout"></div>
     <div th:replace="fragments/order-item-sidebar :: order-item-sidebar"></div>
 </div>
