@@ -1,5 +1,6 @@
 package com.restaurant.management.controller;
 
+import com.restaurant.management.model.Discount;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.model.OrderItem;
@@ -27,6 +28,8 @@ public class OrderController {
     private CategoryService categoryService;
     @Autowired
     private TableService tableService;
+    @Autowired
+    private DiscountService discountService;
 
     @GetMapping("/menu")
     public String showMenu(Model model,
@@ -92,16 +95,26 @@ public class OrderController {
     @GetMapping("/checkout")
     public String checkout(
             @RequestParam("orderId") String orderId,
+            @RequestParam(value = "discountCode", required = false) String discountCode,  // Nhận discountCode từ request
             Model model) {
         List<OrderItem> cart = orderService.getOrderDetailByOrderId(orderId);
         model.addAttribute("orderItems", cart);
+
         double total = cart.stream()
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
+        double discount = 0;
+        if (discountCode != null && !discountCode.isEmpty()) {
+            discount = discountService.applyDiscount(discountCode, total);
+            total -= discount;
+        }
+        model.addAttribute("discount", discount);
         model.addAttribute("total", total);
         model.addAttribute("orderId", orderId);
+        model.addAttribute("discountCode", discountCode);
         return "pages/payment";
     }
+
 
     @GetMapping("/manage")
     public String showManageTableOrder(Model model,

@@ -18,23 +18,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <!-- Left Column - Order Summary -->
             <div class="bg-gray-50 p-6 rounded-lg">
-                <!-- Promo Code Input -->
-                <div class="mb-4">
+                <form th:action="@{/orders/checkout}" method="GET" class="mb-4">
                     <div class="flex space-x-2">
-                        <input
-                                type="text"
-                                id="promoInput"
-                                placeholder="Enter promo code"
-                                class="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        <button
-                                id="applyPromoButton"
-                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        <input hidden name="orderId" th:value="${orderId}">
+                        <!-- Promo code input -->
+                        <input type="text" name="discountCode"
+                            placeholder="Enter discount code"
+                            class="flex-1 px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                             Apply
                         </button>
                     </div>
-                    <p id="promoMessage" class="text-sm mt-1 hidden"></p>
-                </div>
-
+                    <p id="discountMessage" class="text-sm mt-1 hidden"></p>
+                </form>
                 <h4 class="text-lg font-semibold mb-4">Order Summary</h4>
                 <!-- Order Items -->
                 <div id="orderSummary" class="space-y-4 mb-6 max-h-64 overflow-y-auto">
@@ -54,19 +51,19 @@
                 <div class="space-y-2 text-sm border-t pt-4 overflow-y-auto">
                     <div class="flex justify-between">
                         <p class="text-gray-600">Subtotal</p>
-                        <p id="subtotal" class="font-medium" th:text="${total}">$48.21</p>
+                        <p id="subtotal" class="font-medium" th:text="'$' + ${total}">$48.21</p>
                     </div>
                     <div class="flex justify-between">
                         <p class="text-gray-600">Tax (10%)</p>
-                        <p id="tax" class="font-medium" th:text="${total*0.1}">$4.82</p>
+                        <p id="tax" class="font-medium" th:text="'$' + ${total*0.1}">$4.82</p>
                     </div>
                     <div class="flex justify-between">
-                        <p class="text-gray-600">Discount (WELCOME10)</p>
-                        <p id="discount" class="font-medium text-green-600" th:text="${discount}">-$4.82</p>
+                        <p class="text-gray-600" th:text="'Discount(' + ${discountCode != null ? discountCode: ''} +')'">Discount (WELCOME10)</p>
+                        <p id="discount" class="font-medium text-green-600" th:text="'-$' + ${#numbers.formatDecimal(discount, 1, 2)}">-$4.8</p>
                     </div>
                     <div class="flex justify-between text-lg font-bold pt-4 border-t">
                         <p>Total</p>
-                        <p id="totalSummary" th:text="${total}">$48.21</p>
+                        <p id="totalSummary" th:text="'$' + ${#numbers.formatDecimal(total*1.1 - discount, 3, 2)}">$48.21</p>
                     </div>
                 </div>
             </div>
