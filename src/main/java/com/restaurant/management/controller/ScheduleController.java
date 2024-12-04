@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/api/schedules")
+@RequestMapping("/schedules")
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<Map<String, List<Schedule>>> getSchedules(
             @RequestParam("startDate") LocalDate startDate,
             @RequestParam("endDate") LocalDate endDate
@@ -30,7 +30,7 @@ public class ScheduleController {
         return ResponseEntity.ok(schedules);
     }
 
-    @GetMapping("/view")
+    @GetMapping("")
     public String viewSchedules(Model model) {
         return "pages/schedule/view-schedule";
     }

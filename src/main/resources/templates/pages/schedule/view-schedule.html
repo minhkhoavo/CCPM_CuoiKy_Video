@@ -12,7 +12,7 @@
     <!-- Header Section -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">November 2024</h1>
-        <a th:href="@{/api/schedules/config}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+        <a th:href="@{/schedules/config}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
             Auto Scheduling
         </a>
         <div class="flex gap-3">
@@ -65,7 +65,7 @@
             const endDate = formatDateForAPI(new Date(currentWeekStart.getTime() + 6 * 24 * 60 * 60 * 1000));
             console.log(startDate, endDate);
             try {
-                const response = await fetch(`/api/schedules?startDate=${startDate}&endDate=${endDate}`);
+                const response = await fetch(`/schedules/list?startDate=${startDate}&endDate=${endDate}`);
                 scheduleData = await response.json();
                 renderCalendar();
             } catch (error) {
@@ -192,7 +192,7 @@
 
                 try {
                     // Call API to update schedule
-                    const response = await fetch(`/api/schedules/${scheduleId}`, {
+                    const response = await fetch(`/schedules/${scheduleId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -219,7 +219,7 @@
 
         async function deleteSchedule(scheduleId) {
             try {
-                const response = await fetch(`/api/schedules/${scheduleId}`, {
+                const response = await fetch(`/schedules/${scheduleId}`, {
                     method: 'DELETE'
                 });
 
@@ -331,7 +331,7 @@
             const shiftId = document.getElementById('shiftTemplate').value;
 
             try {
-                const response = await fetch(`/api/schedules?shiftId=${shiftId}&employeeId=${employeeId}`, {
+                const response = await fetch(`/schedules?shiftId=${shiftId}&employeeId=${employeeId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
