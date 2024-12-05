@@ -51,7 +51,7 @@ public class AccountController {
         otpService.save(otp);
 
         // Gửi OTP qua SMS
-       // smsService.sendSms(phoneNumber, "Your OTP is: " + otpCode);
+        smsService.sendSms(phoneNumber, "Your OTP is: " + otpCode);
         model.addAttribute("phoneNumber", phoneNumber);
         model.addAttribute("message", "OTP has been sent to your phone.");
         return "pages/auth/verify-otp";
@@ -77,7 +77,7 @@ public class AccountController {
         //cập nhật mật khẩu
         if (updatePasswordForUser(phoneNumber, newPassword)) {
             // Gửi SMS
-            // smsService.sendSms(phoneNumber, "Your new password is: " + newPassword);
+            smsService.sendSms(phoneNumber, "Your new password is: " + newPassword);
             model.addAttribute("message", "A new password has been sent to your phone.");
             return "pages/auth/password-reset-success";
         }
