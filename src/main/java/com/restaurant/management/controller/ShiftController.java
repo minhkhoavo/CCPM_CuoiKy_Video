@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -73,5 +74,26 @@ public class ShiftController {
     @ResponseBody
     public List<Shift> getListRegularShift() {
         return shiftService.getRegularShifts();
+    }
+
+    @GetMapping("/register")
+    public String registerShitf(Model model) {
+        model.addAttribute("availbleShifts", shiftService.getAvailableShifts());
+        return "pages/schedule/shift-register";
+    }
+
+    @PostMapping("/register/{shiftId}")
+    public String registerForShift(@PathVariable Long shiftId, Principal principal) {
+        String username = principal.getName();
+        Long employeeId = employeeService.getEmployeeByEmail(username).getId();
+        scheduleService.registerEmployeeToShift(employeeId, shiftId);
+        return "redirect:/shifts/register";
+    }
+
+    @PostMapping("/cancel/{scheduleId}")
+    public String cancelShift(@PathVariable Long scheduleId) {
+        scheduleService.cancelRegistration(scheduleId);
+
+        return "redirect:/shifts/register";
     }
 }

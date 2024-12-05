@@ -12,7 +12,7 @@ import java.util.List;
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
     List<Shift> findByShiftType(ShiftType shiftType);
 
-    @Query("SELECT s FROM Shift s WHERE s.available > 0")
+    @Query("SELECT s FROM Shift s WHERE s.available > 0 AND s.shiftType = 'OPEN'")
     List<Shift> findAvailableShifts();
 
     @Query("SELECT s.shiftId FROM Shift s WHERE s.shiftType = :shiftType")

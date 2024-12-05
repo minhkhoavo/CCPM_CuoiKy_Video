@@ -30,7 +30,7 @@
                     <td th:text="${shift.shiftName}" class="px-4 py-3 text-sm">Ca Sáng</td>
                     <td>
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Bình Thường
+                            Regular
                         </span>
                     </td>
                     <td th:text="${shift.startTime} + ' - ' + ${shift.endTime}" class="px-4 py-3 text-sm">06:00 - 14:00</td>
@@ -82,24 +82,24 @@
                             <td>
                                 <span
                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800"
-                                        th:text="${openShift.available} + ' / ' + ${openShift.maxRegistration}"                                            th:classappend="${openShift.available == openShift.maxRegistration} ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'">
+                                        th:text="${openShift.available} + ' / ' + ${openShift.maxRegistration}" th:classappend="${openShift.available == 0} ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'">
                                     10/20
                                 </span>
                             </td>
                             <td>
                                 <span
-                                    th:text="${openShift.available == openShift.maxRegistration} ? 'Full' : 'Available'"
+                                    th:text="${openShift.available == 0} ? 'Full' : 'Available'"
                                     th:classappend="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + (${openShift.available == openShift.maxRegistration} ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800')">
-                                    Còn Chỗ
+                                    Available
                                 </span>
                             </td>
                             <td>
                                 <div class="flex space-x-2">
-                                    <a th:href="@{/shifts/edit/{shiftId}(shiftId=${shift.shiftId})}" class="text-blue-500 hover:text-blue-700">
+                                    <a th:href="@{/shifts/edit/{shiftId}(shiftId=${openShift.shiftId})}" class="text-blue-500 hover:text-blue-700">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a onclick="return confirm('Are you sure you want to delete this shift?')"
-                                       th:href="@{/shifts/delete/{shiftId}(shiftId=${shift.shiftId})}" class="text-red-500 hover:text-red-700">
+                                       th:href="@{/shifts/delete/{shiftId}(shiftId=${openShift.shiftId})}" class="text-red-500 hover:text-red-700">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>
@@ -138,36 +138,29 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="shift : ${fixedShifts}" class="hover:bg-gray-50 border-b">
-                            <td class="px-4 py-3 text-sm" th:text="${shift.shiftId}"></td>
+                        <tr th:each="fixedShift : ${fixedShifts}" class="hover:bg-gray-50 border-b">
+                            <td class="px-4 py-3 text-sm" th:text="${fixedShift.shiftId}"></td>
                             <td class="px-4 py-3 text-sm">
-                            <span th:text="${shift.workingDate} + ' ' + ${shift.startTime} + ' - ' + ${shift.endTime}">
+                            <span th:text="${fixedShift.workingDate} + ' ' + ${fixedShift.startTime} + ' - ' + ${fixedShift.endTime}">
                                 2024-06-15 08:00 - 12:00
                             </span>
                             </td>
-                            <td class="px-4 py-3 text-sm" th:text="${shift.employee?.name ?: 'N/A'}">
+                            <td class="px-4 py-3 text-sm" th:text="${fixedShift.employee?.name ?: 'N/A'}">
                                 N/A
                             </td>
-                            <td class="px-4 py-3 text-sm" th:text="${shift.employee?.id ?: 'N/A'}">
+                            <td class="px-4 py-3 text-sm" th:text="${fixedShift.employee?.id ?: 'N/A'}">
                                 N/A
                             </td>
-                            <td class="px-4 py-3 text-sm" th:text="${shift.employee?.position ?: 'N/A'}">
+                            <td class="px-4 py-3 text-sm" th:text="${fixedShift.employee?.position ?: 'N/A'}">
                                 N/A
-                            </td>
-                            <td>
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                  th:text="${shift.available == shift.maxRegistration} ? 'Đã Đầy' : 'Còn Chỗ'"
-                                  th:classappend="${shift.available == shift.maxRegistration} ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'">
-                                Còn Chỗ
-                            </span>
                             </td>
                             <td>
                                 <div class="flex space-x-2">
-                                    <a th:href="@{/shifts/edit/{shiftId}(shiftId=${shift.shiftId})}" class="text-blue-500 hover:text-blue-700">
+                                    <a th:href="@{/shifts/edit/{shiftId}(shiftId=${fixedShift.shiftId})}" class="text-blue-500 hover:text-blue-700">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a onclick="return confirm('Are you sure you want to delete this shift?')"
-                                       th:href="@{/shifts/delete/{shiftId}(shiftId=${shift.shiftId})}" class="text-red-500 hover:text-red-700">
+                                       th:href="@{/shifts/delete/{shiftId}(shiftId=${fixedShift.shiftId})}" class="text-red-500 hover:text-red-700">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </div>

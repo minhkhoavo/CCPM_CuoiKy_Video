@@ -21,6 +21,10 @@
           <i class="fas fa-home w-6 text-center"></i>
           <span class="hidden ml-3 sidebar-expanded">Dashboard</span>
         </a>
+        <a href="/shifts/register" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
+          <i class="fas fa-home w-6 text-center"></i>
+          <span class="hidden ml-3 sidebar-expanded">Register Shift</span>
+        </a>
         <a sec:authorize="hasRole('STAFF')" href="/orders/manage" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
           <i class="fas fa-box w-6 text-center"></i>
           <span class="hidden ml-3 sidebar-expanded">Tables Order</span>

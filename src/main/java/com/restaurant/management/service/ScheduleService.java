@@ -150,6 +150,6 @@ public class ScheduleService {
         int[][][] solution = solver.solveConstraint(numEmployee,numRegularShift, 7,
                 staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
 
-        saveSchedule(solution, LocalDate.now(), LocalDate.parse(startDate).plusDays(7), role);
+        saveSchedule(solution, LocalDate.parse(startDate), LocalDate.parse(startDate).plusDays(7), role);
     }
 }

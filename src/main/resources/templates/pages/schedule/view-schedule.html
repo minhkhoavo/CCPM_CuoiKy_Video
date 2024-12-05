@@ -53,9 +53,14 @@
         let currentWeekStart = new Date();
         let drake;
         let employees;
+        let shifts;
         const listEmployees = () => fetch(`/employees/list`)
             .then(response => response.ok ? response.json() : Promise.reject('Error'))
             .then(data => employees = data)
+            .catch(console.error);
+        const listShifts = () => fetch(`/shifts/list`)
+            .then(response => response.ok ? response.json() : Promise.reject('Error'))
+            .then(data => shifts = data)
             .catch(console.error);
 
         async function fetchScheduleData() {
@@ -233,7 +238,7 @@
             }
         }
 
-        function addShift(date, employeeId) {
+        async function addShift(date, employeeId) {
             const modal = document.getElementById('shiftModal');
             const overlay = document.getElementById('modalOverlay');
             const modalContent = document.getElementById('modalContent');
@@ -246,6 +251,16 @@
                 month: 'long',
                 day: 'numeric'
             });
+
+            // Fetch shift templates asynchronously
+            const shifts = await listShifts(); // Assume listShifts() returns an array of shift objects with startTime, endTime, and name
+
+            // Generate options dynamically
+            const shiftOptions = shifts.map(shift => `
+                <option value="${shift.id}" data-start="${shift.startTime}" data-end="${shift.endTime}">
+                    ${shift.shiftName} (${shift.startTime} - ${shift.endTime})
+                </option>
+            `).join('');
 
             modalContent.innerHTML = `
                 <div class="space-y-4">
@@ -264,9 +279,7 @@
                         <label for="shiftTemplate" class="block text-sm font-medium text-gray-700">Shift Template</label>
                         <select id="shiftTemplate" class="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <option value="">Select a shift template</option>
-                            <option value="1" data-start="07:00" data-end="13:00">Morning Shift (07:00 - 13:00)</option>
-                            <option value="2" data-start="12:00" data-end="18:00">Afternoon Shift (12:00 - 18:00)</option>
-                            <option value="3" data-start="17:00" data-end="23:00">Evening Shift (17:00 - 23:00)</option>
+                            ${shiftOptions}
                         </select>
                     </div>
 

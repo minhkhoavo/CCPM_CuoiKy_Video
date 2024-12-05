@@ -2,7 +2,7 @@
     <form id="modalForm" th:action="@{/shifts}" method="post" th:object="${shift}" class="bg-white max-w-md mx-auto p-6 rounded-lg shadow-md space-y-4">
         <div id="modalTitle" class="font-medium text-lg text-gray-800">Create Open Shift</div>
         <input type="hidden" th:if="${shiftId != null}" th:field="*{shiftId}"/>
-
+        <input type="hidden" th:field="*{available}"/>
         <!-- Shift Name Input -->
         <div class="space-y-2">
             <label for="shiftName" class="block text-sm font-medium text-gray-700">Shift Name</label>
