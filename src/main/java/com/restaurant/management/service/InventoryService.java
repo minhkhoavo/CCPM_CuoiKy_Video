@@ -39,4 +39,8 @@ public class InventoryService {
     public Inventory getById(Long id) {
         return inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found with id: " + id));
     }
+
+    public List<Object[]> getInventoryData() {
+        return inventoryRepository.getInventoryData();
+    }
 }

@@ -42,7 +42,7 @@
                             UnitPrice
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            SupplierId
+                            Supplier Name
                         </th>
                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             description
@@ -61,7 +61,7 @@
                         <td th:text="${inventory.quantity}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
 
                         <td th:text="${inventory.unitPrice}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
-                        <td th:text="${inventory.supplierId}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
+                        <td th:text="${inventory.getSupplier().getName()}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
 
                         <td th:text="${inventory.description}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
 
@@ -74,7 +74,7 @@
                                         th:data-unit="${inventory.unit}"
                                         th:data-quantity="${inventory.quantity}"
                                         th:data-unitPrice="${inventory.unitPrice}"
-                                        th:data-supplierId="${inventory.supplierId}"
+                                        th:data-supplierId="${inventory.getSupplier().getSupplierId()}"
                                         th:data-description="${inventory.description}"
                                         onclick="openModal(this)"
                                         class="text-indigo-600 hover:text-indigo-900">

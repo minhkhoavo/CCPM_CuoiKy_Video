@@ -29,6 +29,9 @@ public class Dish {
     @Column(nullable = false)
     private Double price;
 
+    @Column(nullable = false)
+    private Double cost;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;

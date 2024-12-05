@@ -54,7 +54,7 @@ public class RecipeController {
     @PostMapping("/update/{dishId}")
     public String updateRecipes(@PathVariable Long dishId,
                                 @RequestParam Map<String, String> params,
-                                Model model) {
+                                Model model) throws IOException {
 
         Dish dish = dishService.findById(dishId);
         if (dish == null) {

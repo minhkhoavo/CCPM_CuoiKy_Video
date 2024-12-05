@@ -5,8 +5,9 @@
 <div th:fragment="content" class="flex-1 overflow-auto p-6">
     <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h1 class="text-2xl font-bold mb-4">Update Recipe for Dish:
-            <span th:text="${dish.name}" class="text-blue-600"></span>
+            <span th:text="${dish.getName()}" class="text-blue-600"></span>
         </h1>
+        <p class="text-red-500 font-bold">Cost : <span th:text="${dish.getCost()}"></span> </p>
 
         <form th:action="@{/recipes/update/{dishId}(dishId=${dish.dishId})}" method="post" class="space-y-4">
             <!-- Table for Recipes -->

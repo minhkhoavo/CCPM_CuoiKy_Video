@@ -23,6 +23,7 @@ public class Order {
     private String id;
 
     @ManyToOne
+    @JoinColumn(name = "customer_id", referencedColumnName = "customerId")
     private Customer customer;
 
     private LocalDateTime orderDate;

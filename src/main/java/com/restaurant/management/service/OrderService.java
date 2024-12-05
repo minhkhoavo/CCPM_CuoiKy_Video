@@ -2,6 +2,7 @@ package com.restaurant.management.service;
 
 import com.restaurant.management.enums.OrderMethod;
 import com.restaurant.management.enums.OrderStatus;
+import com.restaurant.management.model.Customer;
 import com.restaurant.management.enums.TableStatus;
 import com.restaurant.management.model.*;
 import com.restaurant.management.repository.DishRepository;
@@ -11,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -25,31 +27,6 @@ public class OrderService {
     private DishRepository dishRepository;
     @Autowired
     private PaymentService paymentService;
-    @Autowired
-    private TableService tableService;
-    @Autowired
-    private CustomerService customerService;
-
-    public Order createOrder(Long tableId, String customerEmail) {
-        DiningTable diningTable = tableService.getTableById(tableId)
-                .orElseThrow(() -> new IllegalArgumentException("Table not found"));
-
-        diningTable.setStatus(TableStatus.OCCUPIED);
-        diningTable = tableService.save(diningTable);
-        Customer customer = new Customer();
-        if(!customerService.getCustomerByEmail(customerEmail).isPresent()) {
-            customer = customerService.getCustomerByEmail("noinfo@gmail.com").get();
-        }
-        Order order = Order.builder()
-                .id(customer.getCustomerId().toString())
-                .customer(customer)
-                .orderDate(LocalDateTime.now())
-                .diningTable(diningTable)
-                .totalAmount(0.0)
-                .build();
-
-        return orderRepository.save(order);
-    }
 
     @Transactional
     public void addDishToOrder(String orderId, Long dishId, int quantity) {
@@ -72,6 +49,7 @@ public class OrderService {
             orderItem.setDish(dish);
             orderItem.setQuantity(quantity);
             orderItem.setPrice(dish.getPrice());
+            orderItem.setCost(dish.getCost());
             orderItemRepository.save(orderItem);
         }
         updateTotalAmount(order);
@@ -162,4 +140,29 @@ public class OrderService {
     public void saveOrder(Order order) {
         orderRepository.save(order);
     }
+
+    public Map<String, Integer> getOrderStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        // Lấy danh sách kết quả từ truy vấn
+        List<Object[]> stats = orderRepository.countOrdersByOrderDay(startDate, endDate);
+        Map<String, Integer> orderStats = new LinkedHashMap<>();
+
+        for (Object[] stat : stats) {
+            // Kiểm tra và chuyển đổi date từ Object[]
+            String date = "";
+            if (stat[0] instanceof java.sql.Date) {
+                // Nếu stat[0] là java.sql.Date, chuyển đổi nó thành String
+                date = new SimpleDateFormat("yyyy-MM-dd").format((java.sql.Date) stat[0]);
+            } else if (stat[0] instanceof String) {
+                // Nếu stat[0] là String, giữ nguyên
+                date = (String) stat[0];
+            }
+
+            // Kiểm tra và chuyển đổi số lượng đơn hàng (stat[1])
+            Integer quantity = ((Number) stat[1]).intValue();
+
+            orderStats.put(date, quantity);
+        }
+        return orderStats;
+    }
+
 }

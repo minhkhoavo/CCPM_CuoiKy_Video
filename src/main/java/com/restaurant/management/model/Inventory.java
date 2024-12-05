@@ -25,6 +25,8 @@ public class Inventory {
     String unit;//don vi tinh
     int quantity;
     Double unitPrice;
-    Long supplierId;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="supplier_id", nullable=false)
+    Supplier supplier;
 }

@@ -1,11 +1,10 @@
 package com.restaurant.management.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -17,6 +16,9 @@ public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long customerId;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    List<Order> orders;
 
     String firstName;
     String lastName;
