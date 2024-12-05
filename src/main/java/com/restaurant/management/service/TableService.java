@@ -106,8 +106,8 @@ public class TableService {
         FontMetrics metrics = g.getFontMetrics();
         int x1 = (250 - metrics.stringWidth(text1)) / 2;
         int x2 = (250 - metrics.stringWidth(text2)) / 2;
-        g.drawString(text1, x1, 270);
-        g.drawString(text2, x2, 290);
+        g.drawString(text1, x1, 250);
+        g.drawString(text2, x2, 270);
 
         g.dispose();
 

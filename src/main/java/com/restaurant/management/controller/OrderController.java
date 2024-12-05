@@ -146,7 +146,7 @@ public class OrderController {
             }
             model.addAttribute("tableId", tableId);
         }
-        model.addAttribute("tableNumber", tableService.getTableNumberTableId(tableId));
+        model.addAttribute("tableNumber", tableService.getTableNumberByTableId(tableId));
         model.addAttribute("tables", tableService.getAllTables());
         model.addAttribute("status", status);
         return "pages/order/manage-table-order";

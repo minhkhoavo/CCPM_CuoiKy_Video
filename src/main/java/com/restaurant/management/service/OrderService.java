@@ -73,6 +73,7 @@ public class OrderService {
             orderItem.setDish(dish);
             orderItem.setQuantity(quantity);
             orderItem.setPrice(dish.getPrice());
+            orderItem.setCost(dish.getCost());
             orderItemRepository.save(orderItem);
         }
         updateTotalAmount(order);

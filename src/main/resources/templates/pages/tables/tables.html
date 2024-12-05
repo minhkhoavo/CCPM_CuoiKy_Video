@@ -83,6 +83,7 @@
                                         th:data-name="${diningTable.tableNumber}"
                                         th:data-capacity="${diningTable.capacity}"
                                         th:data-status="${diningTable.status}"
+                                        th:data-imageUrl="${diningTable.qrCodeUrl}"
                                         onclick="openModal(this)"
                                         class="text-indigo-600 hover:text-indigo-900">
                                     <i class="fas fa-edit"></i>
@@ -121,6 +122,7 @@
                     tableNumber: button.getAttribute('data-name') || '',
                     capacity: button.getAttribute('data-capacity') || '',
                     status: button.getAttribute('data-status') || "",
+                    imageUrl: button.getAttribute('data-imageUrl') || "",
                 };
                 console.log('Button clicked for action:', data);
             }

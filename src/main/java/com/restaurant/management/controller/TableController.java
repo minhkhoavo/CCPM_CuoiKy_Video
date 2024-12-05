@@ -8,6 +8,8 @@ import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.TableService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +50,10 @@ public class TableController {
             }
             return "/";
         } else {
-            return "/";
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String customerEmail = ((UserDetails) principal).getUsername();
+            Order order = orderService.createOrder(tableId, customerEmail);
+            return "redirect:/orders/menu?orderId=" + order.getId();
         }
     }
 
