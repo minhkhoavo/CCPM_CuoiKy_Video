@@ -42,6 +42,7 @@ public class DishService {
         if (file != null && !file.isEmpty()) {
             String imageUrl = storageService.uploadImage(file);
             dish.setImage(imageUrl);
+            dish.setCost(0D);
         }
         return dishRepository.save(dish);
     }
