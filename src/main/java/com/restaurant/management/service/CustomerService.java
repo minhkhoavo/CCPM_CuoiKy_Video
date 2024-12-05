@@ -4,6 +4,8 @@ import com.restaurant.management.model.Category;
 import com.restaurant.management.model.Customer;
 import com.restaurant.management.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,8 @@ public class CustomerService {
     }
 
     public Customer saveCustomer(Customer customer) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         return customerRepository.save(customer);
     }
 
@@ -44,5 +48,10 @@ public class CustomerService {
     }
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);
+    }
+
+    public Customer getCustomerByPhone(String phone) {
+        Customer customer =  customerRepository.findByPhone(phone);
+        return customer != null ? customer : null;
     }
 }

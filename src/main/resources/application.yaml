@@ -30,3 +30,8 @@ payment:
   vnpay:
     tmnCode: ${VNP_TMNCODE:12}
     secretKey: ${VNP_SECRETKEY:12}
+
+twilio:
+  accountSid: ${TWILIO_ACCOUNT_SID}
+  authToken: ${TWILIO_AUTH_TOKEN}
+  fromPhoneNumber: ${TWILIO_PHONE_NUMBER}

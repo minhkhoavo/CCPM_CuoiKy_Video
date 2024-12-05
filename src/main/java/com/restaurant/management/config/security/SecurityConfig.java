@@ -30,11 +30,21 @@ public class SecurityConfig {
             "/recipes",
     };
 
+    private final String[] PUBLIC_Endpoints = {
+            "/login",
+            "/request-otp",
+            "/register",
+            "/verify-otp",
+            "/forgot-password",
+            "/resources/**", "/css/**"
+    };
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(authorize -> authorize
-                    .requestMatchers("/login", "/resources/**", "/css/**").permitAll()
+                    .requestMatchers(PUBLIC_Endpoints).permitAll()
                     .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
                     .anyRequest().authenticated()
             )

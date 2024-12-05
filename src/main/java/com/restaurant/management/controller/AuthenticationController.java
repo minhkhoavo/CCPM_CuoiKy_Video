@@ -15,4 +15,9 @@ public class AuthenticationController {
     public String viewDashboard(Model model) {
         return "pages/auth/profile";
     }
+
+    @GetMapping("/forgot-password")
+    public String forgotPassword(Model model) {
+        return "pages/auth/request-otp";
+    }
 }

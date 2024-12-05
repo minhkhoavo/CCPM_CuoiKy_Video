@@ -36,7 +36,6 @@ public class CustomerController {
             e.printStackTrace();
         }
         return "redirect:/customers";
-
     }
 
     @PostMapping("/edit/{id}")

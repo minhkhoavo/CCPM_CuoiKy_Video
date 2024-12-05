@@ -31,6 +31,10 @@ public class EmployeeService {
     public Employee getEmployeeByEmail(String email) {
         return employeeRepository.findByEmail(email);
     }
+    public Employee getEmployeeByPhone(String phone) {
+        Employee employee = employeeRepository.findByPhone(phone);
+        return employee != null ? employee : null;
+    }
 
     public List<Long> findEmployeeIdsByPosition(String position) {
         return employeeRepository.findEmployeeIdsByPosition(position);
@@ -43,6 +47,13 @@ public class EmployeeService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
 
+        return employeeRepository.save(employee);
+    }
+
+    public Employee saveEmployee(Employee employee)  {
+        //mã hoá mật khâủ
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         return employeeRepository.save(employee);
     }
 
