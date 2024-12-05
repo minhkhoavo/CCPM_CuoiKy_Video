@@ -68,4 +68,7 @@ jobs:
             --env CLOUDINARY_SECRET=${{ secrets.CLOUDINARY_SECRET }} \
             --env VNP_TMNCODE=${{ secrets.VNP_TMNCODE }} \
             --env VNP_SECRETKEY=${{ secrets.VNP_SECRETKEY }} \
+            --env TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
+            --env TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
+            --env TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }} \
             $IMAGE_NAME
