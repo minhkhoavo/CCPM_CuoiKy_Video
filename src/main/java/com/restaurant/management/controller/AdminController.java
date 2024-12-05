@@ -53,7 +53,7 @@ public class AdminController {
         System.out.println(startDateTime+" -------------- "+endDateTime);
 
         //lay data tu service
-        Map<String, Integer> orderStats = orderService.getOrderStatistics(startDateTime, endDateTime);
+        //Map<String, Integer> orderStats = orderService.getOrderStatistics(startDateTime, endDateTime);
         Map<String, Integer> dishStats = orderItemService.getDishStatistics(OrderStatus.COMPLETED, startDateTime, endDateTime);
         Map<String, Object> revenueAndProfit = orderItemService.getRevenueAndProfitData(startDateTime, endDateTime);
         List<Object []> reservationData = reservationService.getReservationStatusCounts(startDate, endDate);
@@ -61,7 +61,7 @@ public class AdminController {
         List<Object[]> dishSalesStats = orderItemService.getDishSalesStats(OrderStatus.COMPLETED, startDateTime, endDateTime);
 
         //truyen data vao dashboard
-        model.addAttribute("orderStats", orderStats);
+        //model.addAttribute("orderStats", orderStats);
         model.addAttribute("dishStats", dishStats);
         model.addAttribute("revenueAndProfit", revenueAndProfit);
         model.addAttribute("reservationData", reservationData);
@@ -70,7 +70,7 @@ public class AdminController {
         model.addAttribute("startDate", startDate);  // Đưa giá trị startDate vào model
         model.addAttribute("endDate", endDate);      // Đưa giá trị endDate vào model
 
-        System.out.println("----"+orderStats);
+        //System.out.println("----"+orderStats);
         return "pages/admin/dashboard";
     }
 }
