@@ -23,11 +23,11 @@ public class SalaryService {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    public List<Salary> getSalariesByPayDate(LocalDate start, LocalDate end) {
+    public List<Salary> getsalaryByPayDate(LocalDate start, LocalDate end) {
         return salaryRepository.findByPayDateBetween(start, end);
     }
 
-    public void calculateSalaries(LocalDate startDate, LocalDate endDate) {
+    public void calculatesalary(LocalDate startDate, LocalDate endDate) {
         List<Employee> employees = employeeRepository.findAll();
 
         for (Employee employee : employees) {
@@ -74,7 +74,7 @@ public class SalaryService {
     }
 
 
-    public void payAllSalaries() {
+    public void payAllsalary() {
         List<Salary> salaries = salaryRepository.findAll();
         for (Salary salary : salaries) {
             if (salary.getStatus() != SalaryStatus.PAID) {

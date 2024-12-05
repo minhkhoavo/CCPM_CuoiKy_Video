@@ -8,7 +8,7 @@
         <div class="p-6">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                 <h2 class="text-xl font-semibold mb-4 md:mb-0">Salary</h2>
-                <form action="#" th:action="@{/salaries/calculate}" method="post" class="space-y-4 flex flex-row item-center justify-center">
+                <form action="#" th:action="@{/salary/calculate}" method="post" class="space-y-4 flex flex-row item-center justify-center">
                     <div>
                         <label for="monthYear" class="block text-gray-700 font-medium">Select Month</label>
                         <input  required
@@ -22,7 +22,7 @@
                             class="ml-4 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
                         Calculate Salary
                     </button>
-                    <a href="/salaries/pay" class="block text-center ml-4 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    <a href="/salary/pay" class="block text-center ml-4 w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
                         Apply
                     </a>
                 </form>
@@ -55,7 +55,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody th:each="salary : ${salaries}" class="bg-white divide-y divide-gray-200">
+                    <tbody th:each="salary : ${salary}" class="bg-white divide-y divide-gray-200">
                     <tr class="hover:bg-gray-50">
                         <td th:text="${salary.employee.id}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
                         <td th:text="${salary.employee.name}" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
@@ -97,7 +97,7 @@
     <script th:src="@{/js/Modal.js}"></script>
     <script>
         function openModal(button) {
-            const salaryModal = new ModalWithForm("salaryModal", "Salary", null, '/salaries/update');
+            const salaryModal = new ModalWithForm("salaryModal", "Salary", null, '/salary/update');
             let data;
             if (button != null) {
                 data = {
@@ -115,7 +115,7 @@
         }
 
         function closeModal() {
-            const salaryModal = new ModalWithForm('salaryModal', null, '/salaries/update');
+            const salaryModal = new ModalWithForm('salaryModal', null, '/salary/update');
             salaryModal.close();
         }
     </script>

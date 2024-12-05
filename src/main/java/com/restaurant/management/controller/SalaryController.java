@@ -10,7 +10,7 @@ import java.time.LocalDate;
 
 
 @Controller
-@RequestMapping("/salaries")
+@RequestMapping("/salary")
 public class SalaryController {
     @Autowired
     private SalaryService salaryService;
@@ -18,11 +18,11 @@ public class SalaryController {
     private SalaryRepository salaryRepository;
 
     @GetMapping
-    public String listSalaries(@RequestParam(value = "date", required = false) String date, Model model) {
+    public String listsalary(@RequestParam(value = "date", required = false) String date, Model model) {
         if (date != null && !date.isEmpty()) {
             LocalDate start = LocalDate.parse(date + "-01");
             LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-            model.addAttribute("salaries", salaryService.getSalariesByPayDate(start, end));
+            model.addAttribute("salary", salaryService.getsalaryByPayDate(start, end));
         }
 
         return "pages/salary/salary-list";
@@ -32,8 +32,8 @@ public class SalaryController {
     public String calculateSalary(@RequestParam String monthYear) {
         LocalDate start = LocalDate.parse(monthYear + "-01");
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
-        salaryService.calculateSalaries(start, end);
-        return "redirect:/salaries?date=" + monthYear;
+        salaryService.calculatesalary(start, end);
+        return "redirect:/salary?date=" + monthYear;
     }
 
     @PostMapping("/update/{id}")
@@ -41,13 +41,13 @@ public class SalaryController {
                                  @RequestParam("hourlyRate") Double hourlyRate,
                                  @RequestParam("bonus") Double bonus) {
         salaryService.updateSalary(id, hourlyRate, bonus);
-        return "redirect:/salaries";
+        return "redirect:/salary";
     }
 
     @GetMapping("/pay")
     public String paySalary() {
-        salaryService.payAllSalaries();
-        return "redirect:/salaries";
+        salaryService.payAllsalary();
+        return "redirect:/salary";
     }
 }
 

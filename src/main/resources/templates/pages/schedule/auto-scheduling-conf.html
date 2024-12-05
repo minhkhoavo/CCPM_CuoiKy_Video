@@ -203,13 +203,13 @@
 
         console.log('Dữ liệu gửi đi:', payload);
 
-        fetch('/api/schedules/config', {
+        fetch('/schedules/config', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         })
             .then(response => {
-                if (response.ok) window.location.href = '/api/schedules/view';
+                if (response.ok) window.location.href = '/schedules/view';
             })
             .catch(error => console.error('Lỗi:', error));
     }

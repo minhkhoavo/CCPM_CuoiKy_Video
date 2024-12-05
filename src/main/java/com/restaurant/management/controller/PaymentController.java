@@ -30,39 +30,6 @@ public class PaymentController {
     @Autowired
     private OrderService orderService;
 
-    // GET mapping để trả về form thanh toán
-//    @GetMapping
-//    public ResponseEntity<String> getPaymentForm() {
-//        // Tạo HTML form với phương thức POST
-//        String htmlForm = "<html>" +
-//                "<head><title>Thanh Toán</title></head>" +
-//                "<body>" +
-//                "<form action=\"/payment/submit\" method=\"post\">" +
-//                "<div>" +
-//                "<label for=\"amount\">Số tiền:</label>" +
-//                "<input type=\"number\" id=\"amount\" name=\"amount\" required value=\"100\">" +
-//                "</div>" +
-//                "<div>" +
-//                "<label for=\"orderInfo\">Thông tin đơn hàng:</label>" +
-//                "<input type=\"text\" id=\"orderInfo\" name=\"orderInfo\" required value=\"Thanh toan don hang test\">" +
-//                "</div>" +
-//                "<button type=\"submit\">Thanh toán</button>" +
-//                "</form>" +
-//                "</body></html>";
-//
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.TEXT_HTML)
-//                .body(htmlForm);
-//    }
-
-//    @PostMapping("/submit")
-//    public ResponseEntity<String> payment(@RequestParam("amount") int orderTotal,
-//                                          @RequestParam("orderInfo") String orderInfo,
-//                                          HttpServletRequest request) {
-//        String redirectUrl = paymentService.payOrder(100000, "Thanh toan don hang test");
-//        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
-//    }
-
     @GetMapping("/vn-pay-callback")
     @ResponseBody
     public ResponseEntity<Map<String, String>> handleVNPayReturn(HttpServletRequest request) {
