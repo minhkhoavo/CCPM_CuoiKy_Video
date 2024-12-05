@@ -117,8 +117,6 @@ public class ScheduleService {
         List<Long> employeeIds = employeeService.findEmployeeIdsByPosition(position);
         List<Long> shiftIds = shiftService.getRegularShiftIds(ShiftType.REGULAR);
 
-        shiftIds.forEach(id -> System.out.println("Shift ID: " + id));
-
         for (int emp = 0; emp < solution.length; emp++) {
             for (int day = 0; day < solution[emp].length; day++) {
                 for (int shift = 0; shift < solution[emp][day].length; shift++) {
@@ -139,18 +137,19 @@ public class ScheduleService {
         }
     }
 
-    public void autoSchedulingShitf(String startDate, List<List<Integer>> numEmpPerShift, int maxShiftPerDay,
+    public void autoSchedulingShitf(String startDate, String role, List<List<Integer>> numEmpPerShift, int maxShiftPerDay,
                                     int maxDeviationShift, int isConsecutiveShifts) {
         // Xử lý ma trận staff và chef chuyển đổi từ List<List<Integer>> thành mảng 2D int[])
         int[][] staffMatrixArray = new int[numEmpPerShift.size()][];
         for (int i = 0; i < numEmpPerShift.size(); i++) {
             staffMatrixArray[i] = numEmpPerShift.get(i).stream().mapToInt(Integer::intValue).toArray();
         }
-
+        int numRegularShift = shiftService.getRegularShifts().size();
+        int numEmployee = employeeService.findEmployeeIdsByPosition(role).size();
         SchedulingSolver solver = new SchedulingSolver();
-        int[][][] solution = solver.solveConstraint(5,3, 7,
+        int[][][] solution = solver.solveConstraint(numEmployee,numRegularShift, 7,
                 staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
 
-        saveSchedule(solution, LocalDate.now(), LocalDate.now().plusDays(7), "STAFF");
+        saveSchedule(solution, LocalDate.now(), LocalDate.parse(startDate).plusDays(7), role);
     }
 }

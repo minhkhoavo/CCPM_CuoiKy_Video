@@ -2,10 +2,8 @@ package com.restaurant.management.service;
 
 import com.restaurant.management.enums.OrderMethod;
 import com.restaurant.management.enums.OrderStatus;
-import com.restaurant.management.model.Customer;
-import com.restaurant.management.model.Dish;
-import com.restaurant.management.model.Order;
-import com.restaurant.management.model.OrderItem;
+import com.restaurant.management.enums.TableStatus;
+import com.restaurant.management.model.*;
 import com.restaurant.management.repository.DishRepository;
 import com.restaurant.management.repository.OrderItemRepository;
 import com.restaurant.management.repository.OrderRepository;
@@ -26,32 +24,34 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
     @Autowired
     private DishRepository dishRepository;
-
     @Autowired
     private PaymentService paymentService;
-
     @Autowired
-    private  CustomerService customerService;
-    /*
-        {
-      "customerId": "1",
-      "orderDate": "2023-11-05T12:00:00",
-      "totalAmount": 55.5,
-      "orderMethod": "CASH",
-      "orderItems": [
-        {
-          "dishDetails": { "dishId": 1 },
-          "quantity": 2,
-          "price": 99.0
-        },
-        {
-          "dishDetails": { "dishId": 2 },
-          "quantity": 1,
-          "price": 22.0
+    private TableService tableService;
+    @Autowired
+    private CustomerService customerService;
+
+    public Order createOrder(Long tableId, String customerEmail) {
+        DiningTable diningTable = tableService.getTableById(tableId)
+                .orElseThrow(() -> new IllegalArgumentException("Table not found"));
+
+        diningTable.setStatus(TableStatus.OCCUPIED);
+        diningTable = tableService.save(diningTable);
+        Customer customer = new Customer();
+        if(!customerService.getCustomerByEmail(customerEmail).isPresent()) {
+            customer = customerService.getCustomerByEmail("noinfo@gmail.com").get();
         }
-      ]
+        Order order = Order.builder()
+                .id(customer.getCustomerId().toString())
+                .customer(customer)
+                .orderDate(LocalDateTime.now())
+                .diningTable(diningTable)
+                .totalAmount(0.0)
+                .build();
+
+        return orderRepository.save(order);
     }
-    */
+
     @Transactional
     public void addDishToOrder(String orderId, Long dishId, int quantity) {
         Order order = getOrderById(orderId);
@@ -76,26 +76,34 @@ public class OrderService {
             orderItem.setCost(dish.getCost());
             orderItemRepository.save(orderItem);
         }
+        updateTotalAmount(order);
     }
 
-    public void updateOrderItemQuantity(Long orderItemId, int delta) {
-        // Lấy thông tin OrderItem từ cơ sở dữ liệu
+    private void updateTotalAmount(Order order) {
+        double totalAmount = order.getOrderItems().stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .sum();
+        order.setTotalAmount(totalAmount);
+        orderRepository.save(order);
+    }
+
+    public void updateOrderItemQuantity(String orderId, Long orderItemId, int delta) {
         OrderItem orderItem = orderItemRepository.findById(orderItemId)
                 .orElseThrow(() -> new RuntimeException("Order item not found"));
 
-        // Tính toán số lượng mới
         int newQuantity = orderItem.getQuantity() + delta;
 
         if (newQuantity <= 0) {
-            // Xóa OrderItem nếu số lượng <= 0
             orderItemRepository.delete(orderItem);
         } else {
-            // Cập nhật số lượng mới
             orderItem.setQuantity(newQuantity);
             orderItemRepository.save(orderItem);
         }
+        Order order = getOrderById(orderId);
+        updateTotalAmount(order);
     }
 
+    @Transactional
     public List<OrderItem> getOrderDetailByOrderId(String orderId) {
         return orderRepository.findOrderDetailByOrderId(orderId);
     }
@@ -133,6 +141,12 @@ public class OrderService {
             orderRepository.save(order);
             return true;
         }).orElse(false);
+    }
+
+    public void completedOrder(String orderId) {
+        Order order = getOrderById(orderId);
+        order.setOrderStatus(OrderStatus.COMPLETED);
+        tableService.updateTableStatus(order.getDiningTable().getId(), TableStatus.AVAILABLE);
     }
 
     public Optional<Order> findOrderByTableId(Long tableId) {
@@ -175,5 +189,4 @@ public class OrderService {
         }
         return orderStats;
     }
-
 }

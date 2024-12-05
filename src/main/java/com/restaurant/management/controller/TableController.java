@@ -1,18 +1,20 @@
 package com.restaurant.management.controller;
 
 import com.google.zxing.WriterException;
+import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.TableService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,17 +39,29 @@ public class TableController {
         Optional<Order> orderOptional = orderService.findOrderByTableId(tableId);
 
         if (orderOptional.isPresent()) {
-            model.addAttribute("order", orderOptional.get());
-            model.addAttribute("orderItems", orderOptional.get().getOrderItems());
-            return "pages/tables/table-orders";
+            Order order = orderOptional.get();
+            if(!order.getOrderStatus().equals(OrderStatus.COMPLETED)) {
+                model.addAttribute("order", order);
+                model.addAttribute("orderItems", order.getOrderItems());
+                model.addAttribute("tableId", tableId);
+                model.addAttribute("tableNumber", tableService.getTableNumberByTableId(tableId));
+                model.addAttribute("orderId", order.getId());
+                return "pages/tables/table-orders";
+            }
+            return "/";
         } else {
-            return "redirect:/menu";
+            Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String customerEmail = ((UserDetails) principal).getUsername();
+            Order order = orderService.createOrder(tableId, customerEmail);
+            return "redirect:/orders/menu?orderId=" + order.getId();
         }
     }
+
     @PostMapping("/add")
     public String addTable(@ModelAttribute DiningTable diningTable, HttpServletRequest request) {
+        System.out.println(diningTable);
         try {
-            tableService.saveTable(diningTable, request);
+            tableService.createTable(diningTable, request);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
             return "error";

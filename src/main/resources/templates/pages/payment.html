@@ -55,7 +55,7 @@
                     </div>
                     <div class="flex justify-between">
                         <p class="text-gray-600">Tax (10%)</p>
-                        <p id="tax" class="font-medium" th:text="'$' + ${total*0.1}">$4.82</p>
+                        <p id="tax" class="font-medium" th:text="'$' + ${#numbers.formatDecimal(total*0.1, 3, 2)}">$4.82</p>
                     </div>
                     <div class="flex justify-between">
                         <p class="text-gray-600" th:text="'Discount(' + ${discountCode != null ? discountCode: ''} +')'">Discount (WELCOME10)</p>
@@ -103,7 +103,7 @@
                             class="border rounded-lg p-4 mb-3 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
                         <div class="flex items-center space-x-3">
                             <div class="flex-shrink-0">
-                                <img src="/api/placeholder/24/24" alt="VNPay" class="w-6 h-6" />
+                                <img src="https://scontent.fhan2-4.fna.fbcdn.net/v/t39.30808-6/202166185_2021396718013233_8499389898242103910_n.png?_nc_cat=1&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeFULWEOfNOUh4A7kUCl8dLoKwdd0u08Nc0rB13S7Tw1zcs3SsA7IzQ9tGxkyN50RQ4ufxVKHVHIyxOodniSiPxp&_nc_ohc=Ie3P21iKsDMQ7kNvgHL3ZJv&_nc_zt=23&_nc_ht=scontent.fhan2-4.fna&_nc_gid=AFpYYI3VdMJ5bg6Akvycv4k&oh=00_AYBNl3Fidpnz00CiYObU3WyB6FIH-fRAn_vrmt_A-WafVg&oe=67575E69" alt="VNPay" class="w-6 h-6" />
                             </div>
                             <div>
                                 <p class="font-medium">VNPay</p>
@@ -112,20 +112,6 @@
                         </div>
                     </div>
 
-                    <!-- Momo Option -->
-                    <div
-                            data-method="MOMO"
-                            class="border rounded-lg p-4 cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex-shrink-0">
-                                <img src="/api/placeholder/24/24" alt="Momo" class="w-6 h-6" />
-                            </div>
-                            <div>
-                                <p class="font-medium">Momo</p>
-                                <p class="text-sm text-gray-500">Pay with Momo e-wallet</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <!-- Place Order Button -->
                 <a th:href="@{/orders/pay/{orderId}(orderId=${orderId})}" id="payButton"

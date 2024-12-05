@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,7 +37,8 @@ public class SecurityConfig {
             "/register",
             "/verify-otp",
             "/forgot-password",
-            "/resources/**", "/css/**"
+            "/resources/**", "/css/**",
+            "/orders/sse/**"
     };
 
 
@@ -64,6 +66,7 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .maxSessionsPreventsLogin(false)
             );
+
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

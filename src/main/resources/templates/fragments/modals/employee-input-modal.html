@@ -1,4 +1,4 @@
-<div th:fragment="employee-modal" class="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md max-h-[500px] overflow-y-auto">
+<div th:fragment="employee-modal" class="max-w-md mx-auto mt-8 p-6 bg-white rounded-lg shadow-md  overflow-y-auto">
   <h2 id="modalTitle"
       class="text-xl font-semibold mb-6">Employee</h2>
   <form id="modalForm" method="post" action="employees/add" enctype="multipart/form-data">
@@ -76,9 +76,9 @@
           name="position"
           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500">
           <option value="" disabled selected>Select Employee Position</option>
-          <option value="Staff">Staff</option>
-          <option value="Manager">Manager</option>
-          <option value="Chef">Chef</option>
+          <option value="STAFF">Staff</option>
+          <option value="ADMIN">Manager</option>
+          <option value="CHEF">Chef</option>
         </select>
       </div>
     </div>

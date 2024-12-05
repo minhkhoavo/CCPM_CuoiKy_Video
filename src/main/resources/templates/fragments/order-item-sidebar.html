@@ -1,5 +1,7 @@
 <!-- Order Section -->
-<div th:fragment="order-item-sidebar" class="md:w-1/3 bg-white p-6 rounded-lg shadow-md md:max-w-96 border-t md:border-l border-gray-200 flex flex-col md:h-full z-50">
+<div th:fragment="order-item-sidebar"
+     class="md:w-1/3 bg-white p-6 rounded-lg shadow-md md:max-w-96 border-t md:border-l border-gray-200 flex flex-col md:h-full z-50"
+     xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- Hidden field to store Order ID -->
     <input type="hidden" id="orderId" name="orderId" th:value="${orderId}" />
     <!-- Order Header -->

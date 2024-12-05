@@ -4,6 +4,7 @@ import com.restaurant.management.config.payment.VNPayConfig;
 import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.PaymentService;
+import com.restaurant.management.service.TableService;
 import com.restaurant.management.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,8 @@ public class PaymentController {
     private VNPayConfig vnPayConfig;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private TableService tableService;
 
     @GetMapping("/vn-pay-callback")
     @ResponseBody
@@ -81,7 +84,7 @@ public class PaymentController {
 
             String responseCode = request.getParameter("vnp_ResponseCode");
             if ("00".equals(responseCode)) {
-                orderService.updateOrderStatus(orderId, OrderStatus.PAID);
+                orderService.completedOrder(orderId);
                 response.put("RspCode", "00");
                 response.put("Message", "Confirm Success");
             } else {

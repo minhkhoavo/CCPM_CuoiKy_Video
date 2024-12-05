@@ -5,6 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.restaurant.management.enums.TableStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.repository.TableRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,9 +17,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +36,19 @@ public class TableService {
         return tableRepository.findById(id);
     }
 
-    public DiningTable saveTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
+    public Long getTableNumberByTableId(Long tableId) {
+        return tableRepository.getTableNumberById(tableId);
+    }
+
+    public DiningTable save(DiningTable table) {
+        return tableRepository.save(table);
+    }
+
+    public void updateTableStatus(Long tableId, TableStatus status) {
+        tableRepository.findById(tableId).get().setStatus(TableStatus.AVAILABLE);
+    }
+
+    public DiningTable createTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();
@@ -96,8 +106,8 @@ public class TableService {
         FontMetrics metrics = g.getFontMetrics();
         int x1 = (250 - metrics.stringWidth(text1)) / 2;
         int x2 = (250 - metrics.stringWidth(text2)) / 2;
-        g.drawString(text1, x1, 270);
-        g.drawString(text2, x2, 290);
+        g.drawString(text1, x1, 250);
+        g.drawString(text2, x2, 270);
 
         g.dispose();
 

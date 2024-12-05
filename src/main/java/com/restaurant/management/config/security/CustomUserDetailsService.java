@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
@@ -30,11 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .build();
         }
 
-        Customer customer = customerService.getCustomerByEmail(email);
-        if (customer != null) {
+        Optional<Customer> customer = customerService.getCustomerByEmail(email);
+        if (customer.isPresent()) {
             return User.builder()
-                    .username(customer.getEmail())
-                    .password(customer.getPassword())
+                    .username(customer.get().getEmail())
+                    .password(customer.get().getPassword())
                     .roles("CUSTOMER")
                     .build();
         }

@@ -78,7 +78,7 @@
         }
 
         function getEmployeeBackgroundColor(employeeId) {
-            // Map of colors for different employees
+            const colorId = employeeId % 5;
             const colors = {
                 1: 'bg-red-100',
                 2: 'bg-green-100',
@@ -86,7 +86,7 @@
                 4: 'bg-pink-100',
                 5: 'bg-yellow-100'
             };
-            return colors[employeeId] || 'bg-gray-100';
+            return colors[colorId] || 'bg-gray-100';
         }
 
         function renderCalendar() {
