@@ -1,7 +1,9 @@
 package com.restaurant.management.model;
 
+import com.restaurant.management.enums.TableStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DiningTable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +24,9 @@ public class DiningTable {
     private Integer capacity;
 
     @Column(name = "status", nullable = false)
-    private String status; // Example: "Available", "Occupied", "Reserved", "Unavailable"
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private TableStatus status = TableStatus.AVAILABLE; // Example: "Available", "Occupied", "Reserved", "Unavailable"
 
     @Column(name = "qr_code_url", nullable = false)
     private String qrCodeUrl;

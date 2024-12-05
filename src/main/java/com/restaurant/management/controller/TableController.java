@@ -46,8 +46,9 @@ public class TableController {
     }
     @PostMapping("/add")
     public String addTable(@ModelAttribute DiningTable diningTable, HttpServletRequest request) {
+        System.out.println(diningTable);
         try {
-            tableService.saveTable(diningTable, request);
+            tableService.createTable(diningTable, request);
         } catch (WriterException | IOException e) {
             e.printStackTrace();
             return "error";

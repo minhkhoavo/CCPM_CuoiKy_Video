@@ -5,6 +5,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.restaurant.management.enums.TableStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.repository.TableRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,19 @@ public class TableService {
         return tableRepository.findById(id);
     }
 
-    public DiningTable saveTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
+    public Long getTableNumberTableId(Long tableId) {
+        return tableRepository.getTableNumberById(tableId);
+    }
+
+    public DiningTable save(DiningTable table) {
+        return tableRepository.save(table);
+    }
+
+    public void updateTableStatus(Long tableId, TableStatus status) {
+        tableRepository.findById(tableId).get().setStatus(TableStatus.AVAILABLE);
+    }
+
+    public DiningTable createTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
         String scheme = request.getScheme();
         String serverName = request.getServerName();
         int serverPort = request.getServerPort();

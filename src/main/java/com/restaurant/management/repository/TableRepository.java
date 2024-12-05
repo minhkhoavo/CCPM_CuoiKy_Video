@@ -14,5 +14,7 @@ import java.util.Optional;
 @Repository
 public interface TableRepository extends JpaRepository<DiningTable, Long> {
     Optional<DiningTable> findByTableNumber(int tableNumber);
+    @Query("SELECT t.tableNumber FROM DiningTable t WHERE t.id = :tableId")
+    Long getTableNumberById(@Param("tableId") Long tableId);
 }
 

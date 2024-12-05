@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerService {
@@ -38,8 +39,12 @@ public class CustomerService {
         return customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Customer not found!"));
     }
 
-    public Customer getCustomerByEmail(String email) {
-        return customerRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Customer not found!"));
+    public Optional<Customer> getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
+    public Long getCustomerIdByEmail(String email) {
+        return customerRepository.getCustomerIdByEmail(email);
     }
     public void deleteCustomer(Long id) {
         customerRepository.deleteById(id);

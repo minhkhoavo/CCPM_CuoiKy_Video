@@ -1,5 +1,6 @@
 package com.restaurant.management.controller;
 
+import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.Discount;
 import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Order;
@@ -35,9 +36,14 @@ public class OrderController {
     public String showMenu(Model model,
                            @RequestParam("orderId") String orderId,
                            @RequestParam(value = "category", required = false) Long categoryId) {
+        Order order = orderService.getOrderById(orderId);
+        if(order.getOrderStatus().equals(OrderStatus.COMPLETED)) {
+            return "redirect:/reviews/" + orderId;
+        }
+
         model.addAttribute("categories", categoryService.getAllCategories());
         model.addAttribute("activeCategory", categoryId);
-        System.out.println("categoryId:::: " + categoryId);
+
         List<Dish> menuItems = (categoryId != null) ?
                 dishService.findDishesByCategoryId(categoryId) :
                 dishService.getAllDishes();
@@ -49,7 +55,15 @@ public class OrderController {
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
         model.addAttribute("total", total);
+        model.addAttribute("tableNumber", order.getDiningTable().getId());
         return "pages/menu";
+    }
+
+    @PostMapping("/create")
+    public String createOrder(@RequestParam("tableId") Long tableId,
+                              @RequestParam(value = "customerEmail", required = false) String customerEmail) {
+        Order order = orderService.createOrder(tableId, customerEmail);
+        return "redirect:/orders/menu?orderId=" + order.getId();
     }
 
     @GetMapping("/menu/search")
@@ -85,9 +99,9 @@ public class OrderController {
             @RequestParam("orderItemId") Long orderItemId,
             @RequestParam("action") String action) {
         if ("increase".equals(action)) {
-            orderService.updateOrderItemQuantity(orderItemId, 1);
+            orderService.updateOrderItemQuantity(orderId, orderItemId, 1);
         } else if ("decrease".equals(action)) {
-            orderService.updateOrderItemQuantity(orderItemId, -1);
+            orderService.updateOrderItemQuantity(orderId, orderItemId, -1);
         }
         return "redirect:/orders/menu?orderId=" + orderId;
     }
@@ -115,10 +129,10 @@ public class OrderController {
         return "pages/payment";
     }
 
-
     @GetMapping("/manage")
     public String showManageTableOrder(Model model,
-                          @RequestParam(value = "tableId", required = false) Long tableId) {
+                            @RequestParam(value = "tableId", required = false) Long tableId,
+                            @RequestParam(value = "status", required = false) String status) {
         if(tableId != null) {
             Optional<Order> order = orderService.findOrderByTableId(tableId);
             if(order.isPresent()) {
@@ -130,8 +144,11 @@ public class OrderController {
                 model.addAttribute("total", total);
                 model.addAttribute("orderId", order.get().getId());
             }
+            model.addAttribute("tableId", tableId);
         }
+        model.addAttribute("tableNumber", tableService.getTableNumberTableId(tableId));
         model.addAttribute("tables", tableService.getAllTables());
+        model.addAttribute("status", status);
         return "pages/order/manage-table-order";
     }
 

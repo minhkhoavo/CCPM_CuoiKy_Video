@@ -1,6 +1,7 @@
 package com.restaurant.management.service;
 
 import com.restaurant.management.enums.ReservationStatus;
+import com.restaurant.management.enums.TableStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Reservation;
 import com.restaurant.management.repository.ReservationRepository;
@@ -129,16 +130,18 @@ public class ReservationService {
         for (Reservation reservation : expiredReservations) {
             reservation.setStatus(ReservationStatus.CANCELLED);
             DiningTable table = reservation.getTable();
-            if (table != null && "Reserved".equals(table.getStatus())) {
-                table.setStatus("Available");
+            if (table != null && "Reserved".equalsIgnoreCase(table.getStatus().toString())) {
+                table.setStatus(TableStatus.AVAILABLE);
                 tableRepository.save(table);
             }
         }
 
         for (Reservation reservation : upcomingReservations) {
             DiningTable table = reservation.getTable();
-            if (table != null && !"Reserved".equals(table.getStatus())) {
-                table.setStatus("Reserved");
+            if (table != null && !"Reserved".equalsIgnoreCase(table.getStatus().toString()
+
+            )) {
+                table.setStatus(TableStatus.RESERVED);
                 tableRepository.save(table);
             }
         }

@@ -22,7 +22,8 @@ public class Order {
     @Id
     private String id;
 
-    private String customerId;
+    @ManyToOne
+    private Customer customer;
 
     private LocalDateTime orderDate;
 
