@@ -120,13 +120,18 @@ public class OrderController {
         double discount = 0;
         if (discountCode != null && !discountCode.isEmpty()) {
             discount = discountService.applyDiscount(discountCode, total);
-            total -= discount;
         }
         model.addAttribute("discount", discount);
         model.addAttribute("total", total);
         model.addAttribute("orderId", orderId);
         model.addAttribute("discountCode", discountCode);
         return "pages/payment";
+    }
+
+    @GetMapping("/completed/{orderId}")
+    public String completedOrder(@PathVariable String orderId) {
+        orderService.completedOrder(orderId);
+        return "redirect:/orders/reviews/" + orderId;
     }
 
     @GetMapping("/manage")

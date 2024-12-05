@@ -40,7 +40,7 @@ public class TableController {
 
         if (orderOptional.isPresent()) {
             Order order = orderOptional.get();
-            if(!order.getOrderStatus().equals(OrderStatus.COMPLETED)) {
+            if (order.getOrderStatus() != null && order.getOrderStatus() != OrderStatus.COMPLETED) {
                 model.addAttribute("order", order);
                 model.addAttribute("orderItems", order.getOrderItems());
                 model.addAttribute("tableId", tableId);
@@ -48,11 +48,12 @@ public class TableController {
                 model.addAttribute("orderId", order.getId());
                 return "pages/tables/table-orders";
             }
-            return "/";
+            return "/error";
         } else {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String customerEmail = ((UserDetails) principal).getUsername();
             Order order = orderService.createOrder(tableId, customerEmail);
+
             return "redirect:/orders/menu?orderId=" + order.getId();
         }
     }

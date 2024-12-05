@@ -45,7 +45,9 @@ public class TableService {
     }
 
     public void updateTableStatus(Long tableId, TableStatus status) {
-        tableRepository.findById(tableId).get().setStatus(TableStatus.AVAILABLE);
+        DiningTable table = tableRepository.findById(tableId).get();
+        table.setStatus(status);
+        tableRepository.save(table);
     }
 
     public DiningTable createTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {
