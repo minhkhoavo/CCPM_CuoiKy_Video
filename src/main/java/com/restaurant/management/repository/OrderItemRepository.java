@@ -19,35 +19,41 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
             "(:status IS NULL OR o.orderStatus = :status)")
     List<OrderItem> findByKeywordAndStatus(@Param("keyword") String keyword, @Param("status") OrderStatus status);
 
-    //tinh số lượng dish trong tung ngay
-    @Query("SELECT d.name AS dishName, SUM(oi.quantity) AS totalQuantity"+
-            " FROM OrderItem oi JOIN oi.dish d "+
-            " WHERE oi.orderStatus = 'COMPLETED' "+
-            " GROUP BY d.name"+
-            " ORDER BY totalQuantity")
-    List<Object[]> getDishSalesStats();
+    //tinh số lượng dish 
+    @Query("SELECT oi.dish.name AS dishName, SUM(oi.quantity) AS totalQuantity"+
+            " FROM OrderItem oi join oi.order o"+
+            " WHERE oi.orderStatus = :status "+
+            " AND o.orderDate BETWEEN :startDate AND :endDate " +
+            " GROUP BY oi.dish.name"+
+            " ORDER BY totalQuantity DESC")
+    List<Object[]> getDishSalesStats(@Param("status") OrderStatus status,
+                                     @Param("startDate") LocalDateTime startDate,
+                                     @Param("endDate") LocalDateTime endDate);
 
     @Query("SELECT o.orderDate AS orderDate, " +
-            "       (SELECT SUM(oi.quantity * oi.price) " +
-            "        FROM OrderItem oi " +
-            "        WHERE oi.order.id = o.id) AS totalCost, " +
-            "       o.totalAmount AS totalRevenue " +
+            "       SUM(oi.cost * oi.quantity) AS totalCost, " +
+            "       (SUM(oi.price * oi.quantity) - SUM(oi.cost * oi.quantity)) AS totalProfit " +
             "FROM Order o " +
+            "JOIN OrderItem oi ON o.id = oi.order.id " +
             "WHERE o.orderDate BETWEEN :startDate AND :endDate " +
-            "GROUP BY o.orderDate, o.id " +
+            "GROUP BY o.orderDate " +
             "ORDER BY o.orderDate ASC")
-    List<Object[]> getCostAndRevenueByDateRange(@Param("startDate") LocalDateTime startDate,
+    List<Object[]> getProfitAndRevenueByDateRange(@Param("startDate") LocalDateTime startDate,
                                                 @Param("endDate") LocalDateTime endDate);
 
-//    @Query("SELECT o.orderDate AS orderDate, " +
-//            "       SUM(oi.quantity * oi.price) AS totalCost, " +
-//            "       SUM(o.totalAmount) AS totalRevenue " +
-//            "FROM Order o " +
-//            "LEFT JOIN OrderItem oi ON oi.order.id = o.id " +
-//            "WHERE o.orderDate BETWEEN :startDate AND :endDate " +
-//            "GROUP BY o.orderDate " +
-//            "ORDER BY o.orderDate ASC")
-//    List<Object[]> getCostAndRevenueByDateRange(@Param("startDate") LocalDateTime startDate,
-//                                                @Param("endDate") LocalDateTime endDate);
-
+    //thong ke mon an, so luong, gia tien giam dan theo trang thai
+    @Query("SELECT oi.dish.name AS dishName, SUM(oi.quantity) AS totalQuantity, SUM(oi.quantity * oi.price) AS totalSales " +
+            "FROM OrderItem oi " +
+            "JOIN oi.order o " +
+            "WHERE oi.orderStatus = :status " +
+            "AND o.orderDate BETWEEN :startDate AND :endDate " +
+            "GROUP BY oi.dish.name " +
+            "ORDER BY totalSales DESC   "+
+            "LIMIT 5"
+    )
+    List<Object[]> findDishSalesStatsBetweenDates(
+            @Param("status") OrderStatus status,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate
+    );
 }

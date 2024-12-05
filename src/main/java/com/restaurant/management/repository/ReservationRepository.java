@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -52,6 +53,14 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             @Param("today") LocalDate today,
             @Param("upTime") LocalTime upTime
     );
+
+    @Query("SELECT r.dateToCome AS date, r.status AS status, COUNT(r) AS count " +
+            "FROM Reservation r " +
+            "WHERE r.dateToCome BETWEEN :startDate AND :endDate " +
+            "GROUP BY r.dateToCome, r.status " +
+            "ORDER BY r.dateToCome ASC")
+    List<Object[]> countReservationsByStatusAndDate(@Param("startDate") LocalDate startDate,
+                                                    @Param("endDate") LocalDate endDate);
 
 }
 

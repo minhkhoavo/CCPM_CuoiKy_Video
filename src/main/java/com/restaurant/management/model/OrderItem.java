@@ -25,8 +25,14 @@ public class OrderItem {
     @JoinColumn(name = "dish_id")
     private Dish dish;
 
+    @Column(nullable = false)
     private Integer quantity;
+
+    @Column(nullable = false)
     private Double price;
+
+    @Column(nullable = false)
+    private Double cost;
 
     @Enumerated(EnumType.STRING)
     @Builder.Default

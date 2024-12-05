@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -146,5 +144,11 @@ public class ReservationService {
         reservationRepository.saveAll(expiredReservations);
         System.out.println("Updated " + expiredReservations.size() + " reservations to CANCELLED.");
         System.out.println("Updated " + upcomingReservations.size() + " reservations to READY.");
+    }
+
+    public List<Object[]> getReservationStatusCounts(LocalDate startDate, LocalDate endDate) {
+        List<Object[]> reservationData = reservationRepository.countReservationsByStatusAndDate(startDate, endDate);
+
+        return reservationData;
     }
 }

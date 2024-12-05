@@ -41,21 +41,20 @@ public class OrderItemService {
         return orderItemRepository.findByKeywordAndStatus(searchKeyword, status);
     }
 
-    public Map<String, Integer> getDishStatistics() {
-        List<Object[]> result = orderItemRepository.getDishSalesStats();
+    public Map<String, Integer> getDishStatistics(OrderStatus orderStatus, LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> result = orderItemRepository.getDishSalesStats(orderStatus, startDate, endDate);
         Map<String, Integer> dishStatistics = new HashMap<>();
         for(Object[] row : result){
             String dishName = (String) row[0];
             Integer quantity = ((Number) row[1]).intValue();
-//            Integer quantity = ((Number) stat[1]).intValue();
             dishStatistics.put(dishName, quantity);
         }
         return dishStatistics;
     }
 
     // dashboard chi phi va loi nhuan
-    public Map<String, Object> getCostAndRevenueData(LocalDateTime startDate, LocalDateTime endDate) {
-        List<Object[]> results = orderItemRepository.getCostAndRevenueByDateRange(startDate, endDate);
+    public Map<String, Object> getRevenueAndProfitData(LocalDateTime startDate, LocalDateTime endDate) {
+        List<Object[]> results = orderItemRepository.getProfitAndRevenueByDateRange(startDate, endDate);
 
         List<String> dates = new ArrayList<>();
         List<Double> totalCosts = new ArrayList<>();
@@ -73,6 +72,13 @@ public class OrderItemService {
         response.put("totalRevenues", totalRevenues);
 
         return response;
+    }
+
+    public List<Object[]> getDishSalesStats(OrderStatus status, LocalDateTime startDate, LocalDateTime endDate) {
+        // table tên dish, so luong, tong price giam dan
+        List<Object[]> results = orderItemRepository.findDishSalesStatsBetweenDates(status, startDate, endDate);
+
+        return results;
     }
 
 }

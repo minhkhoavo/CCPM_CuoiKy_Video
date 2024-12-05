@@ -4,10 +4,12 @@ import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Inventory;
 import com.restaurant.management.model.Recipe;
 import com.restaurant.management.repository.RecipeRepository;
+import com.sun.jna.platform.win32.OaIdl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.*;
 
 @Transactional
@@ -19,10 +21,15 @@ public class RecipeService {
     @Autowired
     private InventoryService inventoryService;
 
+    @Autowired
+    private DishService dishService;
+
     //xoa cong thuc cu va chi them nguyen lieu co so luong > 0
-    public void updateRecipesForDish(Dish dish, Map<String, String> params) {
+    public void updateRecipesForDish(Dish dish, Map<String, String> params) throws IOException {
         //tao danh sach luu cong thuc moi
         List<Recipe> recipesToUpdate = new ArrayList<>();
+
+        Double costDish = 0.0;
 
         for(Map.Entry<String, String> entry : params.entrySet()) {
             //lay inventoryId, quantity
@@ -42,6 +49,9 @@ public class RecipeService {
                         recipe.setInventory(inventory);
                         recipe.setQuantityRequired(quantity);
                         recipesToUpdate.add(recipe);
+
+                        // tinh chi phi cua mon an
+                        costDish += inventory.getUnitPrice() * quantity;
                     }
                 }
                 catch(NumberFormatException e){
@@ -49,6 +59,9 @@ public class RecipeService {
                 }
             }
         }
+
+        dish.setCost(costDish);
+        dishService.saveDish(dish, null);
 
         recipeRepository.deleteByDish(dish);
         recipeRepository.saveAll(recipesToUpdate);

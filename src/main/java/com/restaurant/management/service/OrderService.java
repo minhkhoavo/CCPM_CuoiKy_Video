@@ -73,6 +73,7 @@ public class OrderService {
             orderItem.setDish(dish);
             orderItem.setQuantity(quantity);
             orderItem.setPrice(dish.getPrice());
+            orderItem.setCost(dish.getCost());
             orderItemRepository.save(orderItem);
         }
     }
@@ -151,9 +152,9 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public Map<String, Integer> getOrderStatistics() {
+    public Map<String, Integer> getOrderStatistics(LocalDateTime startDate, LocalDateTime endDate) {
         // Lấy danh sách kết quả từ truy vấn
-        List<Object[]> stats = orderRepository.countOrdersByOrderDay();
+        List<Object[]> stats = orderRepository.countOrdersByOrderDay(startDate, endDate);
         Map<String, Integer> orderStats = new LinkedHashMap<>();
 
         for (Object[] stat : stats) {
