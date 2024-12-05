@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -101,6 +102,7 @@ public class OrderService {
         updateTotalAmount(order);
     }
 
+    @Transactional
     public List<OrderItem> getOrderDetailByOrderId(String orderId) {
         return orderRepository.findOrderDetailByOrderId(orderId);
     }

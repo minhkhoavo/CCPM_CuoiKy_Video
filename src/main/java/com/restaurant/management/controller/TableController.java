@@ -1,6 +1,7 @@
 package com.restaurant.management.controller;
 
 import com.google.zxing.WriterException;
+import com.restaurant.management.enums.OrderStatus;
 import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.model.Order;
 import com.restaurant.management.service.OrderService;
@@ -12,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.http.HttpRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +37,21 @@ public class TableController {
         Optional<Order> orderOptional = orderService.findOrderByTableId(tableId);
 
         if (orderOptional.isPresent()) {
-            model.addAttribute("order", orderOptional.get());
-            model.addAttribute("orderItems", orderOptional.get().getOrderItems());
-            return "pages/tables/table-orders";
+            Order order = orderOptional.get();
+            if(!order.getOrderStatus().equals(OrderStatus.COMPLETED)) {
+                model.addAttribute("order", order);
+                model.addAttribute("orderItems", order.getOrderItems());
+                model.addAttribute("tableId", tableId);
+                model.addAttribute("tableNumber", tableService.getTableNumberByTableId(tableId));
+                model.addAttribute("orderId", order.getId());
+                return "pages/tables/table-orders";
+            }
+            return "/";
         } else {
-            return "redirect:/menu";
+            return "/";
         }
     }
+
     @PostMapping("/add")
     public String addTable(@ModelAttribute DiningTable diningTable, HttpServletRequest request) {
         System.out.println(diningTable);

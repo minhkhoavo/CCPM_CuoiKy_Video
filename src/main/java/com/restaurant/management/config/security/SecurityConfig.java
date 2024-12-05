@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -35,6 +36,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers("/login", "/resources/**", "/css/**").permitAll()
+                    .requestMatchers("/orders/sse/**").permitAll()
                     .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
@@ -54,6 +56,7 @@ public class SecurityConfig {
                     .maximumSessions(1)
                     .maxSessionsPreventsLogin(false)
             );
+
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }

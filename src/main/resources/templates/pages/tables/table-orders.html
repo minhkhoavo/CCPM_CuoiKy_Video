@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Đặt món - Bàn số 2</title>
+    <title th:text="'Orders - Table Number ' + ${tableNumber}"></title>
 </head>
 <body class="bg-gray-100 min-h-screen">
 <div class="container mx-auto px-4 py-8">
     <!-- Header Section -->
+    <input id="orderId" th:value="${orderId}" hidden>
     <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
         <div class="flex justify-between items-center">
             <div>
-                <h1 class="text-2xl font-bold text-gray-800" th:text="'Bàn số ' + ${order.diningTable.tableNumber}"></h1>
-                <p class="text-gray-600" th:text="'Mã đơn: #' + ${order.id}"></p>
+                <h1 class="text-2xl font-bold text-gray-800" th:text="'Table Number ' + ${order.diningTable.tableNumber}"></h1>
+                <p class="text-gray-600" th:text="'Order ID: #' + ${order.id}"></p>
             </div>
             <div class="text-right">
-                <p class="text-gray-600" th:text="'Thời gian: ' + ${order.orderDate.hour} + ':' + ${order.orderDate.minute}"></p>
-                <p class="text-gray-600" th:text="'Ngày: ' + ${order.orderDate.dayOfMonth} + '-' + ${order.orderDate.monthValue} + '-' + ${order.orderDate.year}"></p>
+                <p class="text-gray-600" th:text="'Time: ' + ${order.orderDate.hour} + ':' + ${order.orderDate.minute}"></p>
+                <p class="text-gray-600" th:text="'Date: ' + ${order.orderDate.dayOfMonth} + '-' + ${order.orderDate.monthValue} + '-' + ${order.orderDate.year}"></p>
             </div>
         </div>
     </div>
@@ -47,11 +48,11 @@
                     <td class="px-6 py-4 whitespace-nowrap" th:text="${item.dish.price} + 'VND'"></td>
                     <td class="px-6 py-4 whitespace-nowrap" th:text="${item.quantity * item.dish.price} + 'VND'"></td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <!--<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                              th:class="${item.status == 'Đang chế biến' ? 'bg-green-100 text-green-800' : item.status == 'Đang chuẩn bị' ? 'bg-yellow-100 text-yellow-800' : ''}"
-                              th:text="${item.status}"></span>-->
-                    </td>
-                </tr>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          th:class="${item.orderStatus.name() == 'COMPLETED' ? 'bg-green-100 text-green-800' : item.orderStatus.name() == 'PENDING' ? 'bg-yellow-100 text-yellow-800' : ''}"
+                          th:text="${item.orderStatus.name()}"></span>
+                            </td>
+                        </tr>
                 </tbody>
             </table>
         </div>
@@ -84,7 +85,12 @@
             Thanh toán
         </button>
     </div>
-
 </div>
+<script>
+    setInterval(function() {
+        location.reload();
+    }, 5000);
+</script>
+
 </body>
 </html>

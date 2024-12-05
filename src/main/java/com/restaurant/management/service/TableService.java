@@ -17,9 +17,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.http.HttpRequest;
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +36,7 @@ public class TableService {
         return tableRepository.findById(id);
     }
 
-    public Long getTableNumberTableId(Long tableId) {
+    public Long getTableNumberByTableId(Long tableId) {
         return tableRepository.getTableNumberById(tableId);
     }
 
