@@ -61,8 +61,7 @@ public class InventoryController {
     @PostMapping("/edit/{id}")
     public String editCustomer(@PathVariable Long id, @ModelAttribute Inventory inventory) {
         try {
-            inventory.setInventoryId(id);
-            Inventory update = inventoryService.updateInventory(inventory);
+            Inventory update = inventoryService.updateInventory(inventory, id);
         } catch (Exception e) {
             e.printStackTrace();
             return "error";
