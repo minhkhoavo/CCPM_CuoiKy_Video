@@ -10,6 +10,8 @@ import com.restaurant.management.model.DiningTable;
 import com.restaurant.management.repository.TableRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -32,6 +34,11 @@ public class TableService {
         return tableRepository.findAll();
     }
 
+    public Page<DiningTable> getTablesWithPagination(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return tableRepository.findAll(pageRequest);
+    }
+
     public Optional<DiningTable> getTableById(Long id) {
         return tableRepository.findById(id);
     }
@@ -45,7 +52,9 @@ public class TableService {
     }
 
     public void updateTableStatus(Long tableId, TableStatus status) {
-        tableRepository.findById(tableId).get().setStatus(TableStatus.AVAILABLE);
+        DiningTable table = tableRepository.findById(tableId).get();
+        table.setStatus(status);
+        tableRepository.save(table);
     }
 
     public DiningTable createTable(DiningTable diningTable, HttpServletRequest request) throws WriterException, IOException {

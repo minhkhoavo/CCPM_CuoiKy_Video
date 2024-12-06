@@ -4,6 +4,8 @@ import com.restaurant.management.model.Customer;
 import com.restaurant.management.model.Supplier;
 import com.restaurant.management.repository.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,11 @@ public class SupplierService {
     public List<Supplier> getAllSuppliers() {
         return supplierRepository.findAll();
     }
+    public Page<Supplier> getSuppliersWithPagination(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return supplierRepository.findAll(pageRequest);
+    }
+
 
     public Supplier saveSupplier(Supplier supplier) {return supplierRepository.save(supplier);}
 

@@ -37,13 +37,15 @@ public class OrderService {
 
         diningTable.setStatus(TableStatus.OCCUPIED);
         diningTable = tableService.save(diningTable);
-        Customer customer = new Customer();
-        if(!customerService.getCustomerByEmail(customerEmail).isPresent()) {
-            customer = customerService.getCustomerByEmail("noinfo@gmail.com").get();
+        Optional<Customer> customer = customerService.getCustomerByEmail(customerEmail);
+
+        if (!customer.isPresent()) {
+            customer = customerService.getCustomerByEmail("noinfo@default.com");
         }
+        String customerId = customer.get().getCustomerId().toString();
         Order order = Order.builder()
-                .id(customer.getCustomerId().toString())
-                .customer(customer)
+                .id(generateOrderID(customerId))
+                .customer(customer.get())
                 .orderDate(LocalDateTime.now())
                 .diningTable(diningTable)
                 .totalAmount(0.0)
@@ -76,6 +78,7 @@ public class OrderService {
             orderItem.setCost(dish.getCost());
             orderItemRepository.save(orderItem);
         }
+        order = getOrderById(orderId);
         updateTotalAmount(order);
     }
 
@@ -146,6 +149,7 @@ public class OrderService {
     public void completedOrder(String orderId) {
         Order order = getOrderById(orderId);
         order.setOrderStatus(OrderStatus.COMPLETED);
+        orderRepository.save(order);
         tableService.updateTableStatus(order.getDiningTable().getId(), TableStatus.AVAILABLE);
     }
 

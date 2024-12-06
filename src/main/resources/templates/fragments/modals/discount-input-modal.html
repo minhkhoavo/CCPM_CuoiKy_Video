@@ -3,13 +3,15 @@
   <form id="modalForm" method="post" th:action="@{/discounts}" th:object="${discount}">
     <!-- Form Fields -->
     <div class="space-y-4">
+      <input th:field="*{id}" hidden="hidden">
+      <input th:field="*{timesUsed}" hidden="hidden">
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Discount Code</label>
         <input
-                type="text" readonly
+                type="text"
                 th:field="*{code}"
                 placeholder="Enter discount code"
-                class="bg-gray-200 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500" />
       </div>
 
       <div>

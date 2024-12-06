@@ -3,6 +3,8 @@ package com.restaurant.management.service;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,11 @@ public class EmployeeService {
 
     public List<Employee> getAllEmployees() {
         return employeeRepository.findAll();
+    }
+
+    public Page<Employee> getEmployeesWithPagination(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return employeeRepository.findAll(pageRequest);
     }
 
     public Optional<Employee> getEmployeeById(Long id) {

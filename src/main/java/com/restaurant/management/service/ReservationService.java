@@ -136,9 +136,7 @@ public class ReservationService {
 
         for (Reservation reservation : upcomingReservations) {
             DiningTable table = reservation.getTable();
-            if (table != null && !"Reserved".equalsIgnoreCase(table.getStatus().toString()
-
-            )) {
+            if (table != null && !"Reserved".equalsIgnoreCase(table.getStatus().toString())) {
                 table.setStatus(TableStatus.RESERVED);
                 tableRepository.save(table);
             }

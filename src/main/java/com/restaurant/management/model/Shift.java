@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,6 +29,7 @@ public class Shift {
     private Integer available;
     @Column(nullable = false)
     private int maxRegistration;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate workingDate;
 
     // Fixed Shitf
@@ -41,7 +43,7 @@ public class Shift {
         if (maxRegistration == 0) {
             maxRegistration = 999;
         }
-        available = maxRegistration;
+        available = 0;
         if (workingDate == null) {
             workingDate = LocalDate.now();
         }

@@ -4,6 +4,7 @@ import com.restaurant.management.model.Dish;
 import com.restaurant.management.service.CategoryService;
 import com.restaurant.management.service.DishService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,10 +18,14 @@ public class DishController {
     @Autowired
     private CategoryService categoryService;
 
-    // Hiển thị danh sách các món ăn
     @GetMapping
-    public String listDishes(Model model) {
-        model.addAttribute("dishes", dishService.getAllDishes());
+    public String listDishes(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "5") int size,
+                             Model model) {
+        Page<Dish> dishPage = dishService.getDishesWithPagination(page, size);
+        model.addAttribute("dishes", dishPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", dishPage.getTotalPages());
         model.addAttribute("categories", categoryService.getAllCategories());
         return "pages/admin/dish";
     }

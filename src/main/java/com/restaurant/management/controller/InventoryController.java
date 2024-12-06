@@ -7,6 +7,7 @@ import com.restaurant.management.service.CustomerService;
 import com.restaurant.management.service.InventoryService;
 import com.restaurant.management.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,26 +25,20 @@ public class InventoryController {
     private SupplierService supplierService;
 
     @GetMapping
-    public String listInventory(Model model) {
-        model.addAttribute("inventories", inventoryService.getAllInventory());
+    public String listInventory(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model) {
+        Page<Inventory> inventoryPage = inventoryService.getInventoryWithPagination(page, size);
+
+        model.addAttribute("inventories", inventoryPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", inventoryPage.getTotalPages());
         model.addAttribute("suppliers", supplierService.getAllSuppliers());
 
-        // return "pages/customer/list";
         return "pages/admin/Inventory/inventoryList";
-
-//        List<Inventory> inventories = inventoryService.getAllInventory();
-//        List<Supplier> suppliers = supplierService.getAllSuppliers();
-//        Map<Long, String> supplierMap = suppliers.stream()
-//                .collect(Collectors.toMap(Supplier::getSupplierId, Supplier::getName));
-//
-//        // Truyền cả inventories và supplierMap vào model
-//        model.addAttribute("inventories", inventories);
-//        model.addAttribute("suppliers", inventories);
-//
-//        model.addAttribute("supplierMap", supplierMap);
-//        return "pages/admin/Inventory/inventoryList";
-
     }
+
 
     @GetMapping("/delete/{id}")
     public String deleteInventory(@PathVariable Long id) {
