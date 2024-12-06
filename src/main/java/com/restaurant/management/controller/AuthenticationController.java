@@ -1,5 +1,7 @@
 package com.restaurant.management.controller;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,9 @@ public class AuthenticationController {
 
     @GetMapping("/profile")
     public String viewDashboard(Model model) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String customerEmail = ((UserDetails) principal).getUsername();
+        model.addAttribute("customerEmail", customerEmail);
         return "pages/auth/profile";
     }
 

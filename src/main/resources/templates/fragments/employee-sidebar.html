@@ -11,30 +11,29 @@
     <div class="flex flex-col h-full">
       <!-- Logo -->
       <div class="p-4 flex items-center justify-center">
-        <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">K</div>
         <span class="ml-2 hidden text-xl font-bold text-gray-800 sidebar-expanded">Restaurant</span>
       </div>
 
       <!-- Navigation -->
       <nav class="mt-4 flex flex-col space-y-2">
         <a href="/profile" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
-          <i class="fas fa-home w-6 text-center"></i>
+          <i class="fas fa-home w-6"></i>
           <span class="hidden ml-3 sidebar-expanded">Dashboard</span>
         </a>
         <a href="/shifts/register" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
-          <i class="fas fa-home w-6 text-center"></i>
+          <i class="fas fa-sun w-6"></i>
           <span class="hidden ml-3 sidebar-expanded">Register Shift</span>
         </a>
         <a href="/schedules/employee-schedule" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
-          <i class="fas fa-home w-6 text-center"></i>
-          <span class="hidden ml-3 sidebar-expanded">Register Shift</span>
+          <i class="fas fa-calendar-days w-6"></i>
+          <span class="hidden ml-3 sidebar-expanded">View Schedule</span>
         </a>
         <a sec:authorize="hasRole('STAFF')" href="/orders/manage" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
           <i class="fas fa-box w-6 text-center"></i>
           <span class="hidden ml-3 sidebar-expanded">Tables Order</span>
         </a>
         <a sec:authorize="hasRole('CHEF')" href="/order-item" class="flex items-center justify-center p-2 text-gray-600 hover:bg-gray-100 rounded-md transition">
-          <i class="fas fa-box w-6 text-center"></i>
+          <i class="fa-solid fa-bowl-rice"></i>
           <span class="hidden ml-3 sidebar-expanded">Orders</span>
         </a>
       </nav>

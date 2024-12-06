@@ -38,7 +38,7 @@ public class OrderController {
                            @RequestParam(value = "category", required = false) Long categoryId) {
         Order order = orderService.getOrderById(orderId);
         if(order.getOrderStatus().equals(OrderStatus.COMPLETED)) {
-            return "redirect:/reviews/" + orderId;
+            return "redirect:/orders/reviews/" + orderId;
         }
 
         model.addAttribute("categories", categoryService.getAllCategories());

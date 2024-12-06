@@ -8,7 +8,7 @@
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold">Reservations Dashboard</h2>
             <a th:href="@{/reservations/booking}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 flex items-center">
-                <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+                <i class="fa-solid fa-plus w-4 h-4 mr-2"></i>
                 New Reservation
             </a>
         </div>
@@ -43,7 +43,7 @@
                 <input type="text" name="search" th:value="${param.search}"
                        placeholder="Search reservations..."
                        class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
-                <i data-feather="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                <i class="fa-solid fa-plus absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"></i>
             </div>
 
             <div>
@@ -117,7 +117,7 @@
                 <div class="text-sm">
                     <div class="text-gray-600 mb-1">Contact:</div>
                     <div class="flex items-center">
-                        <i data-feather="mail" class="w-4 h-4 mr-2 text-gray-400"></i>
+                        <i class="fa-regular fa-envelope w-4 h-4 mr-2 text-gray-400"></i>
                         <span class="font-medium" th:text="${reservation.email}">Email</span>
                     </div>
                 </div>
@@ -126,18 +126,18 @@
             <div class="flex space-x-3 border-t pt-4">
                 <a th:href="@{/reservations/edit/{id}(id=${reservation.id})}"
                    class="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
-                    <i data-feather="edit" class="w-4 h-4 mr-2"></i>
+                    <i class="fa-regular fa-pen-to-square w-4 h-4 mr-2"></i>
                     Edit
                 </a>
                 <a th:href="@{/reservations/cancel/{id}(id=${reservation.id})}"
                    onclick="return confirm('Are you sure you want to cancel this reservation?')"
                    class="flex items-center py-2 text-red-600 text-sm font-medium rounded-md hover:bg-red-50">
-                    <i data-feather="trash-2" class="w-4 h-4 mr-2"></i>
+                    <i class="fa-regular fa-trash-can w-4 h-4 mr-2"></i>
                     Delete
                 </a>
                 <a th:href="@{/reservations/accept/{id}(id=${reservation.id})}"
                    class="flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-md hover:bg-green-700">
-                    <i data-feather="check-circle" class="w-4 h-4 mr-2"></i>
+                    <i class="fa-regular fa-circle-check w-4 h-4 mr-2"></i>
                     Accept
                 </a>
             </div>
@@ -147,19 +147,15 @@
     <!-- Empty State -->
     <div th:if="${#lists.isEmpty(reservations)}" class="text-center py-12">
         <div class="text-gray-400 mb-4">
-            <i data-feather="calendar" class="w-12 h-12 mx-auto"></i>
+            <i class="fa-regular fa-calendar w-12 h-12 mx-auto"></i>
         </div>
         <h3 class="text-lg font-medium text-gray-900 mb-2">No reservations found</h3>
         <p class="text-gray-500">Start by creating a new reservation.</p>
         <a th:href="@{/reservations/create}" class="mt-4 inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-            <i data-feather="plus" class="w-4 h-4 mr-2"></i>
+            <i class="fa-solid fa-plus w-4 h-4 mr-2"></i>
             New Reservation
         </a>
     </div>
 </div>
-
-<script>
-    feather.replace();
-</script>
 </body>
 </html>
