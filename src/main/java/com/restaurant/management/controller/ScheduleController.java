@@ -1,12 +1,16 @@
 package com.restaurant.management.controller;
 
+import com.restaurant.management.model.Employee;
 import com.restaurant.management.model.Schedule;
+import com.restaurant.management.service.EmployeeService;
 import com.restaurant.management.service.ScheduleService;
 import com.restaurant.management.service.SchedulingSolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +24,8 @@ import java.util.Map;
 public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
+    @Autowired
+    private EmployeeService employeeService;
 
     @GetMapping("/list")
     public ResponseEntity<Map<String, List<Schedule>>> getSchedules(
@@ -85,5 +91,47 @@ public class ScheduleController {
         scheduleService.autoSchedulingShitf(startDate, "STAFF", staffMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
         scheduleService.autoSchedulingShitf(startDate, "CHEF", chefMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
         return ResponseEntity.ok("success");
+    }
+
+    @PostMapping("/completed")
+    public ResponseEntity<Void> markAsCompletedSchedule(@RequestBody Map<String, Long> requestBody) {
+        Long scheduleId = requestBody.get("scheduleId");
+        scheduleService.updateScheduleStatus(scheduleId, "COMPLETED");
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/published")
+    public ResponseEntity<String> publishAllSchedules() {
+        scheduleService.publishAllSchedules();
+        return ResponseEntity.ok("All schedules have been published successfully");
+    }
+
+    @GetMapping("/employee-schedule")
+    public String getEmployeeSchedule(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            Model model
+    ) {
+        // If no dates provided, default to current month
+        if (startDate == null || endDate == null) {
+            LocalDate now = LocalDate.now();
+            startDate = now.withDayOfMonth(1);
+            endDate = now.withDayOfMonth(now.lengthOfMonth());
+        }
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String customerEmail = ((UserDetails) principal).getUsername();
+        Employee employee = employeeService.getEmployeeByEmail(customerEmail);
+
+        List<Schedule> schedules = scheduleService.findSchedulesByEmployeeAndDateRange(
+                employee.getId(), startDate, endDate
+        );
+
+        model.addAttribute("employee", employee);
+        model.addAttribute("schedules", schedules);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
+        return "pages/schedule/employee-schedule";
     }
 }

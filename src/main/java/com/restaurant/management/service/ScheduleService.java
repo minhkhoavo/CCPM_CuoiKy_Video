@@ -76,6 +76,14 @@ public class ScheduleService {
         return scheduleRepository.findById(scheduleId);
     }
 
+    public void updateScheduleStatus(Long scheduleId, String status) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new RuntimeException("Schedule not found with id: " + scheduleId));
+
+        schedule.setStatus(status);
+        scheduleRepository.save(schedule);
+    }
+
     public Schedule updateSchedule(Long scheduleId, LocalDate workingDate, Long employeeId) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found with id: " + scheduleId));
@@ -151,5 +159,24 @@ public class ScheduleService {
                 staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
 
         saveSchedule(solution, LocalDate.parse(startDate), LocalDate.parse(startDate).plusDays(7), role);
+    }
+
+    public void publishAllSchedules() {
+        List<Schedule> schedules = scheduleRepository.findAll();
+
+        schedules.forEach(schedule -> {
+            schedule.setStatus("PUBLISHED");
+        });
+
+        scheduleRepository.saveAll(schedules);
+    }
+
+    public List<Schedule> findSchedulesByEmployeeAndDateRange(Long employeeId, LocalDate startDate, LocalDate endDate) {
+        return scheduleRepository.findByEmployeeIdAndWorkingDateBetweenAndStatus(
+                employeeId,
+                startDate,
+                endDate,
+                "PUBLISHED"
+        );
     }
 }

@@ -15,6 +15,9 @@
         <a th:href="@{/schedules/config}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
             Auto Scheduling
         </a>
+        <a th:href="@{/schedules/published}" class="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+            Published
+        </a>
         <div class="flex gap-3">
             <button onclick="navigateWeek('prev')" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
                 Previous
@@ -150,19 +153,26 @@
                                  data-date="${dateKey}"
                                  data-employee="${employee.id}">
                                 ${employeeSchedules.map(schedule => `
-                                    <div class="shift-block mb-2 p-2 rounded ${getEmployeeBackgroundColor(employee.id)} text-sm cursor-move"
+                                    <div class="shift-block mb-2 p-2 rounded ${getEmployeeBackgroundColor(employee.id)} text-sm cursor-move flex items-center justify-between"
                                          draggable="true"
                                          data-schedule-id="${schedule.scheduleId}">
-                                        ${schedule.shift?.shiftName ?? "Custom Shift"}<br>
-                                        ${schedule.startTime} - ${schedule.endTime}
-                                        <div class="text-xs text-gray-600">Status: ${schedule.status}</div>
-                                        <button onclick="deleteSchedule(${schedule.scheduleId})"
-                                                class="ml-2 text-gray-500 hover:text-red-500">×</button>
+                                        <div>
+                                            ${schedule.shift?.shiftName ?? "Custom Shift"}<br>
+                                            ${schedule.startTime} - ${schedule.endTime}
+                                            <div class="text-xs text-gray-600">Status: ${schedule.status}</div>
+                                        </div>
+                                        <div class="flex items-center space-x-2 flex-row">
+                                            <button onclick="markAsCompletedSchedule(${schedule.scheduleId})"
+                                                    class="text-green-500 hover:text-green-700">Y
+                                            </button>
+                                            <button onclick="deleteSchedule(${schedule.scheduleId})"
+                                                    class="text-gray-500 hover:text-red-500">×</button>
+                                        </div>
                                     </div>
                                 `).join('')}
                             </div>
                             <button onclick="addShift('${dateKey}', ${employee.id})"
-                                    class="text-sm text-center text-blue-600 hover:text-blue-800">
+                                    class="text-sm text-center text-blue-600 hover:text-blue-800 w-full">
                                 + Add Shift
                             </button>
                         </td>
@@ -238,6 +248,26 @@
             }
         }
 
+        async function markAsCompletedSchedule(scheduleId) {
+            try {
+                const response = await fetch('/schedules/completed', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ scheduleId })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to post completed schedule');
+                }
+
+                await fetchScheduleData();
+            } catch (error) {
+                console.error('Error mark as completed schedule:', error);
+            }
+        }
+
         async function addShift(date, employeeId) {
             const modal = document.getElementById('shiftModal');
             const overlay = document.getElementById('modalOverlay');
@@ -257,7 +287,7 @@
 
             // Generate options dynamically
             const shiftOptions = shifts.map(shift => `
-                <option value="${shift.id}" data-start="${shift.startTime}" data-end="${shift.endTime}">
+                <option value="${shift.shiftId}" data-start="${shift.startTime}" data-end="${shift.endTime}">
                     ${shift.shiftName} (${shift.startTime} - ${shift.endTime})
                 </option>
             `).join('');
