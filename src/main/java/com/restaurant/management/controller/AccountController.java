@@ -122,7 +122,7 @@ public class AccountController {
         return "redirect:/login";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String showHomePage(Model model){
         List<Dish> dishes = dishService.getAllDishes();
         model.addAttribute("dishes", dishes);
