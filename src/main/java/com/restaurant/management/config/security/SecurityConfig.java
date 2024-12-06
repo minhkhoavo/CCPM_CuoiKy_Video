@@ -38,7 +38,8 @@ public class SecurityConfig {
             "/verify-otp",
             "/forgot-password",
             "/resources/**", "/css/**",
-            "/orders/sse/**"
+            "/orders/sse/**",
+            "/home"
     };
 
 
