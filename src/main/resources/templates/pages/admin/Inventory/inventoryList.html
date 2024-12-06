@@ -68,7 +68,7 @@
                                         th:data-unit="${inventory.unit}"
                                         th:data-quantity="${inventory.quantity}"
                                         th:data-unitPrice="${inventory.unitPrice}"
-                                        th:data-supplierId="${inventory.getSupplier().getSupplierId()}"
+                                        th:data-supplier="${inventory.getSupplier().getSupplierId()}"
                                         th:data-description="${inventory.description}"
                                         onclick="openModal(this)"
                                         class="text-indigo-600 hover:text-indigo-900">
@@ -134,7 +134,7 @@
                     unit: button.getAttribute('data-unit') || "",
                     quantity: button.getAttribute('data-quantity') || "",
                     unitPrice: button.getAttribute('data-unitPrice') || "",
-                    supplierId: button.getAttribute('data-supplierId') || "",
+                    supplier: button.getAttribute('data-supplier') || "",
                     description: button.getAttribute('data-description') || "",
                 };
                 console.log("Button clicked for action:", data);

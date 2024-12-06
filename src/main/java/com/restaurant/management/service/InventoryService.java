@@ -37,6 +37,8 @@ public class InventoryService {
     }
 
     public Inventory saveInventory(Inventory inventory) {
+        Supplier supplier = supplierService.getSupplierById(inventory.getSupplier().getSupplierId());
+        inventory.setSupplier(supplier);
         return inventoryRepository.save(inventory);
     }
 
