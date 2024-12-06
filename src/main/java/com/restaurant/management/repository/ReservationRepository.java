@@ -46,7 +46,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
         SELECT r 
         FROM Reservation r 
         WHERE r.dateToCome = :today 
-          AND r.status = 'PENDING'
+          AND r.status = 'ACCEPTED'
           AND r.timeToCome <= :upTime
     """)
     List<Reservation> findReservationsUpcoming(
