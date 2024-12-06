@@ -136,6 +136,7 @@ public class ScheduleService {
                                 .startTime(shiftEntity.getStartTime())
                                 .endTime(shiftEntity.getEndTime())
                                 .workingDate(startDate.plusDays(day))
+                                .status("DRAFF")
                                 .build();
 
                         scheduleRepository.save(schedule);
@@ -155,7 +156,7 @@ public class ScheduleService {
         int numRegularShift = shiftService.getRegularShifts().size();
         int numEmployee = employeeService.findEmployeeIdsByPosition(role).size();
         SchedulingSolver solver = new SchedulingSolver();
-        int[][][] solution = solver.solveConstraint(numEmployee,numRegularShift, 7,
+        int[][][] solution = solver.solveConstraint(numEmployee, numRegularShift, 7,
                 staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
 
         saveSchedule(solution, LocalDate.parse(startDate), LocalDate.parse(startDate).plusDays(7), role);
