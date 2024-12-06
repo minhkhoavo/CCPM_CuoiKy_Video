@@ -8,6 +8,7 @@ import com.restaurant.management.service.OrderService;
 import com.restaurant.management.service.TableService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -28,12 +29,17 @@ public class TableController {
     private OrderService orderService;
 
     @GetMapping
-    public String listTables(Model model) {
-        List<DiningTable> diningTables = tableService.getAllTables();
-        model.addAttribute("tables", diningTables);
+    public String listTables(@RequestParam(defaultValue = "0") int page,
+                             @RequestParam(defaultValue = "5") int size,
+                             Model model) {
+        Page<DiningTable> tablePage = tableService.getTablesWithPagination(page, size);
+        model.addAttribute("tables", tablePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", tablePage.getTotalPages());
         model.addAttribute("diningTable", new DiningTable());
         return "pages/tables/tables";
     }
+
     @GetMapping("/{tableId}")
     public String getOrderByTable(@PathVariable("tableId") Long tableId, Model model) {
         Optional<Order> orderOptional = orderService.findOrderByTableId(tableId);

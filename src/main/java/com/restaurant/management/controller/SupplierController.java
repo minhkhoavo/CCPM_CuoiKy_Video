@@ -6,6 +6,7 @@ import com.restaurant.management.model.Supplier;
 import com.restaurant.management.service.CustomerService;
 import com.restaurant.management.service.SupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,16 @@ public class SupplierController {
     private SupplierService supplierService;
 
     @GetMapping
-    public String listSupplier(Model model) {
-        model.addAttribute("suppliers", supplierService.getAllSuppliers());
-        // return "pages/customer/list";
+    public String listSupplier(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size,
+                               Model model) {
+        Page<Supplier> supplierPage = supplierService.getSuppliersWithPagination(page, size);
+        model.addAttribute("suppliers", supplierPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", supplierPage.getTotalPages());
         return "pages/admin/Supplier/supplierList";
     }
+
 
     @PostMapping("/add")
     public String addSupplier(@ModelAttribute Supplier supplier) {

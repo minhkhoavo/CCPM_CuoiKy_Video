@@ -3,6 +3,7 @@ package com.restaurant.management.controller;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,11 +18,25 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+//    @GetMapping
+//    public String listEmployees(Model model) {
+//        model.addAttribute("employees", employeeService.getAllEmployees());
+//        return "pages/employee/list";
+//    }
+
     @GetMapping
-    public String listEmployees(Model model) {
-        model.addAttribute("employees", employeeService.getAllEmployees());
+    public String listEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
+
+        Page<Employee> employeePage = employeeService.getEmployeesWithPagination(page, size);
+        model.addAttribute("employees", employeePage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", employeePage.getTotalPages());
         return "pages/employee/list";
     }
+
 
     @GetMapping("/list")
     public ResponseEntity<List<Employee>> listEmployees() {
@@ -40,7 +55,6 @@ public class EmployeeController {
             return "redirect:/employees";
         }
     }
-
 
     @PostMapping("/edit/{id}")
     public String updateEmployee(@PathVariable Long id,

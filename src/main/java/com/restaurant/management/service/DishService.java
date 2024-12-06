@@ -7,6 +7,8 @@ import com.restaurant.management.repository.DishRepository;
 import com.restaurant.management.repository.InventoryRepository;
 import com.restaurant.management.repository.RecipeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +34,12 @@ public class DishService {
     public List<Dish> getAllDishes() {
         return dishRepository.findAll();
     }
+
+    public Page<Dish> getDishesWithPagination(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return dishRepository.findAll(pageRequest);
+    }
+
 
     public Dish findById(Long id) {
         return dishRepository.findById(id)

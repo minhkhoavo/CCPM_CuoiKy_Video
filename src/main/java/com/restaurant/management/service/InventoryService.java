@@ -5,6 +5,8 @@ import com.restaurant.management.model.Inventory;
 import com.restaurant.management.repository.InventoryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +18,13 @@ public class InventoryService {
     @Autowired
     public InventoryRepository inventoryRepository;
 
-    public List<Inventory> getAllInventory(){
+    public List<Inventory> getAllInventory() {
         return inventoryRepository.findAll();
+    }
+
+    public Page<Inventory> getInventoryWithPagination(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return inventoryRepository.findAll(pageRequest);
     }
 
     public void deleteInventory(Long id) {

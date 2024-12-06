@@ -3,6 +3,7 @@ package com.restaurant.management.controller;
 import com.restaurant.management.model.Customer;
 import com.restaurant.management.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -20,10 +21,14 @@ public class CustomerController {
     private CustomerService customerService;
 
     @GetMapping
-    public String listCustomer(Model model) {
-        model.addAttribute("customers", customerService.getAllCustomer());
-       // return "pages/customer/list";
-       return "pages/admin/Customer/customerList";
+    public String listCustomer(@RequestParam(defaultValue = "0") int page,
+                               @RequestParam(defaultValue = "10") int size,
+                               Model model) {
+        Page<Customer> customerPage = customerService.getCustomersWithPagination(page, size);
+        model.addAttribute("customers", customerPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", customerPage.getTotalPages());
+        return "pages/admin/Customer/customerList";
     }
 
     @PostMapping("/add")

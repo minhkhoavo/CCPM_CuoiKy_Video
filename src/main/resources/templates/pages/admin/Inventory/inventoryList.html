@@ -92,6 +92,32 @@
                     </tr>
                     </tbody>
                 </table>
+                <!-- Pagination -->
+                <div class="flex items-center justify-between mt-4">
+                    <!-- Previous Button -->
+                    <a th:href="@{|/inventories?page=${currentPage - 1}&size=5|}"
+                       th:if="${currentPage > 0}"
+                       class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-200 rounded hover:bg-gray-300">
+                        Previous
+                    </a>
+
+                    <!-- Page Numbers -->
+                    <div class="flex space-x-2">
+                        <a th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                           th:href="@{|/inventories?page=${pageNum}&size=5|}"
+                           th:text="${pageNum + 1}"
+                           th:classappend="${pageNum == currentPage} ? 'bg-blue-500 text-white' : ''"
+                           class="px-4 py-2 text-sm font-medium rounded bg-gray-200 text-gray-600 hover:bg-blue-600 hover:text-white">
+                        </a>
+                    </div>
+
+                    <!-- Next Button -->
+                    <a th:href="@{|/inventories?page=${currentPage + 1}&size=5|}"
+                       th:if="${currentPage < totalPages - 1}"
+                       class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-200 rounded hover:bg-gray-300">
+                        Next
+                    </a>
+                </div>
             </div>
         </div>
     </div>
