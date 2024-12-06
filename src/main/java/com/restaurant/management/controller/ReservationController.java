@@ -49,7 +49,7 @@ public class ReservationController {
                     .build());
 
             System.out.println(reserDate);
-            return "pages/reservation/form";
+            return "redirect:/profile";
         } else return "pages/reservation/booking";
     }
 

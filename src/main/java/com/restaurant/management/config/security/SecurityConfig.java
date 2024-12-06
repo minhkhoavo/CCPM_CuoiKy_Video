@@ -29,6 +29,8 @@ public class SecurityConfig {
             "/suppliers",
             "/dishes",
             "/recipes",
+            "/reservations",
+            "/schedules"
     };
 
     private final String[] PUBLIC_Endpoints = {

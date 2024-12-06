@@ -24,7 +24,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
-
     @Autowired
     private PaymentService paymentService;
     @Autowired

@@ -6,6 +6,7 @@ import com.restaurant.management.service.DishService;
 import com.restaurant.management.service.OrderItemService;
 import com.restaurant.management.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class ChefViewOrderController {
     private DishService dishService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN') AND hasRole('CHEF')")
     public String listOrder(@RequestParam(required = false) String keyword, @RequestParam(required = false) String statusFilter,Model model) {
        //tim kiem ten dish hoac orderid va status
         List<OrderItem> orderItems = orderItemService.searchOrderItems(keyword, statusFilter);
@@ -35,6 +37,7 @@ public class ChefViewOrderController {
     }
 
     @PostMapping("/updateOrderStatus")
+    @PreAuthorize("hasRole('ADMIN') AND hasRole('CHEF')")
     public String updateOrderStatus(@RequestParam Long orderItemId, @RequestParam Long dishId, @RequestParam OrderStatus orderStatus, @RequestParam int quantity , RedirectAttributes redirectAttributes, Model model ) throws IllegalAccessException {
         //cập nhật lại kho hàng
         if(orderStatus.equals(OrderStatus.COMPLETED)) {
