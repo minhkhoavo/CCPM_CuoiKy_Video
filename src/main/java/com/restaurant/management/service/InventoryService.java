@@ -2,6 +2,8 @@ package com.restaurant.management.service;
 
 import com.restaurant.management.model.Customer;
 import com.restaurant.management.model.Inventory;
+import com.restaurant.management.model.Supplier;
+import com.restaurant.management.repository.CustomerRepository;
 import com.restaurant.management.repository.InventoryRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ import java.util.List;
 public class InventoryService {
     @Autowired
     public InventoryRepository inventoryRepository;
+
+    @Autowired
+    public SupplierService supplierService;
 
     public List<Inventory> getAllInventory() {
         return inventoryRepository.findAll();
@@ -35,17 +40,20 @@ public class InventoryService {
         return inventoryRepository.save(inventory);
     }
 
-    public Inventory updateInventory(Inventory inventory) {
-        Inventory existingInventory = inventoryRepository.findById(inventory.getInventoryId())
+    public Inventory updateInventory(Inventory inventory, Long id) {
+        Inventory existingInventory = inventoryRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory not found with id: " + inventory.getInventoryId()));
 
        // BeanUtils.copyProperties(inventory, existingInventory, "inventoryId"); // Bỏ qua `inventoryId` n
         existingInventory.setUnit(inventory.getUnit());
         existingInventory.setQuantity(inventory.getQuantity());
-        existingInventory.setInventoryId(inventory.getInventoryId());
         existingInventory.setDescription(inventory.getDescription());
-        existingInventory.setSupplier(inventory.getSupplier());
+
+        Supplier supplier = supplierService.getSupplierById(existingInventory.getSupplier().getSupplierId());
+
+        existingInventory.setSupplier(supplier);
         existingInventory.setItemName(inventory.getItemName());
+        existingInventory.setUnitPrice(inventory.getUnitPrice());
 
         return inventoryRepository.save(existingInventory);
     }
