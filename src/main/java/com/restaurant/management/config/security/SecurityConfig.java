@@ -20,16 +20,17 @@ public class SecurityConfig {
     private CustomUserDetailsService customUserDetailsService;
 
     private final String[] ADMIN_ENDPOINTS = {
-            "/inventories",
+            "/inventories/**",
             "/tables",
-            "/employees",
+            "/employees/**",
             "/customers",
             "/dashboard",
             "/shifts",
-            "/suppliers",
+            "/suppliers/**",
             "/dishes",
-            "/recipes",
-            "/schedules"
+            "/recipes/**",
+            "/schedules",
+            "/reservations",
     };
 
     private final String[] PUBLIC_Endpoints = {

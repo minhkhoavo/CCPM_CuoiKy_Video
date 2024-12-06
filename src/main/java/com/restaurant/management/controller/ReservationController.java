@@ -59,7 +59,7 @@ public class ReservationController {
     public String createReservation(@ModelAttribute Reservation reservation) {
         System.out.println(reservation);
         reservationService.save(reservation);
-        return "redirect:/reservations";
+        return "redirect:/profile";
     }
 
     @GetMapping("/edit/{id}")
