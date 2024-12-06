@@ -63,7 +63,6 @@ public class InventoryController {
         try {
             inventory.setInventoryId(id);
             Inventory update = inventoryService.updateInventory(inventory);
-
         } catch (Exception e) {
             e.printStackTrace();
             return "error";

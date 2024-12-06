@@ -39,7 +39,14 @@ public class InventoryService {
         Inventory existingInventory = inventoryRepository.findById(inventory.getInventoryId())
                 .orElseThrow(() -> new RuntimeException("Inventory not found with id: " + inventory.getInventoryId()));
 
-        BeanUtils.copyProperties(inventory, existingInventory, "inventoryId"); // Bỏ qua `inventoryId` n
+       // BeanUtils.copyProperties(inventory, existingInventory, "inventoryId"); // Bỏ qua `inventoryId` n
+        existingInventory.setUnit(inventory.getUnit());
+        existingInventory.setQuantity(inventory.getQuantity());
+        existingInventory.setInventoryId(inventory.getInventoryId());
+        existingInventory.setDescription(inventory.getDescription());
+        existingInventory.setSupplier(inventory.getSupplier());
+        existingInventory.setItemName(inventory.getItemName());
+
         return inventoryRepository.save(existingInventory);
     }
 
