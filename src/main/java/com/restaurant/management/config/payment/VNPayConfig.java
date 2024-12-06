@@ -13,11 +13,13 @@ import java.util.*;
 @Configuration
 public class VNPayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_ReturnUrl = "http://localhost:8080/payment/vn-pay-callback";
     public static String vnp_Version = "2.1.0";
     public static String vnp_Command = "pay";
     public static String orderType = "order-type";
     public static String vnp_CurrCode = "VND";
+
+    @Value("${payment.vnpay.returnUrl}")
+    public String vnp_ReturnUrl = "";
 
     @Value("${payment.vnpay.tmnCode}")
     public String vnp_TmnCode;

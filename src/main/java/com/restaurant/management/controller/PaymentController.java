@@ -8,6 +8,7 @@ import com.restaurant.management.service.TableService;
 import com.restaurant.management.util.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -85,8 +86,9 @@ public class PaymentController {
             String responseCode = request.getParameter("vnp_ResponseCode");
             if ("00".equals(responseCode)) {
                 orderService.completedOrder(orderId);
-                response.put("RspCode", "00");
-                response.put("Message", "Confirm Success");
+                return ResponseEntity.status(HttpStatus.FOUND)
+                        .header(HttpHeaders.LOCATION, "/orders/reviews/" + orderId)
+                        .build();
             } else {
                 orderService.updateOrderStatus(orderId, OrderStatus.UNPAID);
                 response.put("Message", "Error when pay");

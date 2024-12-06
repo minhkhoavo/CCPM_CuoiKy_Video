@@ -55,7 +55,7 @@ jobs:
           echo "Stopping and removing the old container if exists..."
           docker stop restaurant-web || true
           docker rm restaurant-web || true
-
+  
           echo "Running the new container..."
           docker run -d --name restaurant-web \
             --network host \
@@ -68,6 +68,7 @@ jobs:
             --env CLOUDINARY_SECRET=${{ secrets.CLOUDINARY_SECRET }} \
             --env VNP_TMNCODE=${{ secrets.VNP_TMNCODE }} \
             --env VNP_SECRETKEY=${{ secrets.VNP_SECRETKEY }} \
+            --env VNP_RETURNURL=${{ secrets.VNP_RETURNURL }} \
             --env TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }} \
             --env TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }} \
             --env TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }} \

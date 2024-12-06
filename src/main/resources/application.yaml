@@ -30,6 +30,7 @@ payment:
   vnpay:
     tmnCode: ${VNP_TMNCODE:12}
     secretKey: ${VNP_SECRETKEY:12}
+    returnUrl: ${VNP_RETURNURL:http://localhost:8080/payment/vn-pay-callback}
 
 twilio:
   accountSid: ${TWILIO_ACCOUNT_SID}
