@@ -87,7 +87,7 @@ public class ShiftController {
         String username = principal.getName();
         Long employeeId = employeeService.getEmployeeByEmail(username).getId();
         scheduleService.registerEmployeeToShift(employeeId, shiftId);
-        return "redirect:/shifts/register";
+        return "redirect:/profile";
     }
 
     @PostMapping("/cancel/{scheduleId}")

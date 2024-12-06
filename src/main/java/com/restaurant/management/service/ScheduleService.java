@@ -107,7 +107,7 @@ public class ScheduleService {
                 .shift(shift)
                 .startTime(shift.getStartTime())
                 .endTime(shift.getEndTime())
-                .status("DRAFT")
+                .status("PUBLISHED")
                 .workingDate(shift.getWorkingDate())
                 .build();
 
