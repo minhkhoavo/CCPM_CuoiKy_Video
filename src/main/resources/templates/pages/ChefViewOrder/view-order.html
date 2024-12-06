@@ -35,7 +35,7 @@
                 <!-- Lặp qua danh sách orderItems -->
                 <div th:each="item : ${orderItems}" class="bg-white rounded-lg shadow-lg p-4 flex items-center justify-between">
                     <div class="flex items-center space-x-4">
-                        <img src="https://lavenderstudio.com.vn/wp-content/uploads/2017/03/chup-san-pham.jpg" alt="Order image" class="w-16 h-16 rounded-lg object-cover">
+                        <img th:src="${item.getDish().image}" alt="Order image" class="w-16 h-16 rounded-lg object-cover">
                         <div>
                             <p class="font-semibold">Order # <span th:text="${item.order.id}"></span></p>
                             <p class="text-gray-600 text-sm">Dish: <span th:text="${item.dish.getName()}"></span></p>

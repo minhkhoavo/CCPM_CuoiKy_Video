@@ -1,14 +1,12 @@
 package com.restaurant.management.controller;
 
 import com.restaurant.management.model.Customer;
+import com.restaurant.management.model.Dish;
 import com.restaurant.management.model.Employee;
 import com.restaurant.management.model.Otp;
 import com.restaurant.management.repository.CustomerRepository;
 import com.restaurant.management.repository.OtpRepository;
-import com.restaurant.management.service.CustomerService;
-import com.restaurant.management.service.EmployeeService;
-import com.restaurant.management.service.OtpService;
-import com.restaurant.management.service.SmsService;
+import com.restaurant.management.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -38,6 +37,9 @@ public class AccountController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private DishService dishService;
 
     @PostMapping("/request-otp")
     public String requestOtp(@RequestParam String phoneNumber, Model model) {
@@ -118,5 +120,12 @@ public class AccountController {
     public String registerCustomer(@ModelAttribute("customer") Customer customer){
         customerService.saveCustomer(customer);
         return "redirect:/login";
+    }
+
+    @GetMapping("/home")
+    public String showHomePage(Model model){
+        List<Dish> dishes = dishService.getAllDishes();
+        model.addAttribute("dishes", dishes);
+        return "pages/auth/homePage";
     }
 }
