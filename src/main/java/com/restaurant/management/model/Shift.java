@@ -40,12 +40,14 @@ public class Shift {
 
     @PrePersist
     public void setDefaultValues() {
-        if (maxRegistration == 0) {
-            maxRegistration = 999;
-        }
-        available = 0;
-        if (workingDate == null) {
-            workingDate = LocalDate.now();
+        if(shiftId == null) {
+            if (maxRegistration == 0) {
+                maxRegistration = 999;
+            }
+            available = maxRegistration;
+            if (workingDate == null) {
+                workingDate = LocalDate.now();
+            }
         }
     }
 
