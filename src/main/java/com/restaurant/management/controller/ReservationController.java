@@ -4,6 +4,7 @@ import com.restaurant.management.model.Reservation;
 import com.restaurant.management.service.ReservationService;
 import com.restaurant.management.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class ReservationController {
     private TableService tableService;
 
     @GetMapping("")
+    @PreAuthorize("hasRole('ADMIN')")
     public String listReservations(
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String dateFilter,
@@ -37,6 +39,7 @@ public class ReservationController {
     }
 
     @GetMapping("/booking")
+    @PreAuthorize("hasRole('ADMIN') AND hasRole('CUSTOMER')")
     public String booking(Model model,
            @RequestParam(value = "dateToCome", required = false) LocalDate reserDate,
            @RequestParam(value = "timeToCome", required = false) LocalTime reserTime,
@@ -48,8 +51,7 @@ public class ReservationController {
                     .timeToCome(reserTime)
                     .build());
 
-            System.out.println(reserDate);
-            return "redirect:/profile";
+            return "pages/reservation/form";
         } else return "pages/reservation/booking";
     }
 
@@ -61,6 +63,7 @@ public class ReservationController {
     }
 
     @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showEditForm(@PathVariable Long id, Model model) {
         Reservation reservation = reservationService.findById(id);
         model.addAttribute("tables", tableService.getAllTables());
@@ -69,12 +72,14 @@ public class ReservationController {
     }
 
     @GetMapping("/accept/{tableId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String acceptReservation(@PathVariable Long tableId) {
         reservationService.acceptReservation(tableId);
         return "redirect:/reservations";
     }
 
     @GetMapping("/cancel/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteReservation(@PathVariable Long id) {
         reservationService.cancelReservation(id);
         return "redirect:/reservations";

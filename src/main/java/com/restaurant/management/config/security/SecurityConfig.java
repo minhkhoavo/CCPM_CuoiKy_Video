@@ -29,7 +29,6 @@ public class SecurityConfig {
             "/suppliers",
             "/dishes",
             "/recipes",
-            "/reservations",
             "/schedules"
     };
 
