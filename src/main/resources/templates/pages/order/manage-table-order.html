@@ -4,7 +4,7 @@
 <body>
 <div class="w-full ml-20 mx-auto flex flex-col md:flex-row gap-6 h-screen">
     <div th:replace="~{fragments/table-layout}"></div>
-    <div th:replace="${status == 'AVAILABLE'} ? ~{fragments/order-item-sidebar} : ~{fragments/create-checkin-order}"></div>
+    <div th:replace="${status == 'AVAILABLE'} ? ~{fragments/create-checkin-order} : ~{fragments/order-item-sidebar}"></div>
 </div>
 <script>
     function selectTable(tableId) {
