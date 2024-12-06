@@ -67,6 +67,7 @@
                                         th:data-email="${customer.email}"
                                         th:data-phone="${customer.phone}"
                                         th:data-address="${customer.address}"
+                                        th:data-password="${customer.password}"
                                         onclick="openModal(this)"
                                         class="text-indigo-600 hover:text-indigo-900">
                                     <i class="fas fa-edit"></i>
@@ -132,7 +133,7 @@
                     email: button.getAttribute('data-email') || "",
                     phone: button.getAttribute('data-phone') || "",
                     address: button.getAttribute('data-address') || "",
-
+                    password: button.getAttribute('data-password') || ""
                 };
                 console.log("Button clicked for action:", data);
             }
