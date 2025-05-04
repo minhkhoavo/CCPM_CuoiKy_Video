@@ -4,7 +4,6 @@ import com.restaurant.management.model.Employee;
 import com.restaurant.management.model.Schedule;
 import com.restaurant.management.service.EmployeeService;
 import com.restaurant.management.service.ScheduleService;
-import com.restaurant.management.service.SchedulingSolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -88,8 +87,8 @@ public class ScheduleController {
 
         List<List<Integer>> staffMatrix = (List<List<Integer>>) requestBody.get("staffMatrix");
         List<List<Integer>> chefMatrix = (List<List<Integer>>) requestBody.get("chefMatrix");
-        scheduleService.autoSchedulingShitf(startDate, "STAFF", staffMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
-        scheduleService.autoSchedulingShitf(startDate, "CHEF", chefMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
+        // scheduleService.autoSchedulingShitf(startDate, "STAFF", staffMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
+        // scheduleService.autoSchedulingShitf(startDate, "CHEF", chefMatrix, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
         return ResponseEntity.ok("success");
     }
 

@@ -107,16 +107,15 @@
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-springsecurity6</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.google.ortools/ortools-java -->
-		<dependency>
-			<groupId>com.google.ortools</groupId>
-			<artifactId>ortools-java</artifactId>
-			<version>9.11.4210</version>
-		</dependency>
 		<dependency>
 			<groupId>com.twilio.sdk</groupId>
 			<artifactId>twilio</artifactId>
 			<version>8.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 

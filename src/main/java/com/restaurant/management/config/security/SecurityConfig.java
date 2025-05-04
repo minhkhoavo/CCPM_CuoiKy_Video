@@ -50,7 +50,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                     .requestMatchers(PUBLIC_Endpoints).permitAll()
                     .requestMatchers(ADMIN_ENDPOINTS).hasRole("ADMIN")
-                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             )
             .formLogin(form -> form
                     .loginPage("/login")

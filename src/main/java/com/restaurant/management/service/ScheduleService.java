@@ -146,21 +146,21 @@ public class ScheduleService {
         }
     }
 
-    public void autoSchedulingShitf(String startDate, String role, List<List<Integer>> numEmpPerShift, int maxShiftPerDay,
-                                    int maxDeviationShift, int isConsecutiveShifts) {
-        // Xử lý ma trận staff và chef chuyển đổi từ List<List<Integer>> thành mảng 2D int[])
-        int[][] staffMatrixArray = new int[numEmpPerShift.size()][];
-        for (int i = 0; i < numEmpPerShift.size(); i++) {
-            staffMatrixArray[i] = numEmpPerShift.get(i).stream().mapToInt(Integer::intValue).toArray();
-        }
-        int numRegularShift = shiftService.getRegularShifts().size();
-        int numEmployee = employeeService.findEmployeeIdsByPosition(role).size();
-        SchedulingSolver solver = new SchedulingSolver();
-        int[][][] solution = solver.solveConstraint(numEmployee, numRegularShift, 7,
-                staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
+    // public void autoSchedulingShitf(String startDate, String role, List<List<Integer>> numEmpPerShift, int maxShiftPerDay,
+    //                                 int maxDeviationShift, int isConsecutiveShifts) {
+    //     // Xử lý ma trận staff và chef chuyển đổi từ List<List<Integer>> thành mảng 2D int[])
+    //     int[][] staffMatrixArray = new int[numEmpPerShift.size()][];
+    //     for (int i = 0; i < numEmpPerShift.size(); i++) {
+    //         staffMatrixArray[i] = numEmpPerShift.get(i).stream().mapToInt(Integer::intValue).toArray();
+    //     }
+    //     int numRegularShift = shiftService.getRegularShifts().size();
+    //     int numEmployee = employeeService.findEmployeeIdsByPosition(role).size();
+    //     SchedulingSolver solver = new SchedulingSolver();
+    //     int[][][] solution = solver.solveConstraint(numEmployee, numRegularShift, 7,
+    //             staffMatrixArray, maxShiftPerDay, maxDeviationShift, isConsecutiveShifts);
 
-        saveSchedule(solution, LocalDate.parse(startDate), LocalDate.parse(startDate).plusDays(7), role);
-    }
+    //     saveSchedule(solution, LocalDate.parse(startDate), LocalDate.parse(startDate).plusDays(7), role);
+    // }
 
     public void publishAllSchedules() {
         List<Schedule> schedules = scheduleRepository.findAll();

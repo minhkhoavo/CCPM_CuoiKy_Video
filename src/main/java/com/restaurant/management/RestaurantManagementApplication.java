@@ -1,6 +1,5 @@
 package com.restaurant.management;
 
-import com.restaurant.management.service.SchedulingSolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
