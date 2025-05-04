@@ -24,7 +24,7 @@ spring:
     url: ${DB_URL:jdbc:mysql://localhost:3306/restaurant}
     username: ${DB_USERNAME:root}
     password: ${DB_PASSWORD:1234567890}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: ${DB_DRIVER:com.mysql.cj.jdbc.Driver} 
   jpa:
     hibernate:
       ddl-auto: update
